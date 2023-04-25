@@ -1,3 +1,22 @@
+<script setup>
+
+import {ref} from "vue";
+
+const html = document.querySelector('html');
+const themeInitial = html.getAttribute('data-bs-theme');
+const theme = ref(themeInitial);
+
+function toggleTheme() {
+    if (theme.value === 'dark') {
+        theme.value = 'light';
+    } else {
+        theme.value = 'dark';
+    }
+        html.setAttribute('data-bs-theme', theme.value);
+}
+
+</script>
+
 <template>
     <nav class="navbar navbar-expand-sm bg-body-tertiary">
         <div class="container-fluid">
@@ -13,6 +32,12 @@
                         <router-link class="nav-link" aria-current="page" to="/">Plot</router-link>
                     </li>
                 </ul>
+                <span class="nav-item me-2">
+                    <button class="btn btn-outline-secondary" @click="toggleTheme()" href="#">
+                        <i v-if="theme === 'dark'" class="bi bi-sun-fill" style="font-size: 1em"></i>
+                        <i v-else class="bi bi-moon-stars-fill"></i>
+                    </button>
+                </span>
                 <div v-if="isLogged === false" class="navbar-nav">
                     <a href="#" class="nav-link me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
                         Log in
