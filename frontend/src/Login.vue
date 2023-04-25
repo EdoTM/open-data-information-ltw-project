@@ -1,36 +1,43 @@
 <script setup>
 import axiosInstance from "./axiosInstance";
 import md5 from "crypto-js/md5";
+import {ref} from "vue";
 
 function generatePasswordMD5(plainPassword) {
     return md5(plainPassword).toString()
 }
 
-let loginError = "";
+const loginError = ref("");
 
-const sendLoginRequest = () => {
+const emits = defineEmits(["logged-in", "update:user-name", "update:user-email"])
+
+function handleResponse(response) {
+    const json = response.data;
+    emits("logged-in", true);
+    emits("update:user-name", json.username);
+    emits("update:user-email", json.email);
+    console.log("Login successful");
+}
+
+function sendLoginRequest() {
     const plainPassword = document.getElementById("inputPassword").value;
 
-    axiosInstance.post("/login", {
+    const login = {
         email: document.getElementById("inputEmail").value,
         password: generatePasswordMD5(plainPassword)
-    }).then(response => {
+    }
 
-        console.log(response);
-    }).catch(error => {
+    console.log(login)
+
+    axiosInstance.post("/login", login).then(handleResponse).catch(error => {
+        console.log(error)
         if (error.response.status === 401) {
-            loginError = "INVALID_CREDENTIALS";
-            console.log("LoginError: ", loginError);
+            loginError.value = "INVALID_CREDENTIALS";
         } else if (error.response.status === 404) {
-            loginError = "USER_NOT_FOUND";
-            console.log("LoginError: ", loginError);
+            loginError.value = "USER_NOT_FOUND";
         }
-        else {
-            loginError = "UNKNOWN_ERROR";
-            console.log("error: ", error.response);
-        }
+        console.log("LoginError: ", loginError);
     });
-    console.log("loginError: ", loginError);
 }
 </script>
 
@@ -45,9 +52,14 @@ const sendLoginRequest = () => {
                 <label for="inputPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="inputPassword" minlength="8" required>
             </div>
-            <div class="alert alert-danger" role="alert">
-                <span v-if="loginError === 'INVALID_CREDENTIALS'">Invalid password.</span>
-                <span v-else-if="loginError === 'USER_NOT_FOUND'">User not found.</span>
+            <div v-if="loginError === 'INVALID_CREDENTIALS'" class="alert alert-danger" role="alert">
+                Invalid password.
+            </div>
+            <div v-else-if="loginError === 'USER_NOT_FOUND'" class="alert alert-danger" role="alert">
+                User not found.
+            </div>
+            <div v-else-if="loginError === 'UNKNOWN_ERROR'" class="alert alert-danger" role="alert">
+                An error occurred.
             </div>
             <button type="submit" class="btn btn-primary mt-2">Login</button>
         </form>
@@ -56,7 +68,6 @@ const sendLoginRequest = () => {
 </template>
 
 <script>
-
 export default {
     name: "Login"
 }
