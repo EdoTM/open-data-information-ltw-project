@@ -6,6 +6,8 @@ function generatePasswordMD5(plainPassword) {
     return md5(plainPassword).toString()
 }
 
+let loginError = "";
+
 const sendLoginRequest = () => {
     const plainPassword = document.getElementById("inputPassword").value;
 
@@ -13,9 +15,15 @@ const sendLoginRequest = () => {
         email: document.getElementById("inputEmail").value,
         password: generatePasswordMD5(plainPassword)
     }).then(response => {
+
         console.log(response);
     }).catch(error => {
-        console.log(error);
+        if (error.response.status === 401) {
+            loginError = "INVALID_CREDENTIALS";
+        } else if (error.response.status === 404) {
+            loginError = "USER_NOT_FOUND";
+        }
+        console.log("error: ", error.response.status);
     });
 }
 </script>
@@ -30,6 +38,10 @@ const sendLoginRequest = () => {
             <div class="mb-3">
                 <label for="inputPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="inputPassword" minlength="8" required>
+            </div>
+            <div class="alert alert-danger" role="alert">
+                <span v-if="loginError === 'INVALID_CREDENTIALS'">Invalid password.</span>
+                <span v-else-if="loginError === 'USER_NOT_FOUND'">User not found.</span>
             </div>
             <button type="submit" class="btn btn-primary mt-2">Login</button>
         </form>
