@@ -7,17 +7,20 @@ from Crypto.Util.Padding import pad, unpad
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = os.urandom(32)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:*"])
 
-def generate_cookie(input_email):
+
+def generate_cookie(input_email: str):
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
     session_id = cipher.encrypt(pad(input_email.encode(), AES.block_size)).hex()
     return session_id
 
-def get_user_from_cookie(input_cookie):
+
+def get_user_from_cookie(input_cookie: str):
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
     email = unpad(cipher.decrypt(bytes.fromhex(input_cookie)), AES.block_size).decode()
     return email
+
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -25,23 +28,20 @@ def login():
     email = data["email"]
     password_md5 = data["password"]
 
-    resp_data = {}
-    resp_data["status"] = "success"
-    resp_data["email"] = email
-    resp_data["username"] = "gino"
-    
+    resp_data = {
+        "status": "success",
+        "email": email,
+        "username": "gino"
+    }
+
     resp = make_response(resp_data)
     session_id = generate_cookie(email)
     resp.set_cookie("sessionID", session_id)
 
-    
-
-    
     print(get_user_from_cookie(session_id))
 
     return resp
 
-    
 
 def start_api():
     global app
