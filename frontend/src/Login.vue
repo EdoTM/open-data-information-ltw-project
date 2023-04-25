@@ -1,5 +1,5 @@
 <script setup>
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 import md5 from "crypto-js/md5";
 
 function generatePasswordMD5(plainPassword) {
@@ -9,7 +9,7 @@ function generatePasswordMD5(plainPassword) {
 const sendLoginRequest = () => {
     const plainPassword = document.getElementById("inputPassword").value;
 
-    axios.post("http://localhost:5000/login", {
+    axiosInstance.post("/login", {
         email: document.getElementById("inputEmail").value,
         password: generatePasswordMD5(plainPassword)
     }).then(response => {
