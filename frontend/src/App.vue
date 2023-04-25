@@ -32,7 +32,7 @@ function handleLogin() {
                     <Login
                             @logged-in="handleLogin()"
                             @update:user-email="userEmail = $event"
-                            @update:user-name="userName = $event"
+                            @update:user-name="userName = '@'+$event"
                     />
                 </div>
             </div>
