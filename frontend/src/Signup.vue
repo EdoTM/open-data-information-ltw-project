@@ -42,9 +42,9 @@ function sendLoginRequest() {
 </script>
 
 <template>
-    <h1>Sign up</h1>
 
     <div class="mx-auto mb-4" style="max-width: 300px">
+    <h1>Sign up</h1>
         <form @submit.prevent="sendLoginRequest">
             <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="inputEmail" required placeholder="s">
@@ -53,21 +53,21 @@ function sendLoginRequest() {
             <div class="input-group mb-3">
                 <span class="input-group-text">@</span>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Username">
+                    <input type="text" class="form-control" id="inputUsername" placeholder="Username" required>
                     <label for="inputUsername">Username</label>
                 </div>
             </div>
-            <div class="mb-3">
-                <label for="inputPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword" minlength="8" required>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="inputPassword" required placeholder="s">
+                <label for="inputPassword">Password</label>
             </div>
-            <div class="mb-3">
-                <label for="inputRepeatPassword" class="form-label">Repeat password</label>
-                <input type="password" class="form-control" id="inputRepeatPassword" minlength="8" required>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="inputRepeatPassword" required placeholder="s">
+                <label for="inputRepeatPassword">Repeat password</label>
             </div>
-            <div class="mb-3">
-                <label for="inputBirthday" class="form-label">Birthday</label>
-                <input type="date" class="form-control" id="inputBirthday" required>
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="inputBirthdate" required placeholder="s">
+                <label for="inputBirthdate">Birth date</label>
             </div>
             <button type="submit" class="btn btn-success mt-2">Sign up</button>
         </form>
