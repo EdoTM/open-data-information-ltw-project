@@ -31,8 +31,8 @@ def signup():
     email = data["email"]
     username = data["username"]
     password_md5 = data["password"]
-    birthday = data["birthday"]
-    user = db.store_user(email, username, password_md5, birthday)
+    birthdate = data["birthdate"]
+    user = db.store_user(email, username, password_md5, birthdate)
 
     return generate_success_resp(user)
 

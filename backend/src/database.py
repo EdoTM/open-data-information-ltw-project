@@ -11,8 +11,9 @@ class Database():
     
     def _store_user(self, email, username, password_md5, birthday):
         conn = sqlite3.connect(self.db_dir)
+        cursor = conn.cursor()
         query="INSERT INTO users VALUES (?, ?, ?, ?)"
-        conn.execute(query, (email, username, password_md5, birthday))
+        cursor.execute(query, (email, username, password_md5, birthday))
         conn.commit()
         conn.close()
 

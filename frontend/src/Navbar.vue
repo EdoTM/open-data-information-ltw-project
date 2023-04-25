@@ -15,6 +15,13 @@ function toggleTheme() {
         html.setAttribute('data-bs-theme', theme.value);
 }
 
+
+function delete_cookie(name) {
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+
+
 </script>
 
 <template>
@@ -49,7 +56,7 @@ function toggleTheme() {
                         Logged in as {{ userName }}
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-outline-secondary" aria-current="page" @click="isLogged = false;" href="#">Log out</button>
+                        <button class="btn btn-outline-secondary" aria-current="page" @click="isLogged = false; delete_cookie('sessionID');" href="#">Log out</button>
                     </li>
                 </ul>
             </div>

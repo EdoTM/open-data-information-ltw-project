@@ -19,12 +19,15 @@ function handleResponse(response) {
     console.log("Login successful");
 }
 
-function sendLoginRequest() {
-    const plainPassword = document.getElementById("inputPassword").value;
+function sendSignUpRequest() {
+    const plainPassword = document.getElementById("signupInputPassword").value;
 
     const signup = {
-        email: document.getElementById("inputEmail").value,
-        password: generatePasswordMD5(plainPassword)
+        email: document.getElementById("signupInputEmail").value,
+        password: generatePasswordMD5(plainPassword),
+        username: document.getElementById("signupInputUsername").value,
+        birthdate: document.getElementById("signupInputBirthdate").value
+
     }
 
     console.log(signup)
@@ -45,29 +48,29 @@ function sendLoginRequest() {
 
     <div class="mx-auto mb-4" style="max-width: 300px">
     <h1>Sign up</h1>
-        <form @submit.prevent="sendLoginRequest">
+        <form @submit.prevent="sendSignUpRequest">
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="inputEmail" required placeholder="s">
-                <label for="inputEmail">Email address</label>
+                <input type="email" class="form-control" id="signupInputEmail" required placeholder="s">
+                <label for="signupInputEmail">Email address</label>
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">@</span>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="inputUsername" placeholder="Username" required>
-                    <label for="inputUsername">Username</label>
+                    <input type="text" class="form-control" id="signupInputUsername" placeholder="Username" required>
+                    <label for="signupInputUsername">Username</label>
                 </div>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="inputPassword" required placeholder="s">
-                <label for="inputPassword">Password</label>
+                <input type="password" class="form-control" id="signupInputPassword" required placeholder="s">
+                <label for="signupInputPassword">Password</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="inputRepeatPassword" required placeholder="s">
-                <label for="inputRepeatPassword">Repeat password</label>
+                <input type="password" class="form-control" id="signupInputRepeatPassword" required placeholder="s">
+                <label for="signupInputRepeatPassword">Repeat password</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="date" class="form-control" id="inputBirthdate" required placeholder="s">
-                <label for="inputBirthdate">Birth date</label>
+                <input type="date" class="form-control" id="signupInputBirthdate" required placeholder="s">
+                <label for="signupInputBirthdate">Birth date</label>
             </div>
             <button type="submit" class="btn btn-success mt-2">Sign up</button>
         </form>
