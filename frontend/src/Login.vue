@@ -31,7 +31,7 @@ const sendLoginRequest = () => {
                 <label for="inputPassword" class="form-label">Password</label>
                 <input type="password" class="form-control" id="inputPassword" minlength="8" required>
             </div>
-            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+            <button type="submit" class="btn btn-primary mt-2">Login</button>
         </form>
     </div>
 
