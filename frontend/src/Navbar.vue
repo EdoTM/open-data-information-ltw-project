@@ -6,6 +6,9 @@ const html = document.querySelector('html');
 const themeInitial = html.getAttribute('data-bs-theme');
 const theme = ref(themeInitial);
 
+const emits = defineEmits(["log-out"]);
+
+
 function toggleTheme() {
     if (theme.value === 'dark') {
         theme.value = 'light';
@@ -16,10 +19,14 @@ function toggleTheme() {
 }
 
 
-function delete_cookie(name) {
+function deleteCookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
-
+function handleLogout() {
+    deleteCookie("sessionID");
+    emits("log-out");
+    console.log("Logout successful");
+}
 
 
 </script>
@@ -56,7 +63,7 @@ function delete_cookie(name) {
                         Logged in as {{ userName }}
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-outline-secondary" aria-current="page" @click="isLogged = false; delete_cookie('sessionID');" href="#">Log out</button>
+                        <button class="btn btn-outline-secondary" aria-current="page" @click="handleLogout('sessionID');" href="#">Log out</button>
                     </li>
                 </ul>
             </div>

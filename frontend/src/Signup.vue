@@ -12,6 +12,7 @@ const loginError = ref("");
 const emits = defineEmits(["logged-in", "update:user-name", "update:user-email"])
 
 function handleResponse(response) {
+    // TODO: Handle response, this is just the login response handling
     const json = response.data;
     emits("logged-in", true);
     emits("update:user-name", json.username);
@@ -34,6 +35,7 @@ function sendSignUpRequest() {
 
     axiosInstance.post("/signup", signup).then(handleResponse).catch(error => {
         console.log(error)
+        // TODO: Handle errors, this is just the login error handling
         if (error.response.status === 401) {
             loginError.value = "INVALID_CREDENTIALS";
         } else if (error.response.status === 404) {

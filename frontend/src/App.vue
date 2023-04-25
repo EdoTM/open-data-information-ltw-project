@@ -18,6 +18,7 @@ function handleLogin() {
     <Navbar
             :is-logged="isLogged"
             :user-name="userName"
+            @log-out="isLogged = false"
     />
 
   <!-- Modal -->
