@@ -1,3 +1,4 @@
 flask
 pycryptodome
 flask_cors
+sqlite3

@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
+from database import *
 
 app = Flask(__name__)
 
@@ -21,6 +22,22 @@ def get_user_from_cookie(input_cookie: str):
     email = unpad(cipher.decrypt(bytes.fromhex(input_cookie)), AES.block_size).decode()
     return email
 
+def generate_success_resp(user):
+    resp_data = {
+        "status": "success",
+        "email":  user["email"],
+        "username": user["username"],
+    }
+
+    resp = make_response(resp_data)
+    session_id = generate_cookie(user["email"])
+    resp.set_cookie("sessionID", session_id)
+    return resp
+
+def make_error_resp(error):
+    resp_data = {"status": "error", "error": error}
+    return make_response(resp_data, 401)
+
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -28,19 +45,33 @@ def login():
     email = data["email"]
     password_md5 = data["password"]
 
-    resp_data = {
-        "status": "success",
-        "email": email,
-        "username": "gino"
-    }
+    try:
+        user = db.get_user_by_email(email)
+    except UserNotFoundError:
+        return make_error_resp("User not found")
+        
+    
+    if user["password_md5"] != password_md5:
+        return make_error_resp("Wrong password")
+    
+    return generate_success_resp(user)
+    
 
-    resp = make_response(resp_data)
-    session_id = generate_cookie(email)
-    resp.set_cookie("sessionID", session_id)
 
-    print(get_user_from_cookie(session_id))
+@app.route("/signup", methods=["POST"])
+def signup():
+    data = request.json
+    email = data["email"]
+    username = data["username"]
+    password_md5 = data["password"]
+    birthday = data["birthday"]
+    user = db.store_user(email, username, password_md5, birthday)
 
-    return resp
+    return generate_success_resp(user)
+
+
+
+    
 
 
 def start_api():
@@ -53,4 +84,5 @@ def start_api():
 
 
 if __name__ == "__main__":
+    db = Database()
     start_api()
