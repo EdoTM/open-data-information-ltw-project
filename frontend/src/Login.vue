@@ -20,11 +20,17 @@ const sendLoginRequest = () => {
     }).catch(error => {
         if (error.response.status === 401) {
             loginError = "INVALID_CREDENTIALS";
+            console.log("LoginError: ", loginError);
         } else if (error.response.status === 404) {
             loginError = "USER_NOT_FOUND";
+            console.log("LoginError: ", loginError);
         }
-        console.log("error: ", error.response.status);
+        else {
+            loginError = "UNKNOWN_ERROR";
+            console.log("error: ", error.response);
+        }
     });
+    console.log("loginError: ", loginError);
 }
 </script>
 
