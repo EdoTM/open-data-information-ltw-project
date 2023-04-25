@@ -25,11 +25,18 @@ def login():
     email = data["email"]
     password_md5 = data["password"]
 
+    resp_data = {}
+    resp_data["status"] = "success"
+    resp_data["email"] = email
+    resp_data["username"] = "gino"
     
-    resp = make_response()
+    resp = make_response(resp_data)
     session_id = generate_cookie(email)
     resp.set_cookie("sessionID", session_id)
 
+    
+
+    
     print(get_user_from_cookie(session_id))
 
     return resp
