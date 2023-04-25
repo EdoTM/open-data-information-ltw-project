@@ -4,7 +4,7 @@ import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {createRouter, createWebHistory} from "vue-router";
 import Home from "./Home.vue";
-import Login from "./Login.vue";
+import Signup from "./Signup.vue";
 
 let router = createRouter({
     history: createWebHistory(),
@@ -14,8 +14,8 @@ let router = createRouter({
             component: Home
         },
         {
-            path: '/login',
-            component: Login
+            path: '/signup',
+            component: Signup
         }
     ]
 });

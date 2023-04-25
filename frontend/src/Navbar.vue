@@ -17,7 +17,7 @@
                     <a href="#" class="nav-link me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
                         Log in
                     </a>
-                    <router-link class="btn btn-success" aria-current="page" to="/login">Sign up</router-link>
+                    <router-link class="btn btn-success" aria-current="page" to="/signup">Sign up</router-link>
                 </div>
                 <ul v-else class="navbar-nav">
                     <li class="navbar-text me-3">
