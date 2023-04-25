@@ -34,8 +34,8 @@ def generate_success_resp(user):
     resp.set_cookie("sessionID", session_id)
     return resp
 
-def make_error_resp(error):
-    resp_data = {"status": "error", "error": error}
+def make_error_resp(error_msg, error_code):
+    resp_data = {"status": "error", "error": error_msg}
     return make_response(resp_data, 401)
 
 
@@ -48,11 +48,11 @@ def login():
     try:
         user = db.get_user_by_email(email)
     except UserNotFoundError:
-        return make_error_resp("User not found")
+        return make_error_resp("User not found", 404)
         
     
     if user["password_md5"] != password_md5:
-        return make_error_resp("Wrong password")
+        return make_error_resp("Wrong password", 401)
     
     return generate_success_resp(user)
     
