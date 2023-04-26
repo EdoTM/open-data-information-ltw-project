@@ -1,10 +1,10 @@
 <script setup>
-import Navbar from "./Navbar.vue";
-import Login from "./Login.vue";
+import Navbar from "./components/Navbar.vue";
+import Login from "./components/Login.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
-import axiosInstance from "./axiosInstance";
-import { getCookie } from "./cookieUtils";
+import axiosInstance from "./utils/axiosInstance";
+import { getCookie } from "./utils/cookieUtils";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
 

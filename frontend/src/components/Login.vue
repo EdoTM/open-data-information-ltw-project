@@ -1,5 +1,5 @@
 <script setup>
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 import md5 from "crypto-js/md5";
 import { ref } from "vue";
 

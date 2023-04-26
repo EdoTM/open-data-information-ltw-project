@@ -1,11 +1,7 @@
 <script setup>
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 import md5 from "crypto-js/md5";
 import { onMounted, ref } from "vue";
-
-const props = defineProps({
-  isLogged: Boolean,
-});
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
@@ -248,5 +244,8 @@ onMounted(() => {
 <script>
 export default {
   name: "Signup",
+  props: {
+    isLogged: Boolean,
+  },
 };
 </script>
