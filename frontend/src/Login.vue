@@ -51,18 +51,24 @@ function sendLoginRequest() {
 <template>
   <div class="mx-auto mb-4" style="max-width: 300px">
     <form @submit.prevent="sendLoginRequest">
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="inputEmail" required placeholder="s">
-            <label for="inputEmail">Email address</label>
-        </div>
       <div class="form-floating mb-3">
         <input
-          type="password"
+          id="inputEmail"
           class="form-control"
-          id="inputPassword"
-          minlength="8"
+          placeholder="Email"
           required
+          type="email"
+        />
+        <label for="inputEmail">Email address</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input
+          id="inputPassword"
+          class="form-control"
+          minlength="8"
           placeholder="Password"
+          required
+          type="password"
         />
         <label for="inputPassword">Password</label>
       </div>
@@ -87,7 +93,7 @@ function sendLoginRequest() {
       >
         An error occurred.
       </div>
-      <button type="submit" class="btn btn-primary mt-2">Login</button>
+      <button class="btn btn-primary mt-2" type="submit">Login</button>
     </form>
   </div>
 </template>

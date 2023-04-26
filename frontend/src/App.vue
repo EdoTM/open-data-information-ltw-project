@@ -4,32 +4,40 @@ import Login from "./Login.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./axiosInstance";
-import { getCookie, setCookie } from "./cookieUtils";
+import { getCookie } from "./cookieUtils";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
 
-function toggleTheme() {
-    theme.value = theme.value === "dark" ? "light" : "dark";
-    html.setAttribute("data-bs-theme", theme.value);
-    setCookie("theme", theme.value);
-}
-
-
-const themeInitial = getCookie("theme") || "light";
+const themeInitial = localStorage.getItem("theme") || "light";
 const theme = ref(themeInitial);
 const html = document.querySelector("html");
 html.setAttribute("data-bs-theme", theme.value);
 
+function toggleTheme() {
+  theme.value = theme.value === "dark" ? "light" : "dark";
+  html.setAttribute("data-bs-theme", theme.value);
+  localStorage.setItem("theme", theme.value);
+}
+
 function updateUserInfoIfCookiePresent() {
-  const sessionID = getCookie("sessionID")
+  const sessionID = getCookie("sessionID");
 
   if (sessionID) {
-    axiosInstance.get(`/userInfo?sessionID=${sessionID}`).then((response) => {
-      const json = response.data;
-      isLogged.value = true;
-      setUserName(json.username);
-      userEmail.value = json.email;
-    });
+    axiosInstance
+      .get(`/userInfo?sessionID=${sessionID}`)
+      .then((response) => {
+        const json = response.data;
+        isLogged.value = true;
+        setUserName(json.username);
+        userEmail.value = json.email;
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          console.log("Session ID not found");
+        } else {
+          console.log(error);
+        }
+      });
   }
 }
 
@@ -50,29 +58,29 @@ function handleLogin() {
 <template>
   <Navbar
     :is-logged="isLogged"
+    :theme="theme"
     :user-name="userName"
     @log-out="isLogged = false"
-    :theme="theme"
     @toggle-theme="toggleTheme"
   />
 
   <!-- Modal -->
   <div
-    class="modal fade"
     id="loginModal"
-    tabindex="-1"
-    aria-labelledby="loginModalLabel"
     aria-hidden="true"
+    aria-labelledby="loginModalLabel"
+    class="modal fade"
+    tabindex="-1"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="loginModalLabel">Log in</h1>
+          <h1 id="loginModalLabel" class="modal-title fs-5">Log in</h1>
           <button
-            type="button"
+            aria-label="Close"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="Close"
+            type="button"
           ></button>
         </div>
         <div class="modal-body">
@@ -87,6 +95,6 @@ function handleLogin() {
   </div>
 
   <div class="m-5">
-    <router-view />
+    <router-view :is-logged="isLogged" />
   </div>
 </template>

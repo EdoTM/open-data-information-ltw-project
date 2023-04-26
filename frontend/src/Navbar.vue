@@ -21,20 +21,20 @@ function handleLogout() {
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Navbar</a>
       <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
         aria-label="Toggle navigation"
+        class="navbar-toggler"
+        data-bs-target="#navbarSupportedContent"
+        data-bs-toggle="collapse"
+        type="button"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link class="nav-link" aria-current="page" to="/"
+            <router-link aria-current="page" class="nav-link" to="/"
               >Plot
             </router-link>
           </li>
@@ -42,8 +42,8 @@ function handleLogout() {
         <span class="nav-item me-2">
           <button
             class="btn btn-outline-secondary"
-            @click="handleToggleTheme()"
             href="#"
+            @click="handleToggleTheme()"
           >
             <i
               v-if="theme === 'dark'"
@@ -55,14 +55,14 @@ function handleLogout() {
         </span>
         <div v-if="isLogged === false" class="navbar-nav">
           <a
-            href="#"
             class="nav-link me-2"
-            data-bs-toggle="modal"
             data-bs-target="#loginModal"
+            data-bs-toggle="modal"
+            href="#"
           >
             Log in
           </a>
-          <router-link class="btn btn-success" aria-current="page" to="/signup"
+          <router-link aria-current="page" class="btn btn-success" to="/signup"
             >Sign up
           </router-link>
         </div>
@@ -70,10 +70,10 @@ function handleLogout() {
           <li class="navbar-text me-3">Logged in as {{ userName }}</li>
           <li class="nav-item">
             <button
-              class="btn btn-outline-secondary"
               aria-current="page"
-              @click="handleLogout()"
+              class="btn btn-outline-secondary"
               href="#"
+              @click="handleLogout()"
             >
               Log out
             </button>
