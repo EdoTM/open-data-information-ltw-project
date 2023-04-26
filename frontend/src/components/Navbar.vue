@@ -1,9 +1,13 @@
 <script setup lang="ts">
-const emits = defineEmits(["log-out", "toggle-theme"]);
+import { deleteCookie } from "../utils/cookieUtils";
 
-function deleteCookie(name) {
-  document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-}
+defineProps<{
+  isLogged: boolean;
+  theme: string;
+  userName?: string;
+}>();
+
+const emits = defineEmits(["log-out", "toggle-theme"]);
 
 function handleToggleTheme() {
   emits("toggle-theme");
@@ -83,27 +87,3 @@ function handleLogout() {
     </div>
   </nav>
 </template>
-
-<script lang="ts">
-import Login from "./Login.vue";
-
-export default {
-  name: "Navbar",
-  components: { Login },
-  props: {
-    isLogged: {
-      type: Boolean,
-      required: true,
-    },
-    userName: {
-      type: String,
-    },
-    theme: {
-      type: String,
-      required: true,
-    },
-  },
-};
-</script>
-
-<style scoped></style>

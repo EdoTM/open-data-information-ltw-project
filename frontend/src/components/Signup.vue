@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import axiosInstance from "../utils/axiosInstance";
-import md5 from "crypto-js/md5";
 import { onMounted, ref } from "vue";
 import {getInputElementById} from "../utils/tsUtils";
+import {generatePasswordMD5} from "../utils/appUtils";
 
-function generatePasswordMD5(plainPassword) {
-  return md5(plainPassword).toString();
-}
 
 const signupError = ref("");
+
+defineProps<{
+  isLogged: boolean;
+}>();
 
 const emits = defineEmits([
   "logged-in",
@@ -239,12 +240,3 @@ onMounted(() => {
     </form>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  name: "Signup",
-  props: {
-    isLogged: Boolean,
-  },
-};
-</script>

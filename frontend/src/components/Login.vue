@@ -98,9 +98,3 @@ function sendLoginRequest() {
     </form>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  name: "Login",
-};
-</script>
