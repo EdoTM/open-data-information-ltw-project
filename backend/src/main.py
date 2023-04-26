@@ -8,13 +8,13 @@ from src.utils.utils import *
 def login():
     data = request.json
     email = data["email"]
-    password_md5 = data["password"]
+    password_hash = data["password"]
 
     try:
         user = db.get_user_by_email(email)
     except UserNotFoundError:
         return make_error_response("User not found", 404)
-    if user["password_md5"] != password_md5:
+    if user["password_md5"] != password_hash:
         return make_error_response("Wrong password", 401)
 
     return make_login_success_response(user)
@@ -25,16 +25,16 @@ def signup():
     data = request.json
     email = data["email"]
     username = data["username"]
-    password_md5 = data["password"]
+    password_hash = data["password"]
     birthdate = data["birthdate"]
     try:
-        user = db.store_user(email, username, password_md5, birthdate)
+        user = db.register_user_and_get_info(email, username, password_hash, birthdate)
         return make_login_success_response(user)
     except EmailAlreadyExistsError:
         return make_error_response("Email already exists", 409)
     except UserAlreadyExistsError:
         return make_error_response("Username already exists", 409)
-    except:
+    except Exception:
         return make_error_response("Unknown error", 500)
 
 

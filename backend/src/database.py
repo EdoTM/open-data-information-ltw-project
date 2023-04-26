@@ -18,23 +18,23 @@ class Database:
         self.users_headers = self.get_users_headers()
         print(self.db_dir)
 
-    def _store_user(self, email, username, password_md5, birthday):
+    def __store_user(self, email, username, password_hash, birthday):
+        with sqlite3.connect(self.db_dir) as conn:
+            cursor = conn.cursor()
+            query = "INSERT INTO users VALUES (?, ?, ?, ?)"
+            cursor.execute(query, (email, username, password_hash, birthday))
+            cursor.close()
+
+    def register_user_and_get_info(self, email, username, password_hash, birthday):
         try:
-            with sqlite3.connect(self.db_dir) as conn:
-                cursor = conn.cursor()
-                query = "INSERT INTO users VALUES (?, ?, ?, ?)"
-                cursor.execute(query, (email, username, password_md5, birthday))
-                cursor.close()
+            self.__store_user(email, username, password_hash, birthday)
+            return self.get_user_by_email(email)
         except sqlite3.IntegrityError as e:
             if "users.email" in str(e):
                 raise EmailAlreadyExistsError()
             elif "users.username" in str(e):
                 raise UserAlreadyExistsError()
             raise e
-
-    def store_user(self, email, username, password_md5, birthday):
-        self._store_user(email, username, password_md5, birthday)
-        return self.get_user_by_email(email)
 
     def _get_user_by_email(self, email):
         conn = sqlite3.connect(self.db_dir)
