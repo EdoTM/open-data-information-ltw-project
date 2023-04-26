@@ -3,6 +3,9 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from flask_setup import app
 from flask import make_response
+from database import Database
+
+db = Database()
 
 def generate_cookie(input_email: str):
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
@@ -13,7 +16,8 @@ def generate_cookie(input_email: str):
 def get_user_from_cookie(input_cookie: str):
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
     email = unpad(cipher.decrypt(bytes.fromhex(input_cookie)), AES.block_size).decode()
-    return email
+    user = db.get_user_by_email(email)
+    return user
 
 def generate_success_resp(user):
     resp_data = {

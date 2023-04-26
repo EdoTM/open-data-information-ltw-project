@@ -2,7 +2,7 @@ from flask import Flask, request
 import os
 from database import *
 from flask_setup import app
-from utils.utils import generate_success_resp, make_error_resp
+from utils.utils import generate_success_resp, make_error_resp, get_user_from_cookie
 
 
 
@@ -37,8 +37,12 @@ def signup():
     return generate_success_resp(user)
 
 
+@app.route("/userInfo", methods=["GET"])
+def get_user_info():
+    sessionID = request.args.get("sessionID")
+    user = get_user_from_cookie(sessionID)
+    return generate_success_resp(user)
 
-    
 
 
 def start_api():
