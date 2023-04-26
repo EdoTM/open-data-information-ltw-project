@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const emits = defineEmits(["log-out", "toggle-theme"]);
 
 function deleteCookie(name) {
@@ -53,7 +53,7 @@ function handleLogout() {
             <i v-else class="bi bi-moon-stars-fill"></i>
           </button>
         </span>
-        <div v-if="isLogged === false" class="navbar-nav">
+        <div v-if="!isLogged" class="navbar-nav">
           <a
             class="nav-link me-2"
             data-bs-target="#loginModal"

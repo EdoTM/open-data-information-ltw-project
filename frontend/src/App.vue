@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
 import Login from "./components/Login.vue";
 import { onBeforeMount, ref } from "vue";
@@ -51,7 +51,7 @@ const userEmail = ref("");
 
 function handleLogin() {
   isLogged.value = true;
-  Modal.getInstance(document.getElementById("loginModal")).hide();
+  Modal.getInstance(document.getElementById("loginModal"))!.hide();
 }
 </script>
 
