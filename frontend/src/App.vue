@@ -4,7 +4,11 @@ import Login from "./Login.vue";
 import { ref } from "vue";
 import { Modal } from "bootstrap";
 
-const isLogged = ref(false);
+function isSessionIDValid() {
+  return document.cookie.includes("sessionID");
+}
+
+const isLogged = ref(isSessionIDValid());
 const userName = ref("");
 const userEmail = ref("");
 
