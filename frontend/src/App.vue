@@ -1,14 +1,30 @@
 <script setup>
 import Navbar from "./Navbar.vue";
 import Login from "./Login.vue";
-import { ref } from "vue";
+import {onBeforeMount, ref} from "vue";
 import { Modal } from "bootstrap";
+import axiosInstance from "./axiosInstance";
 
-function isSessionIDValid() {
-  return document.cookie.includes("sessionID");
+onBeforeMount(updateUserInfoIfCookiePresent);
+
+function updateUserInfoIfCookiePresent() {
+  console.log("ciao");
+  const sessionID = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("sessionID"))
+    ?.split("=")[1];
+
+  if (sessionID) {
+    axiosInstance.get(`/userInfo?sessionID=${sessionID}`).then((response) => {
+      const json = response.data;
+      isLogged.value = true;
+      userName.value = json.username;
+      userEmail.value = json.email;
+    });
+  }
 }
 
-const isLogged = ref(isSessionIDValid());
+const isLogged = ref(false);
 const userName = ref("");
 const userEmail = ref("");
 
