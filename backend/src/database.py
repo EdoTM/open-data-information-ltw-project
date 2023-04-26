@@ -10,12 +10,11 @@ class Database():
         print(self.db_dir)
     
     def _store_user(self, email, username, password_md5, birthday):
-        conn = sqlite3.connect(self.db_dir)
-        cursor = conn.cursor()
-        query="INSERT INTO users VALUES (?, ?, ?, ?)"
-        cursor.execute(query, (email, username, password_md5, birthday))
-        conn.commit()
-        conn.close()
+        with sqlite3.connect(self.db_dir) as conn:
+            cursor = conn.cursor()
+            query="INSERT INTO users VALUES (?, ?, ?, ?)"
+            cursor.execute(query, (email, username, password_md5, birthday))
+            cursor.close()
 
     def store_user(self, email, username, password_md5, birthday):
         self._store_user(email, username, password_md5, birthday)
