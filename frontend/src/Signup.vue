@@ -7,7 +7,7 @@ function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
 }
 
-const loginError = ref("");
+const signupError = ref("");
 
 const emits = defineEmits([
   "logged-in",
@@ -41,13 +41,15 @@ function sendSignUpRequest() {
     .then(handleResponse)
     .catch((error) => {
       console.log(error);
-      // TODO: Handle errors, this is just the login error handling
-      if (error.response.status === 401) {
-        loginError.value = "INVALID_CREDENTIALS";
-      } else if (error.response.status === 404) {
-        loginError.value = "USER_NOT_FOUND";
+      if (error.response.status === 409) {
+        // if ("Username" in error.response.data.error) 
+        if (error.response.data.error.includes("Username")) {
+          signupError.value = "Username already taken";
+        } else if (error.response.data.error.includes("Email")) {
+          signupError.value = "Email already taken";
+        }
       }
-      console.log("LoginError: ", loginError);
+      console.log("LoginError: ", signupError);
     });
 }
 
@@ -166,6 +168,6 @@ onMounted(() => {
 
 <script>
 export default {
-  name: "Login",
+  name: "Signup",
 };
 </script>
