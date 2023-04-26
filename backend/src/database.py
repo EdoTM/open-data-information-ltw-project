@@ -10,11 +10,19 @@ class Database():
         print(self.db_dir)
     
     def _store_user(self, email, username, password_md5, birthday):
-        with sqlite3.connect(self.db_dir) as conn:
-            cursor = conn.cursor()
-            query="INSERT INTO users VALUES (?, ?, ?, ?)"
-            cursor.execute(query, (email, username, password_md5, birthday))
-            cursor.close()
+        try:
+            with sqlite3.connect(self.db_dir) as conn:
+                cursor = conn.cursor()
+                query="INSERT INTO users VALUES (?, ?, ?, ?)"
+                cursor.execute(query, (email, username, password_md5, birthday))
+                cursor.close()
+        except sqlite3.IntegrityError as e:
+            if "users.email" in str(e):
+                raise EmailAlreadyExistsError()
+            elif "users.username" in str(e):
+                raise UserAlreadyExistsError()
+            raise e
+        
 
     def store_user(self, email, username, password_md5, birthday):
         self._store_user(email, username, password_md5, birthday)
@@ -45,4 +53,10 @@ class Database():
 
 
 class UserNotFoundError(Exception):
+    pass
+
+class UserAlreadyExistsError(Exception):
+    pass
+
+class EmailAlreadyExistsError(Exception):
     pass

@@ -32,9 +32,15 @@ def signup():
     username = data["username"]
     password_md5 = data["password"]
     birthdate = data["birthdate"]
-    user = db.store_user(email, username, password_md5, birthdate)
-
-    return generate_success_resp(user)
+    try:
+        user = db.store_user(email, username, password_md5, birthdate)
+        return generate_success_resp(user)
+    except EmailAlreadyExistsError:
+        return make_error_resp("Email already exists", 409)
+    except UserAlreadyExistsError:
+        return make_error_resp("Username already exists", 409)
+    except:
+        return make_error_resp("Unknown error", 500)
 
 
 @app.route("/userInfo", methods=["GET"])
