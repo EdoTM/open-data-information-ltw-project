@@ -4,23 +4,22 @@ from src.flask_setup import app
 from flask import make_response
 from src.database import Database
 
-db = Database()
 
-
-def generate_cookie(input_email: str):
+def generate_user_session_id(input_email: str):
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
     session_id = cipher.encrypt(pad(input_email.encode(), AES.block_size)).hex()
     return session_id
 
 
-def get_user_from_cookie(input_cookie: str):
+def get_user_from_session_id(session_id: str):
+    db = Database.get_instance()
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
-    email = unpad(cipher.decrypt(bytes.fromhex(input_cookie)), AES.block_size).decode()
+    email = unpad(cipher.decrypt(bytes.fromhex(session_id)), AES.block_size).decode()
     user = db.get_user_by_email(email)
     return user
 
 
-def generate_success_resp(user):
+def make_login_success_response(user):
     resp_data = {
         "status": "success",
         "email": user["email"],
@@ -28,11 +27,11 @@ def generate_success_resp(user):
     }
 
     resp = make_response(resp_data)
-    session_id = generate_cookie(user["email"])
+    session_id = generate_user_session_id(user["email"])
     resp.set_cookie("sessionID", session_id)
     return resp
 
 
-def make_error_resp(error_msg, error_code):
+def make_error_response(error_msg, error_code):
     resp_data = {"status": "error", "error": error_msg}
     return make_response(resp_data, error_code)

@@ -1,7 +1,7 @@
 from flask import request
 from database import *
 from src.flask_setup import app
-from src.utils.utils import generate_success_resp, make_error_resp, get_user_from_cookie
+from src.utils.utils import *
 
 
 @app.route("/login", methods=["POST"])
@@ -13,12 +13,11 @@ def login():
     try:
         user = db.get_user_by_email(email)
     except UserNotFoundError:
-        return make_error_resp("User not found", 404)
-
+        return make_error_response("User not found", 404)
     if user["password_md5"] != password_md5:
-        return make_error_resp("Wrong password", 401)
+        return make_error_response("Wrong password", 401)
 
-    return generate_success_resp(user)
+    return make_login_success_response(user)
 
 
 @app.route("/signup", methods=["POST"])
@@ -30,23 +29,23 @@ def signup():
     birthdate = data["birthdate"]
     try:
         user = db.store_user(email, username, password_md5, birthdate)
-        return generate_success_resp(user)
+        return make_login_success_response(user)
     except EmailAlreadyExistsError:
-        return make_error_resp("Email already exists", 409)
+        return make_error_response("Email already exists", 409)
     except UserAlreadyExistsError:
-        return make_error_resp("Username already exists", 409)
+        return make_error_response("Username already exists", 409)
     except:
-        return make_error_resp("Unknown error", 500)
+        return make_error_response("Unknown error", 500)
 
 
 @app.route("/userInfo", methods=["GET"])
 def get_user_info():
     session_id = request.args.get("sessionID")
-    user = get_user_from_cookie(session_id)
-    return generate_success_resp(user)
+    user = get_user_from_session_id(session_id)
+    return make_login_success_response(user)
 
 
-def start_api():
+def start_app():
     global app
     debug = "DEBUG" in os.environ
     debug = True  # to be removed in production
@@ -56,5 +55,5 @@ def start_api():
 
 
 if __name__ == "__main__":
-    db = Database()
-    start_api()
+    db = Database.get_instance()
+    start_app()
