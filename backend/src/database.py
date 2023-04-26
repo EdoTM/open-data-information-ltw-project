@@ -1,6 +1,6 @@
 import os
 import sqlite3
-
+from utils.errors import *
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -55,13 +55,3 @@ class Database:
         return user
 
 
-class UserNotFoundError(Exception):
-    pass
-
-
-class UserAlreadyExistsError(Exception):
-    pass
-
-
-class EmailAlreadyExistsError(Exception):
-    pass

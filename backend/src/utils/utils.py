@@ -3,6 +3,7 @@ from Crypto.Util.Padding import pad, unpad
 from flask_setup import app
 from flask import make_response
 from database import Database
+from utils.errors import *
 
 
 def generate_user_session_id(input_email: str):
@@ -14,7 +15,15 @@ def generate_user_session_id(input_email: str):
 def get_user_from_session_id(session_id: str):
     db = Database.get_instance()
     cipher = AES.new(app.config["SECRET_KEY"], AES.MODE_ECB)
-    email = unpad(cipher.decrypt(bytes.fromhex(session_id)), AES.block_size).decode()
+    try:
+        email = unpad(cipher.decrypt(bytes.fromhex(session_id)), AES.block_size).decode()
+    except ValueError as e:
+        if "Padding is incorrect" in str(e):
+            raise UserNotFoundError()
+        if "non-hexadecimal number found in fromhex() arg at position" in str(e):
+            raise UserNotFoundError()
+        print(e)
+        raise ValueError()
     user = db.get_user_by_email(email)
     return user
 

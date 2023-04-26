@@ -41,7 +41,10 @@ def signup():
 @app.route("/userInfo", methods=["GET"])
 def get_user_info():
     session_id = request.args.get("sessionID")
-    user = get_user_from_session_id(session_id)
+    try:
+        user = get_user_from_session_id(session_id)
+    except UserNotFoundError:
+        return make_error_response("User not found", 404)
     return make_login_success_response(user)
 
 
