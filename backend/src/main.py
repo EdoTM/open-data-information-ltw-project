@@ -44,7 +44,9 @@ def get_user_info():
     try:
         user = get_user_from_session_id(session_id)
     except UserNotFoundError:
-        return make_error_response("User not found", 404)
+        resp = make_error_response("User not found", 404)
+        resp.set_cookie("sessionID", "", expires=0)
+        return resp
     return make_login_success_response(user)
 
 
