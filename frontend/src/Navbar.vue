@@ -1,19 +1,12 @@
 <script setup>
-import { ref } from "vue";
-
-const html = document.querySelector("html");
-const themeInitial = html.getAttribute("data-bs-theme");
-const theme = ref(themeInitial);
-
-const emits = defineEmits(["log-out"]);
-
-function toggleTheme() {
-  theme.value = theme.value === "dark" ? "light" : "dark";
-  html.setAttribute("data-bs-theme", theme.value);
-}
+const emits = defineEmits(["log-out", "toggle-theme"]);
 
 function deleteCookie(name) {
   document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+}
+
+function handleToggleTheme() {
+  emits("toggle-theme");
 }
 
 function handleLogout() {
@@ -49,7 +42,7 @@ function handleLogout() {
         <span class="nav-item me-2">
           <button
             class="btn btn-outline-secondary"
-            @click="toggleTheme()"
+            @click="handleToggleTheme()"
             href="#"
           >
             <i
@@ -104,6 +97,10 @@ export default {
     },
     userName: {
       type: String,
+    },
+    theme: {
+      type: String,
+      required: true,
     },
   },
 };

@@ -51,19 +51,20 @@ function sendLoginRequest() {
 <template>
   <div class="mx-auto mb-4" style="max-width: 300px">
     <form @submit.prevent="sendLoginRequest">
-      <div class="mb-3">
-        <label for="inputEmail" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="inputEmail" required />
-      </div>
-      <div class="mb-3">
-        <label for="inputPassword" class="form-label">Password</label>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="inputEmail" required placeholder="s">
+            <label for="inputEmail">Email address</label>
+        </div>
+      <div class="form-floating mb-3">
         <input
           type="password"
           class="form-control"
           id="inputPassword"
           minlength="8"
           required
+          placeholder="Password"
         />
+        <label for="inputPassword">Password</label>
       </div>
       <div
         v-if="loginError === 'INVALID_CREDENTIALS'"
