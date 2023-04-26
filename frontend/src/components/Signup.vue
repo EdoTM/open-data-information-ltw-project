@@ -1,7 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import axiosInstance from "../utils/axiosInstance";
 import md5 from "crypto-js/md5";
 import { onMounted, ref } from "vue";
+import {getInputElementById} from "../utils/tsUtils";
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
@@ -28,13 +29,13 @@ const usernameTaken = ref(false);
 const emailTaken = ref(false);
 
 function sendSignUpRequest() {
-  const plainPassword = document.getElementById("signupInputPassword").value;
+  const plainPassword = getInputElementById("signupInputPassword").value;
 
   const signup = {
-    email: document.getElementById("signupInputEmail").value,
+    email: getInputElementById("signupInputEmail").value,
     password: generatePasswordMD5(plainPassword),
-    username: document.getElementById("signupInputUsername").value,
-    birthdate: document.getElementById("signupInputBirthdate").value,
+    username: getInputElementById("signupInputUsername").value,
+    birthdate: getInputElementById("signupInputBirthdate").value,
   };
 
   console.log(signup);
@@ -48,14 +49,12 @@ function sendSignUpRequest() {
         usernameTaken.value = false;
         if (error.response.data.error.includes("Username")) {
           signupError.value = "Username already taken";
-          document
-            .getElementById("signupInputUsername")
+          getInputElementById("signupInputUsername")
             .setCustomValidity("Username already taken");
           usernameTaken.value = true;
         } else if (error.response.data.error.includes("Email")) {
           signupError.value = "Email already taken";
-          document
-            .getElementById("signupInputEmail")
+          getInputElementById("signupInputEmail")
             .setCustomValidity("Email already registered");
           emailTaken.value = true;
         }
@@ -65,18 +64,18 @@ function sendSignUpRequest() {
 }
 
 function resetUsernameValidity() {
-  document.getElementById("signupInputUsername").setCustomValidity("");
+  getInputElementById("signupInputUsername").setCustomValidity("");
   usernameTaken.value = false;
 }
 
 function resetEmailValidity() {
-  document.getElementById("signupInputEmail").setCustomValidity("");
+  getInputElementById("signupInputEmail").setCustomValidity("");
   emailTaken.value = false;
 }
 
 function addCheckPasswordMatchListener() {
-  const password = document.getElementById("signupInputPassword");
-  const passwordRepeat = document.getElementById("signupInputRepeatPassword");
+  const password = getInputElementById("signupInputPassword");
+  const passwordRepeat = getInputElementById("signupInputRepeatPassword");
 
   [passwordRepeat, password].map((p) =>
     p.addEventListener(
@@ -94,7 +93,7 @@ function addCheckPasswordMatchListener() {
 }
 
 function addCheckBirthdateEventListener() {
-  const birthdate = document.getElementById("signupInputBirthdate");
+  const birthdate = getInputElementById("signupInputBirthdate");
   birthdate.addEventListener(
     "input",
     () => {
@@ -111,7 +110,7 @@ function addCheckBirthdateEventListener() {
 }
 
 function addCheckSignUpFormListener() {
-  const form = document.getElementById("form-coso");
+  const form = getInputElementById("form-coso");
   form.addEventListener(
     "submit",
     (event) => {
@@ -241,7 +240,7 @@ onMounted(() => {
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "Signup",
   props: {
