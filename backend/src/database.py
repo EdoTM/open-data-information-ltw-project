@@ -15,8 +15,7 @@ class Database:
         if db_dir is None:
             db_dir = os.path.join(os.path.dirname(__file__), '../db/opinf.db')
         self.db_dir = db_dir
-        self.users_headers = self.get_users_headers()
-        print(self.db_dir)
+        self.users_headers = self.__get_users_headers()
 
     def __store_user(self, email, username, password_hash, birthday):
         with sqlite3.connect(self.db_dir) as conn:
@@ -36,26 +35,22 @@ class Database:
                 raise UserAlreadyExistsError()
             raise e
 
-    def _get_user_by_email(self, email):
-        conn = sqlite3.connect(self.db_dir)
-        query = "SELECT * FROM users WHERE email=?"
-        cursor = conn.execute(query, (email,))
-        user = cursor.fetchone()
-        conn.close()
+    def get_user_by_email(self, email):
+        with sqlite3.connect(self.db_dir) as conn:
+            query = "SELECT * FROM users WHERE email=?"
+            cursor = conn.execute(query, (email,))
+            user = cursor.fetchone()
+            cursor.close()
         if user is None:
             raise UserNotFoundError()
-        return user
-
-    def get_user_by_email(self, email):
-        user = self._get_user_by_email(email)
         return dict(zip(self.users_headers, user))
 
-    def get_users_headers(self):
-        conn = sqlite3.connect(self.db_dir)
-        query = "SELECT * FROM users where email = 1"
-        cursor = conn.execute(query)
-        headers = [description[0] for description in cursor.description]
-        conn.close()
+    def __get_users_headers(self):
+        with sqlite3.connect(self.db_dir) as conn:
+            query = "SELECT * FROM users where email = 1"
+            cursor = conn.execute(query)
+            headers = [description[0] for description in cursor.description]
+            cursor.close()
         return headers
 
 
