@@ -18,9 +18,9 @@ class Database:
         self.users_headers = self.__get_users_headers()
 
     def __store_user(self, email, username, password_hash, birthday):
+        query = "INSERT INTO users VALUES (?, ?, ?, ?)"
         with sqlite3.connect(self.db_dir) as conn:
             cursor = conn.cursor()
-            query = "INSERT INTO users VALUES (?, ?, ?, ?)"
             cursor.execute(query, (email, username, password_hash, birthday))
             cursor.close()
 
@@ -36,8 +36,8 @@ class Database:
             raise e
 
     def get_user_by_email(self, email):
+        query = "SELECT * FROM users WHERE email=?"
         with sqlite3.connect(self.db_dir) as conn:
-            query = "SELECT * FROM users WHERE email=?"
             cursor = conn.execute(query, (email,))
             user = cursor.fetchone()
             cursor.close()
@@ -46,10 +46,10 @@ class Database:
         return dict(zip(self.users_headers, user))
 
     def __get_users_headers(self):
+        query = "PRAGMA table_info(users)"
         with sqlite3.connect(self.db_dir) as conn:
-            query = "SELECT * FROM users where email = 1"
             cursor = conn.execute(query)
-            headers = [description[0] for description in cursor.description]
+            headers = [row[1] for row in cursor.fetchall()]
             cursor.close()
         return headers
 

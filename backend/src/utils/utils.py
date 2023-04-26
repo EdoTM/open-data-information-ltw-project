@@ -1,8 +1,8 @@
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
-from src.flask_setup import app
+from flask_setup import app
 from flask import make_response
-from src.database import Database
+from database import Database
 
 
 def generate_user_session_id(input_email: str):

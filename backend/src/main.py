@@ -1,7 +1,7 @@
 from flask import request
 from database import *
-from src.flask_setup import app
-from src.utils.utils import *
+from flask_setup import app
+from utils.utils import *
 
 
 @app.route("/login", methods=["POST"])
