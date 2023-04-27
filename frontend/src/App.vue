@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Navbar from "./components/TheNavbar.vue";
-import Login from "./components/Login.vue";
+import Login from "./components/LoginForm.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
