@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { deleteCookie } from "../utils/cookieUtils";
+import { breakpointsBootstrapV5, useBreakpoints } from "@vueuse/core";
 
 defineProps<{
   isLogged: boolean;
   theme: string;
   userName?: string;
 }>();
+
+const navbarBreakpoint = "sm";
+
+const breakpoints = useBreakpoints(breakpointsBootstrapV5);
+const isDesktop = breakpoints.greater(navbarBreakpoint);
 
 const emits = defineEmits(["log-out", "toggle-theme"]);
 
@@ -21,9 +27,9 @@ function handleLogout() {
 </script>
 
 <template>
-  <nav class="navbar navbar-expand-sm bg-body-tertiary">
+  <nav :class="`navbar navbar-expand-${navbarBreakpoint} bg-body-tertiary`">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="/">Open data information</a>
       <button
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
@@ -38,25 +44,21 @@ function handleLogout() {
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link aria-current="page" class="nav-link" to="/"
-              >Plot
+            <router-link aria-current="page" class="nav-link" to="/">
+              Home
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link aria-current="page" class="nav-link" to="/plot">
+              Plot
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link aria-current="page" class="nav-link" to="/report">
+              Report
             </router-link>
           </li>
         </ul>
-        <span class="nav-item me-2">
-          <button
-            class="btn btn-outline-secondary"
-            href="#"
-            @click="handleToggleTheme()"
-          >
-            <i
-              v-if="theme === 'dark'"
-              class="bi bi-sun-fill"
-              style="font-size: 1em"
-            ></i>
-            <i v-else class="bi bi-moon-stars-fill"></i>
-          </button>
-        </span>
         <div v-if="!isLogged" class="navbar-nav">
           <a
             class="nav-link me-2"
@@ -66,23 +68,43 @@ function handleLogout() {
           >
             Log in
           </a>
-          <router-link aria-current="page" class="btn btn-success" to="/signup"
-            >Sign up
+          <router-link
+            aria-current="page"
+            :class="[
+              isDesktop
+                ? 'btn btn-success'
+                : 'nav-link text-decoration-none text-success fw-bold',
+            ]"
+            to="/signup"
+          >
+            Sign up
           </router-link>
         </div>
-        <ul v-else class="navbar-nav">
-          <li class="navbar-text me-3">Logged in as {{ userName }}</li>
-          <li class="nav-item">
+        <div v-else class="navbar-nav">
+          <span class="navbar-text">Logged in as {{ userName }}</span>
+          <button
+            aria-current="page"
+            class="btn btn-outline-secondary"
+            href="#"
+            @click="handleLogout()"
+          >
+            Log out
+          </button>
+        </div>
+        <div class="navbar-nav">
+          <span class="nav-item">
             <button
-              aria-current="page"
-              class="btn btn-outline-secondary"
+              :class="[`btn btn-link nav-link ms-${navbarBreakpoint}-2`]"
               href="#"
-              @click="handleLogout()"
+              :style="['font-size: ' + (isDesktop ? '1.2rem' : '1em')]"
+              @click="handleToggleTheme()"
             >
-              Log out
+              <span v-if="!isDesktop"> Toggle theme </span>
+              <i v-if="theme === 'dark'" class="bi bi-sun-fill"></i>
+              <i v-else class="bi bi-moon-stars-fill"></i>
             </button>
-          </li>
-        </ul>
+          </span>
+        </div>
       </div>
     </div>
   </nav>
