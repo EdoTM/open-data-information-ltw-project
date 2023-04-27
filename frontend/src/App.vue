@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Navbar from "./components/Navbar.vue";
+import Navbar from "./components/TheNavbar.vue";
 import Login from "./components/Login.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
