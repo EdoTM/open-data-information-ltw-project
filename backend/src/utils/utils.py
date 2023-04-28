@@ -8,35 +8,37 @@ from database import Database
 from utils.errors import *
 import os
 
+def check_signature(message, signature):
+    rsa_key = app.config["RSA_PRIV_KEY"]
+    hashed_msg = bytes_to_long(sha256(message.encode()).digest())
 
+    if pow(bytes_to_long(bytes.fromhex(signature)), rsa_key.e, rsa_key.n) != hashed_msg:
+        raise WrongSignature()
 
+def sign_message(message):
+    rsa_key = app.config["RSA_PRIV_KEY"]
+    hashed_msg = bytes_to_long(sha256(message.encode()).digest())
+    return long_to_bytes(pow(hashed_msg, rsa_key.d, rsa_key.n)).hex()
 
 def generate_user_session_id(input_email: str):
     IV = os.urandom(16)
     cipher = AES.new(app.config["SECRET_KEY"], IV=IV, mode=AES.MODE_CBC)
-    rsa_priv_key = app.config["RSA_PRIV_KEY"]
 
     session_id_plaintext = input_email
     session_id_ciphertext = cipher.encrypt(pad(session_id_plaintext.encode(), AES.block_size)).hex()
     
-    hashed_msg = bytes_to_long(sha256(session_id_ciphertext.encode()).digest())
-    
-    signature = pow(hashed_msg, rsa_priv_key.d, rsa_priv_key.n)
-
-    return IV.hex() + session_id_ciphertext + '-' + long_to_bytes(signature).hex()
+    return IV.hex() + session_id_ciphertext + '-' + sign_message(session_id_ciphertext)
 
 
 def get_user_from_session_id(session_id: str):
     db = Database.get_instance()
-    rsa_pub_key = app.config["RSA_PRIV_KEY"].publickey()
     IV = bytes.fromhex(session_id[:32])
     session_id_ciphertext = session_id[32:].split('-')[0]
     signature = session_id[32:].split('-')[1]
 
-    hashed_msg = bytes_to_long(sha256(session_id_ciphertext.encode()).digest())
-    
-    if pow(bytes_to_long(bytes.fromhex(signature)), rsa_pub_key.e, rsa_pub_key.n) != hashed_msg:
+    if not check_signature(session_id_ciphertext, signature):
         raise WrongSignature()
+
         
     try:
         cipher = AES.new(app.config["SECRET_KEY"], IV=IV, mode=AES.MODE_CBC)
