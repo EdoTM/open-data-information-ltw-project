@@ -1,11 +1,14 @@
-class UserNotFoundError(Exception):
+class UserNotFound(Exception):
     pass
 
-class UserAlreadyExistsError(Exception):
+class UserAlreadyExists(Exception):
     pass
 
-class EmailAlreadyExistsError(Exception):
+class EmailAlreadyExists(Exception):
     pass
 
 class IncorrectPadding(Exception):
+    pass
+
+class WrongSignature(Exception):
     pass

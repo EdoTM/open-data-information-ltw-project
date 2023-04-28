@@ -12,7 +12,7 @@ def login():
 
     try:
         user = db.get_user_by_email(email)
-    except UserNotFoundError:
+    except UserNotFound:
         return make_error_response("User not found", 404)
     if user["password_md5"] != password_hash:
         return make_error_response("Wrong password", 401)
@@ -30,9 +30,9 @@ def signup():
     try:
         user = db.register_user_and_get_info(email, username, password_hash, birthdate)
         return make_login_success_response(user)
-    except EmailAlreadyExistsError:
+    except EmailAlreadyExists:
         return make_error_response("Email already exists", 409)
-    except UserAlreadyExistsError:
+    except UserAlreadyExists:
         return make_error_response("Username already exists", 409)
     except Exception:
         return make_error_response("Unknown error", 500)
@@ -43,8 +43,12 @@ def get_user_info():
     session_id = request.args.get("sessionID")
     try:
         user = get_user_from_session_id(session_id)
-    except UserNotFoundError:
+    except UserNotFound:
         resp = make_error_response("User not found", 404)
+        resp.set_cookie("sessionID", "", expires=0)
+        return resp
+    except WrongSignature:
+        resp = make_error_response("Wrong signature", 401)
         resp.set_cookie("sessionID", "", expires=0)
         return resp
     return make_login_success_response(user)

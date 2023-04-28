@@ -39,9 +39,9 @@ class Database:
             return self.get_user_by_email(email)
         except sqlite3.IntegrityError as e:
             if "users.email" in str(e):
-                raise EmailAlreadyExistsError()
+                raise EmailAlreadyExists()
             elif "users.username" in str(e):
-                raise UserAlreadyExistsError()
+                raise UserAlreadyExists()
             raise e
 
     def get_user_by_email(self, email):
@@ -51,7 +51,7 @@ class Database:
             user = cursor.fetchone()
             cursor.close()
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFound()
         return user
 
 
