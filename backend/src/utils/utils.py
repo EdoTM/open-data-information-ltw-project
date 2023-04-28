@@ -9,6 +9,8 @@ from utils.errors import *
 import os
 
 
+
+
 def generate_user_session_id(input_email: str):
     IV = os.urandom(16)
     cipher = AES.new(app.config["SECRET_KEY"], IV=IV, mode=AES.MODE_CBC)
@@ -46,8 +48,7 @@ def get_user_from_session_id(session_id: str):
             raise UserNotFoundError()
         if "non-hexadecimal number found in fromhex() arg at position" in str(e):
             raise UserNotFoundError()
-        print(e)
-        raise ValueError()
+        raise e
     
     email = session_id_plaintext
     user = db.get_user_by_email(email)
