@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import axiosInstance from "../utils/axiosInstance";
 import { onMounted, ref } from "vue";
-import {getInputElementById} from "../utils/tsUtils";
-import {generatePasswordMD5} from "../utils/appUtils";
-
+import { getInputElementById } from "../utils/tsUtils";
+import {
+  generatePasswordMD5,
+  LoginRequest,
+  sendLoginRequest,
+  sendSignUpRequest,
+  SignUpRequest,
+} from "../utils/appUtils";
+import {
+  CallbackTypes,
+  decodeCredential,
+  GoogleLogin,
+} from "vue3-google-login";
 
 const signupError = ref("");
 
@@ -29,10 +38,10 @@ function handleResponse(response) {
 const usernameTaken = ref(false);
 const emailTaken = ref(false);
 
-function sendSignUpRequest() {
+function signupFromFields() {
   const plainPassword = getInputElementById("signupInputPassword").value;
 
-  const signup = {
+  const signup: SignUpRequest = {
     email: getInputElementById("signupInputEmail").value,
     password: generatePasswordMD5(plainPassword),
     username: getInputElementById("signupInputUsername").value,
@@ -41,8 +50,7 @@ function sendSignUpRequest() {
 
   console.log(signup);
 
-  axiosInstance
-    .post("/signup", signup)
+  sendSignUpRequest(signup)
     .then(handleResponse)
     .catch((error) => {
       console.log(error);
@@ -50,13 +58,15 @@ function sendSignUpRequest() {
         usernameTaken.value = false;
         if (error.response.data.error.includes("Username")) {
           signupError.value = "Username already taken";
-          getInputElementById("signupInputUsername")
-            .setCustomValidity("Username already taken");
+          getInputElementById("signupInputUsername").setCustomValidity(
+            "Username already taken"
+          );
           usernameTaken.value = true;
         } else if (error.response.data.error.includes("Email")) {
           signupError.value = "Email already taken";
-          getInputElementById("signupInputEmail")
-            .setCustomValidity("Email already registered");
+          getInputElementById("signupInputEmail").setCustomValidity(
+            "Email already registered"
+          );
           emailTaken.value = true;
         }
       }
@@ -120,7 +130,7 @@ function addCheckSignUpFormListener() {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        sendSignUpRequest();
+        signupFromFields();
         window.location.href = "/";
       }
       form.classList.add("was-validated");
@@ -134,6 +144,35 @@ onMounted(() => {
   addCheckPasswordMatchListener();
   addCheckBirthdateEventListener();
 });
+
+const googleCallback: CallbackTypes.CredentialCallback = (response) => {
+  const userData = decodeCredential(response.credential);
+  const { email, id, given_name, family_name } = userData;
+  const password = generatePasswordMD5(id);
+  const signup: SignUpRequest = {
+    email,
+    password,
+    username: `${given_name}-${family_name}`,
+    birthdate: "2000-01-01",
+  };
+
+  sendSignUpRequest(signup)
+    .then(handleResponse)
+    .catch((error) => {
+      const { status, data } = error.response;
+      if (status === 409 && data.error.includes("Username")) {
+        const login: LoginRequest = {
+          email,
+          password,
+        };
+        sendLoginRequest(login)
+          .then(handleResponse)
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+};
 </script>
 
 <template>
@@ -236,7 +275,21 @@ onMounted(() => {
         </label>
         <div class="invalid-feedback">You must agree before submitting.</div>
       </div>
-      <button class="btn btn-success mt-2" type="submit">Sign up</button>
+      <button class="btn btn-success mt-3 w-100" type="submit">Sign up</button>
     </form>
+    <div class="flex-grow-1 text-center my-2">or</div>
+    <GoogleLogin
+      :callback="googleCallback"
+      prompt
+      class="w-100"
+      style="color-scheme: light"
+      :button-config="{
+        locale: 'en',
+        text: 'signup_with',
+        width: '300',
+        shape: 'circle',
+        theme: 'filled_blue'
+      }"
+    />
   </div>
 </template>

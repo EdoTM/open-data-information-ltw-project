@@ -2,7 +2,13 @@
 import axiosInstance from "../utils/axiosInstance";
 import md5 from "crypto-js/md5";
 import { ref } from "vue";
-import {getInputElementById} from "../utils/tsUtils";
+import { getInputElementById } from "../utils/tsUtils";
+import {
+  CallbackTypes,
+  decodeCredential,
+  GoogleLogin,
+} from "vue3-google-login";
+import { LoginRequest, sendLoginRequest } from "../utils/appUtils";
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
@@ -24,7 +30,7 @@ function handleResponse(response) {
   console.log("Login successful");
 }
 
-function sendLoginRequest() {
+function loginFromFields() {
   const plainPassword = getInputElementById("inputPassword").value;
 
   const login = {
@@ -47,11 +53,26 @@ function sendLoginRequest() {
       console.log("LoginError: ", loginError);
     });
 }
+
+const googleCallback: CallbackTypes.CredentialCallback = (response) => {
+  const userData = decodeCredential(response.credential);
+  const { email, id } = userData;
+  const password = generatePasswordMD5(id);
+  const login: LoginRequest = {
+    email,
+    password,
+  };
+  sendLoginRequest(login)
+    .then(handleResponse)
+    .catch((error) => {
+      console.log(error);
+    });
+};
 </script>
 
 <template>
   <div class="mx-auto mb-4" style="max-width: 300px">
-    <form @submit.prevent="sendLoginRequest">
+    <form @submit.prevent="loginFromFields">
       <div class="form-floating mb-3">
         <input
           id="inputEmail"
@@ -94,7 +115,22 @@ function sendLoginRequest() {
       >
         An error occurred.
       </div>
-      <button class="btn btn-primary mt-2" type="submit">Login</button>
+      <div
+        class="mx-auto d-flex mt-3"
+        style="color-scheme: light;"
+      >
+        <button class="btn btn-primary" style="float: left" type="submit">Login</button>
+        <div class="flex-grow-1 text-center my-auto">or</div>
+        <GoogleLogin
+          :callback="googleCallback"
+          prompt
+          :button-config="{
+            locale: 'en',
+            text: 'signin_with',
+            width: '20',
+          }"
+        />
+      </div>
     </form>
   </div>
 </template>
