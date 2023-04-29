@@ -3,12 +3,8 @@ import axiosInstance from "../utils/axiosInstance";
 import md5 from "crypto-js/md5";
 import { ref } from "vue";
 import { getInputElementById } from "../utils/tsUtils";
-import {
-  CallbackTypes,
-  decodeCredential,
-  GoogleLogin,
-} from "vue3-google-login";
-import { sendLoginRequest } from "../utils/appUtils";
+import { GoogleLogin } from "vue3-google-login";
+import { sendGoogleSignInRequest } from "../utils/appUtils";
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
@@ -22,7 +18,7 @@ const emits = defineEmits([
   "update:user-email",
 ]);
 
-function handleResponse(response) {
+function handleLoginResponse(response) {
   const json = response.data;
   emits("logged-in", true);
   emits("update:user-name", json.username);
@@ -42,7 +38,7 @@ function loginFromFields() {
 
   axiosInstance
     .post("/login", login)
-    .then(handleResponse)
+    .then(handleLoginResponse)
     .catch((error) => {
       console.log(error);
       if (error.response.status === 401) {
@@ -53,22 +49,6 @@ function loginFromFields() {
       console.log("LoginError: ", loginError);
     });
 }
-
-const googleCallback: CallbackTypes.CredentialCallback = (response) => {
-  console.log(response)
-  const userData = decodeCredential(response.credential);
-  const { email, id } = userData;
-  const password = generatePasswordMD5(id);
-  const login: LoginRequest = {
-    email,
-    password,
-  };
-  sendLoginRequest(login)
-    .then(handleResponse)
-    .catch((error) => {
-      console.log(error);
-    });
-};
 </script>
 
 <template>
@@ -116,15 +96,15 @@ const googleCallback: CallbackTypes.CredentialCallback = (response) => {
       >
         An error occurred.
       </div>
-      <div
-        class="mx-auto d-flex mt-3"
-        style="color-scheme: light;"
-      >
-        <button class="btn btn-primary" style="float: left" type="submit">Login</button>
+      <div class="mx-auto d-flex mt-3" style="color-scheme: light !important">
+        <button class="btn btn-primary" style="float: left" type="submit">
+          Login
+        </button>
         <div class="flex-grow-1 text-center my-auto">or</div>
         <GoogleLogin
-          :callback="googleCallback"
-          prompt
+          :callback="
+            (r) => sendGoogleSignInRequest(r).then(handleLoginResponse)
+          "
           :button-config="{
             locale: 'en',
             text: 'signin_with',

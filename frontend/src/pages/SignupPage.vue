@@ -3,16 +3,11 @@ import { onMounted, ref } from "vue";
 import { getInputElementById } from "../utils/tsUtils";
 import {
   generatePasswordMD5,
-  sendLoginRequest,
+  sendGoogleSignInRequest,
   sendSignUpRequest,
 } from "../utils/appUtils";
-import {
-  CallbackTypes,
-  decodeCredential,
-  GoogleLogin,
-} from "vue3-google-login";
-
-const signupError = ref("");
+import { GoogleLogin } from "vue3-google-login";
+import { AxiosResponse } from "axios";
 
 defineProps<{
   isLogged: boolean;
@@ -24,8 +19,7 @@ const emits = defineEmits([
   "update:user-email",
 ]);
 
-function handleResponse(response) {
-  console.log("response", response);
+function handleSignupResponse(response: AxiosResponse<SignInResponse>) {
   const json = response.data;
   emits("logged-in", true);
   emits("update:user-name", json.username);
@@ -47,29 +41,24 @@ function signupFromFields() {
     birthdate: getInputElementById("signupInputBirthdate").value,
   };
 
-  console.log(signup);
-
   sendSignUpRequest(signup)
-    .then(handleResponse)
+    .then(handleSignupResponse)
     .catch((error) => {
       console.log(error);
       if (error.response.status === 409) {
         usernameTaken.value = false;
         if (error.response.data.error.includes("Username")) {
-          signupError.value = "Username already taken";
           getInputElementById("signupInputUsername").setCustomValidity(
             "Username already taken"
           );
           usernameTaken.value = true;
         } else if (error.response.data.error.includes("Email")) {
-          signupError.value = "Email already taken";
           getInputElementById("signupInputEmail").setCustomValidity(
             "Email already registered"
           );
           emailTaken.value = true;
         }
       }
-      console.log("LoginError: ", signupError);
     });
 }
 
@@ -143,35 +132,6 @@ onMounted(() => {
   addCheckPasswordMatchListener();
   addCheckBirthdateEventListener();
 });
-
-const googleCallback: CallbackTypes.CredentialCallback = (response) => {
-  const userData = decodeCredential(response.credential) as GoogleUserData;
-  const { email, id, name } = userData;
-  const password = generatePasswordMD5(id);
-  const signup: SignUpRequest = {
-    email,
-    password,
-    username: name.replace(" ", "-"),
-    birthdate: "2000-01-01",
-  };
-
-  sendSignUpRequest(signup)
-    .then(handleResponse)
-    .catch((error) => {
-      const { status, data } = error.response;
-      if (status === 409 && data.error.includes("Username")) {
-        const login: LoginRequest = {
-          email,
-          password,
-        };
-        sendLoginRequest(login)
-          .then(handleResponse)
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    });
-};
 </script>
 
 <template>
@@ -277,18 +237,19 @@ const googleCallback: CallbackTypes.CredentialCallback = (response) => {
       <button class="btn btn-success mt-3 w-100" type="submit">Sign up</button>
     </form>
     <div class="flex-grow-1 text-center my-2">or</div>
-    <GoogleLogin
-      :callback="googleCallback"
-      prompt
-      class="w-100"
-      style="color-scheme: light"
-      :button-config="{
-        locale: 'en',
-        text: 'signup_with',
-        width: '300',
-        shape: 'circle',
-        theme: 'filled_blue'
-      }"
-    />
+    <div style="color-scheme: light !important">
+      <GoogleLogin
+        :callback="(r) => sendGoogleSignInRequest(r).then(handleSignupResponse)"
+        class="w-100"
+        style="color-scheme: light"
+        :button-config="{
+          locale: 'en',
+          text: 'signup_with',
+          width: '300',
+          shape: 'circle',
+          theme: 'filled_blue',
+        }"
+      />
+    </div>
   </div>
 </template>
