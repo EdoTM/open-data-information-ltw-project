@@ -5,6 +5,7 @@ import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
 import { getCookie } from "./utils/cookieUtils";
+import {googleLogout} from "vue3-google-login";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
 
@@ -51,7 +52,14 @@ const userEmail = ref("");
 
 function handleLogin() {
   isLogged.value = true;
-  Modal.getInstance(document.getElementById("loginModal"))!.hide();
+  Modal.getInstance(document.getElementById("loginModal"))?.hide();
+}
+
+function handleLogout() {
+  isLogged.value = false;
+  userName.value = "";
+  userEmail.value = "";
+  googleLogout();
 }
 </script>
 
@@ -60,7 +68,7 @@ function handleLogin() {
     :is-logged="isLogged"
     :theme="theme"
     :user-name="userName"
-    @log-out="isLogged = false"
+    @log-out="handleLogout()"
     @toggle-theme="toggleTheme"
   />
 

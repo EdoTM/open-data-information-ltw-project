@@ -8,7 +8,7 @@ import {
   decodeCredential,
   GoogleLogin,
 } from "vue3-google-login";
-import { LoginRequest, sendLoginRequest } from "../utils/appUtils";
+import { sendLoginRequest } from "../utils/appUtils";
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();
@@ -55,6 +55,7 @@ function loginFromFields() {
 }
 
 const googleCallback: CallbackTypes.CredentialCallback = (response) => {
+  console.log(response)
   const userData = decodeCredential(response.credential);
   const { email, id } = userData;
   const password = generatePasswordMD5(id);

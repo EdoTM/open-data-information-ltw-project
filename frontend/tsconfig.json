@@ -12,6 +12,7 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
+    "isolatedModules": true,
     "strict": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,

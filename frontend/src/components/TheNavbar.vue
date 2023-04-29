@@ -29,7 +29,7 @@ function handleLogout() {
 <template>
   <nav :class="`navbar navbar-expand-${navbarBreakpoint} bg-body-tertiary`">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Open data information</a>
+      <a class="navbar-brand" href="/">Open data analysis</a>
       <button
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
@@ -81,7 +81,7 @@ function handleLogout() {
           </router-link>
         </div>
         <div v-else class="navbar-nav">
-          <span class="navbar-text">Logged in as {{ userName }}</span>
+          <span class="navbar-text me-3">Logged in as {{ userName }}</span>
           <button
             aria-current="page"
             class="btn btn-outline-secondary"

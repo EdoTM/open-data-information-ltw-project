@@ -3,10 +3,8 @@ import { onMounted, ref } from "vue";
 import { getInputElementById } from "../utils/tsUtils";
 import {
   generatePasswordMD5,
-  LoginRequest,
   sendLoginRequest,
   sendSignUpRequest,
-  SignUpRequest,
 } from "../utils/appUtils";
 import {
   CallbackTypes,
@@ -27,6 +25,7 @@ const emits = defineEmits([
 ]);
 
 function handleResponse(response) {
+  console.log("response", response);
   const json = response.data;
   emits("logged-in", true);
   emits("update:user-name", json.username);
@@ -146,13 +145,13 @@ onMounted(() => {
 });
 
 const googleCallback: CallbackTypes.CredentialCallback = (response) => {
-  const userData = decodeCredential(response.credential);
-  const { email, id, given_name, family_name } = userData;
+  const userData = decodeCredential(response.credential) as GoogleUserData;
+  const { email, id, name } = userData;
   const password = generatePasswordMD5(id);
   const signup: SignUpRequest = {
     email,
     password,
-    username: `${given_name}-${family_name}`,
+    username: name.replace(" ", "-"),
     birthdate: "2000-01-01",
   };
 
