@@ -102,7 +102,7 @@ function handleLogout() {
     </div>
   </div>
 
-  <div class="m-5">
+  <div class="mt-5">
     <router-view :is-logged="isLogged" />
   </div>
 </template>
