@@ -15,7 +15,8 @@
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "@vueuse/core": "^10.1.0",
-    "vue3-google-login": "^2.0.15"
+    "vue3-google-login": "^2.0.15",
+    "vue-lorem-ipsum": "^0.0.1"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.6",
