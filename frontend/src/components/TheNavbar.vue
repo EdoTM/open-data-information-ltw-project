@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { deleteCookie } from "../utils/cookieUtils";
-import { breakpointsBootstrapV5, useBreakpoints } from "@vueuse/core";
+import {bs5Breakpoints} from "../utils/appUtils";
 
 defineProps<{
   isLogged: boolean;
@@ -9,9 +9,7 @@ defineProps<{
 }>();
 
 const navbarBreakpoint = "sm";
-
-const breakpoints = useBreakpoints(breakpointsBootstrapV5);
-const isDesktop = breakpoints.greater(navbarBreakpoint);
+const isDesktop = bs5Breakpoints.greater(navbarBreakpoint);
 
 const emits = defineEmits(["log-out", "toggle-theme"]);
 

@@ -2,6 +2,7 @@ import md5 from "crypto-js/md5";
 import axiosInstance from "./axiosInstance";
 import { decodeCredential } from "vue3-google-login";
 import { AxiosResponse } from "axios";
+import {breakpointsBootstrapV5, useBreakpoints} from "@vueuse/core";
 
 export function generatePasswordMD5(plainPassword: string) {
   return md5(plainPassword).toString();
@@ -46,3 +47,5 @@ function _sendGoogleSignUpRequest(signup: SignUpRequest) {
     throw error;
   });
 }
+
+export const bs5Breakpoints = useBreakpoints(breakpointsBootstrapV5);
