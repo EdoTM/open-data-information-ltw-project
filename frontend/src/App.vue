@@ -5,7 +5,7 @@ import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
 import { getCookie } from "./utils/cookieUtils";
-import {googleLogout} from "vue3-google-login";
+import { googleLogout } from "vue3-google-login";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
 

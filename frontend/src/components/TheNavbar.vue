@@ -81,15 +81,19 @@ function handleLogout() {
           </router-link>
         </div>
         <div v-else class="navbar-nav">
-          <span class="navbar-text me-3">Logged in as {{ userName }}</span>
-          <button
+          <span v-if="isDesktop" class="navbar-text me-3">Logged in as {{ userName }}</span>
+          <a
             aria-current="page"
-            class="btn btn-outline-secondary"
+            :class="[
+              isDesktop
+                ? 'btn btn-outline-secondary'
+                : 'nav-link text-decoration-none text-danger fw-bold',
+            ]"
             href="#"
             @click="handleLogout()"
           >
             Log out
-          </button>
+          </a>
         </div>
         <div class="navbar-nav">
           <span class="nav-item">

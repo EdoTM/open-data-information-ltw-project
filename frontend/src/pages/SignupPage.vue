@@ -6,7 +6,6 @@ import {
   sendGoogleSignInRequest,
   sendSignUpRequest,
 } from "../utils/appUtils";
-import { GoogleLogin } from "vue3-google-login";
 import { AxiosResponse } from "axios";
 
 defineProps<{
@@ -237,15 +236,15 @@ onMounted(() => {
       <button class="btn btn-success mt-3 w-100" type="submit">Sign up</button>
     </form>
     <div class="flex-grow-1 text-center my-2">or</div>
-    <div style="color-scheme: light !important">
+    <div style="width: 100%">
       <GoogleLogin
         :callback="(r) => sendGoogleSignInRequest(r).then(handleSignupResponse)"
-        class="w-100"
         style="color-scheme: light"
+        class="mx-auto"
         :button-config="{
           locale: 'en',
           text: 'signup_with',
-          width: '300',
+          width: 300,
           shape: 'circle',
           theme: 'filled_blue',
         }"

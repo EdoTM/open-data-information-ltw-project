@@ -33,8 +33,9 @@ let router = createRouter({
 });
 
 createApp(App)
-    .use(router)
-    .use(vue3GoogleLogin, {
-      clientId: "524814186523-b4scb23kumgek58om66nog5p6efr8l2t.apps.googleusercontent.com",
-    })
-    .mount("#app");
+  .use(router)
+  .use(vue3GoogleLogin, {
+    clientId:
+      "524814186523-b4scb23kumgek58om66nog5p6efr8l2t.apps.googleusercontent.com",
+  })
+  .mount("#app");
