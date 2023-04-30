@@ -10,4 +10,4 @@ app.config["SECRET_KEY"] = os.urandom(32)
 app.config["RSA_PRIV_KEY"] = RSA.generate(1024)
 
 
-CORS(app, supports_credentials=True, origins=["http://localhost:*"])
+CORS(app, supports_credentials=True, origins=["*"])
