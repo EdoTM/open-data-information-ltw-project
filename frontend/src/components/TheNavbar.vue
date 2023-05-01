@@ -81,7 +81,7 @@ function handleLogout() {
         </div>
         <div v-else class="navbar-nav">
           <span class="my-auto me-2">
-            <img class="profile-pic" :src="profilePic" />
+            <img alt="profilePic" class="profile-pic" :src="profilePic" />
           </span>
           <span v-if="isDesktop" class="navbar-text me-3">{{ userName }}</span>
           <a
