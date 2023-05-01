@@ -1,4 +1,4 @@
-type UserInfoRequest = {
+type UserInfoResponse = {
   username: string;
   email: string;
   profilePic: string;
