@@ -7,6 +7,7 @@ const userVotes: any = ref([0, 1, -1]);
 
 const posts = [
   {
+    id: 0,
     title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     authorProfilePic: `https://www.gravatar.com/avatar/${md5("john")}?d=retro`,
     authorUsername: "@john",
@@ -15,6 +16,7 @@ const posts = [
     score: -5,
   },
   {
+    id: 1,
     title: "Consectetur adipiscing elit.",
     authorProfilePic: `https://www.gravatar.com/avatar/${md5("edotm")}?d=retro`,
     authorUsername: "@edotm",
@@ -24,6 +26,7 @@ const posts = [
     score: 10,
   },
   {
+    id: 2,
     title: "Sed ut perspiciatis unde omnis iste",
     authorProfilePic: `https://www.gravatar.com/avatar/${md5(
       "franko"
@@ -45,13 +48,10 @@ const cons = console;
     <h1>Report page!</h1>
     <Post
       v-for="(post, index) in posts"
-      :key="index"
+      :key="post.id"
       v-bind="post"
       :userVote="userVotes[index]"
-      @upvote="() => {
-        cons.log!('upvote')
-        userVotes[index] = 1
-      }"
+      @upvote="userVotes[index] = 1"
       @downvote="userVotes[index] = -1"
       @unvote="userVotes[index] = 0"
     />

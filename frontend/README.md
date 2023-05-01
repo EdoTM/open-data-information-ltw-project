@@ -50,12 +50,14 @@ Post structure:
 ```json5
 [
   {
+    "id": 213,
     "title": "title",
     "content": "content",
     "score": 0,
     "authorUsername": "username",
     "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
-    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
+    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
+    "uservote": 1,
   },
   {
     // ...
@@ -65,5 +67,12 @@ Post structure:
 
 Request to publish a post
 ```http request
-POST /post
+POST /publishPost
+```
+```json
+{
+  "title": "title",
+  "content": "content",
+  "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
+}
 ```

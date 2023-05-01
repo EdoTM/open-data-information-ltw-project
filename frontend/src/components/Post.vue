@@ -2,6 +2,7 @@
 import { bs5Breakpoints } from "../utils/appUtils";
 
 export interface PostData {
+  id: number;
   title: string;
   content: string;
   image: string;
