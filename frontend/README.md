@@ -46,7 +46,9 @@ Response: same of Login request (sets cookie `sessionID`).
 
 # Posts
 
-Post structure:
+```http request
+GET /getPosts
+```
 ```json5
 [
   {
@@ -67,7 +69,7 @@ Post structure:
 
 Request to publish a post
 ```http request
-POST /publishPost
+POST /createPost
 ```
 ```json
 {

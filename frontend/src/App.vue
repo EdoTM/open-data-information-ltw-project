@@ -4,7 +4,6 @@ import Login from "./components/LoginForm.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
-import { getCookie } from "./utils/cookieUtils";
 import { googleLogout } from "vue3-google-login";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
@@ -21,25 +20,21 @@ function toggleTheme() {
 }
 
 function updateUserInfoIfCookiePresent() {
-  const sessionID = getCookie("sessionID");
-
-  if (sessionID) {
-    axiosInstance
-      .get(`/userInfo?sessionID=${sessionID}`)
-      .then((response) => {
-        const json = response.data;
-        isLogged.value = true;
-        setUserName(json.username);
-        userEmail.value = json.email;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          console.log("Session ID not found");
-        } else {
-          console.log(error);
-        }
-      });
-  }
+  axiosInstance
+    .get(`/userInfo`)
+    .then((response) => {
+      const json = response.data;
+      isLogged.value = true;
+      setUserName(json.username);
+      userEmail.value = json.email;
+    })
+    .catch((error) => {
+      if (error.response.status === 404) {
+        console.log("Session ID not found");
+      } else {
+        console.log(error);
+      }
+    });
 }
 
 function setUserName(name) {
