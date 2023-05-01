@@ -60,7 +60,7 @@ const emit = defineEmits(["upvote", "downvote", "unvote"]);
           :src="post.authorProfilePic"
           class="username-profile-picture"
         />
-        <span class="my-auto username-handle">{{ post.authorUsername }}</span>
+        <span class="my-auto username-handle">@{{ post.authorUsername }}</span>
       </span>
 
       <p style="text-align: justify">

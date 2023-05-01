@@ -1,3 +1,9 @@
+type UserInfoRequest = {
+  username: string;
+  email: string;
+  profilePic: string;
+};
+
 type SignUpRequest = {
   username: string;
   password: string;

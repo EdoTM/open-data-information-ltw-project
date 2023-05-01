@@ -59,7 +59,7 @@ GET /getPosts
     "authorUsername": "username",
     "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
     "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
-    "uservote": 1,
+    "userVote": 1,
   },
   {
     // ...

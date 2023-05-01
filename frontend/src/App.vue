@@ -27,6 +27,7 @@ function updateUserInfoIfCookiePresent() {
       isLogged.value = true;
       setUserName(json.username);
       userEmail.value = json.email;
+      userPicture.value = json.profilePic;
     })
     .catch((error) => {
       if (error.response.status === 404) {
@@ -44,6 +45,7 @@ function setUserName(name) {
 const isLogged = ref(false);
 const userName = ref("");
 const userEmail = ref("");
+const userPicture = ref("");
 
 function handleLogin() {
   isLogged.value = true;
