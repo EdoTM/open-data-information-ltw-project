@@ -16,6 +16,7 @@ Response if success (Sets cookie `sessionID`):
   status: "success",
   username: "username",
   email: "email@smt.com",
+  profilePic: "https://www.image.com/image.png",
 }
 ```
 Response if error:
@@ -46,6 +47,7 @@ Response: same of Login request (sets cookie `sessionID`).
 
 # Posts
 
+Get posts 
 ```http request
 GET /getPosts
 ```
@@ -67,7 +69,7 @@ GET /getPosts
 ]
 ```
 
-Request to publish a post
+Create a post
 ```http request
 POST /createPost
 ```
