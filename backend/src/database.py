@@ -2,6 +2,7 @@ import os
 import sqlite3
 from utils.errors import *
 
+
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
     return {key: value for key, value in zip(fields, row)}
@@ -44,7 +45,7 @@ class Database:
                 raise UserAlreadyExists()
             raise e
 
-    def get_user_by_email(self, email):
+    def get_user_by_email(self, email: str):
         query = "SELECT * FROM users WHERE email=?"
         with self.connect() as conn:
             cursor = conn.execute(query, (email,))
@@ -54,7 +55,7 @@ class Database:
             raise UserNotFound()
         return user
 
-    def get_posts_for_user(self, email = ''):
+    def get_posts_for_user(self, email: str):
         query = """
             select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote
             from posts p left join votes v on p.id = v.post
@@ -66,18 +67,24 @@ class Database:
             posts = cursor.fetchall()
             cursor.close()
         return posts
-    
-    def create_post(self, email, title, content, img):
+
+    def get_posts_without_user(self):
+        return self.get_posts_for_user("")
+
+    def create_post(self, email: str, title: str, content: str, img: str):
         query = "INSERT INTO posts (author_email, title, content, img) VALUES (?, ?, ?, ?)"
         with self.connect() as conn:
             cursor = conn.cursor()
             cursor.execute(query, (email, title, content, img))
             cursor.close()
-    
-    def vote_post(self, email, postID, value):
-        query = "INSERT INTO votes (email, post, value) VALUES (?, ?, ?) ON CONFLICT(email, post) DO UPDATE SET value = ?"
+
+    def vote_post(self, email: str, post_id: int, value: int):
+        query = """
+        INSERT INTO votes (email, post, value)
+        VALUES (?, ?, ?)
+        ON CONFLICT(email, post) DO UPDATE SET value = ?
+        """
         with self.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (email, postID, value, value))
+            cursor.execute(query, (email, post_id, value, value))
             cursor.close()
-        

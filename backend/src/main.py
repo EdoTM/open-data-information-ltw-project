@@ -68,14 +68,14 @@ def get_posts():
     posts = db.get_posts_for_user(email)
     ret = []
     for post in posts:
-        authorUser = db.get_user_by_email(post["author_email"])
+        author_user = db.get_user_by_email(post["author_email"])
         ret.append({
             "id": post["id"],
             "title": post["title"],
             "content": post["content"],
             "score": post["score"],
-            "authorUsername": authorUser["username"],
-            "authorProfilePic": authorUser["profile_pic"],
+            "authorUsername": author_user["username"],
+            "authorProfilePic": author_user["profile_pic"],
             "postImage": post["img"],
             "userVote": post["userVote"]
         })
@@ -85,9 +85,9 @@ def get_posts():
 @app.route("/createPost", methods=["POST"])
 def create_post():
     data = request.json
-    sessionID = request.cookies.get("sessionID")
+    session_id = request.cookies.get("sessionID")
     try:
-        user = get_user_from_session_id(sessionID)
+        user = get_user_from_session_id(session_id)
     except (UserNotFound, WrongSignature):
         return make_error_response("User not found", 404)
     title = data["title"]
@@ -101,15 +101,15 @@ def create_post():
 @app.route("/votePost", methods=["POST"])
 def vote_post():
     data = request.json
-    sessionID = request.cookies.get("sessionID")
+    session_id = request.cookies.get("sessionID")
     try:
-        user = get_user_from_session_id(sessionID)
+        user = get_user_from_session_id(session_id)
     except (UserNotFound, WrongSignature):
         return make_error_response("User not found", 404)
-    postID = data["postID"]
+    post_id = data["postID"]
     vote = data["vote"]
 
-    db.vote_post(user["email"], postID, vote)
+    db.vote_post(user["email"], post_id, vote)
     return make_response("Post voted", 200)
 
 
