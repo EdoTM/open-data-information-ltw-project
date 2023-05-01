@@ -78,3 +78,14 @@ POST /createPost
   "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
 }
 ```
+
+Vote a post
+```http request
+POST /votePost
+```
+```json
+{
+  "postID": 213,
+  "vote": 1
+}
+```
