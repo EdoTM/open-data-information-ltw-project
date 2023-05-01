@@ -28,7 +28,7 @@ def signup():
     username = data["username"]
     password_hash = data["password"]
     birthdate = data["birthdate"]
-    profile_pic = f"https://www.gravatar.com/avatar/{md5(email.encode()).digest().hex()}?d=retro" 
+    profile_pic = f"https://www.gravatar.com/avatar/{md5(email.encode()).digest().hex()}?d=retro"
     try:
         user = db.register_user_and_get_info(email, username, password_hash, birthdate, profile_pic)
         return make_login_success_response(user)
@@ -60,26 +60,27 @@ def get_user_info():
 @app.route("/getPosts", methods=["GET"])
 def get_posts():
     try:
-        user = get_user_from_session_id(request.args.get("sessionID"))
+        user = get_user_from_session_id(request.cookies.get("sessionID"))
         email = user["email"]
     except (UserNotFound, WrongSignature):
         email = ""
-    
+
     posts = db.get_posts_for_user(email)
     ret = []
     for post in posts:
         authorUser = db.get_user_by_email(post["author_email"])
         ret.append({
-            "id" : post["id"],
-            "title" : post["title"],
-            "content" : post["content"],
-            "score" : post["score"],
-            "authorUsername" : authorUser["username"],
-            "authorProfilePic" : authorUser["profile_pic"],
-            "postImage" : post["img"],
-            "userVote" : post["userVote"]
+            "id": post["id"],
+            "title": post["title"],
+            "content": post["content"],
+            "score": post["score"],
+            "authorUsername": authorUser["username"],
+            "authorProfilePic": authorUser["profile_pic"],
+            "postImage": post["img"],
+            "userVote": post["userVote"]
         })
     return ret
+
 
 @app.route("/createPost", methods=["POST"])
 def create_post():
@@ -96,6 +97,7 @@ def create_post():
     db.create_post(user["email"], title, content, img)
     return make_response("Post created", 200)
 
+
 @app.route("/votePost", methods=["POST"])
 def vote_post():
     data = request.json
@@ -109,7 +111,6 @@ def vote_post():
 
     db.vote_post(user["email"], postID, vote)
     return make_response("Post voted", 200)
-
 
 
 def start_app():
