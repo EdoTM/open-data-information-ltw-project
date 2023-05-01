@@ -16,13 +16,15 @@ const emits = defineEmits([
   "logged-in",
   "update:user-name",
   "update:user-email",
+  "update:user-picture",
 ]);
 
 function handleLoginResponse(response) {
-  const json = response.data;
+  const json = response.data as UserInfoResponse;
   emits("logged-in", true);
   emits("update:user-name", json.username);
   emits("update:user-email", json.email);
+  emits("update:user-picture", json.profilePic);
   console.log("Login successful");
 }
 

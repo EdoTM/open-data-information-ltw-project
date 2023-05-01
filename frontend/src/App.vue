@@ -23,7 +23,7 @@ function updateUserInfoIfCookiePresent() {
   axiosInstance
     .get(`/userInfo`)
     .then((response) => {
-      const json = response.data;
+      const json = response.data as UserInfoResponse;
       isLogged.value = true;
       setUserName(json.username);
       userEmail.value = json.email;
@@ -56,6 +56,7 @@ function handleLogout() {
   isLogged.value = false;
   userName.value = "";
   userEmail.value = "";
+  userPicture.value = "";
   googleLogout();
 }
 </script>
@@ -65,6 +66,7 @@ function handleLogout() {
     :is-logged="isLogged"
     :theme="theme"
     :user-name="userName"
+    :profile-pic="userPicture"
     @log-out="handleLogout()"
     @toggle-theme="toggleTheme"
   />
@@ -93,6 +95,7 @@ function handleLogout() {
             @logged-in="handleLogin()"
             @update:user-email="userEmail = $event"
             @update:user-name="setUserName($event)"
+            @update:user-picture="userPicture = $event"
           />
         </div>
       </div>

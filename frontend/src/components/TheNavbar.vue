@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { deleteCookie } from "../utils/cookieUtils";
-import {bs5Breakpoints} from "../utils/appUtils";
+import { bs5Breakpoints } from "../utils/appUtils";
 
 defineProps<{
   isLogged: boolean;
   theme: string;
   userName?: string;
+  profilePic?: string;
 }>();
 
 const navbarBreakpoint = "sm";
@@ -79,7 +80,10 @@ function handleLogout() {
           </router-link>
         </div>
         <div v-else class="navbar-nav">
-          <span v-if="isDesktop" class="navbar-text me-3">Logged in as {{ userName }}</span>
+          <span class="my-auto me-2">
+            <img class="profile-pic" :src="profilePic" />
+          </span>
+          <span v-if="isDesktop" class="navbar-text me-3">{{ userName }}</span>
           <a
             aria-current="page"
             :class="[
@@ -111,3 +115,11 @@ function handleLogout() {
     </div>
   </nav>
 </template>
+
+<style scoped>
+.profile-pic {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+</style>

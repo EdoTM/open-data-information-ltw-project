@@ -61,6 +61,7 @@ def make_login_success_response(user):
         "status": "success",
         "email": user["email"],
         "username": user["username"],
+        "profilePic": user["profile_pic"]
     }
 
     resp = make_response(resp_data)
