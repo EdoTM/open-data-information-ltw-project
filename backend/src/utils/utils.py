@@ -30,6 +30,8 @@ def generate_user_session_id(input_email: str):
 
 
 def get_user_from_session_id(session_id: str):
+    if session_id is None:
+        raise UserNotFound()
     db = Database.get_instance()
     IV = bytes.fromhex(session_id[:32])
     session_id_ciphertext = session_id[32:].split('-')[0]

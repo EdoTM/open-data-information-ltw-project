@@ -26,16 +26,16 @@ class Database:
         conn.row_factory = dict_factory
         return conn
 
-    def __store_user(self, email, username, password_hash, birthday):
-        query = "INSERT INTO users VALUES (?, ?, ?, ?)"
+    def __store_user(self, email, username, password_hash, birthday, profile_pic):
+        query = "INSERT INTO users VALUES (?, ?, ?, ?, ?)"
         with self.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (email, username, password_hash, birthday))
+            cursor.execute(query, (email, username, password_hash, birthday, profile_pic))
             cursor.close()
 
-    def register_user_and_get_info(self, email, username, password_hash, birthday):
+    def register_user_and_get_info(self, email, username, password_hash, birthday, profile_pic):
         try:
-            self.__store_user(email, username, password_hash, birthday)
+            self.__store_user(email, username, password_hash, birthday, profile_pic)
             return self.get_user_by_email(email)
         except sqlite3.IntegrityError as e:
             if "users.email" in str(e):
@@ -54,4 +54,30 @@ class Database:
             raise UserNotFound()
         return user
 
-
+    def get_posts_for_user(self, email = ''):
+        query = """
+            select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote
+            from posts p left join votes v on p.id = v.post
+                        left join votes v2 on p.id = v2.post and v2.email = ?
+            group by p.id
+        """
+        with self.connect() as conn:
+            cursor = conn.execute(query, (email,))
+            posts = cursor.fetchall()
+            cursor.close()
+        return posts
+    
+    def create_post(self, email, title, content, img):
+        query = "INSERT INTO posts (author_email, title, content, img) VALUES (?, ?, ?, ?)"
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, title, content, img))
+            cursor.close()
+    
+    def vote_post(self, email, postID, value):
+        query = "INSERT INTO votes (email, post, value) VALUES (?, ?, ?) ON CONFLICT(email, post) DO UPDATE SET value = ?"
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, postID, value, value))
+            cursor.close()
+        

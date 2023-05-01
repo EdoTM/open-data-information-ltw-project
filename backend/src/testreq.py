@@ -1,7 +1,14 @@
 import requests
 
-url = "http://127.0.0.1:5000"
+url = "http://localhost:5000"
 
-r = requests.post(url + "/login", json={"email": "gino@hello.com", "password": "erkadjaiewfflwal"})
-print(r.cookies)
-print(r.json())
+s = requests.Session()
+
+r = s.post(url + "/login", json = {"email": "gino@gino", "password": "0fe4f43e1dd173abc07ce508a74800e2"})
+
+
+
+r = s.post(url + "/createPost", json = {"title": "titolo", "content": "contenuto", "postImage": "immagine"})
+
+r = s.get(url + "/getPosts")
+print(r.text)
