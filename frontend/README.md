@@ -16,6 +16,7 @@ Response if success (Sets cookie `sessionID`):
   status: "success",
   username: "username",
   email: "email@smt.com",
+  profilePic: "https://www.image.com/image.png",
 }
 ```
 Response if error:
@@ -46,16 +47,21 @@ Response: same of Login request (sets cookie `sessionID`).
 
 # Posts
 
-Post structure:
+Get posts 
+```http request
+GET /getPosts
+```
 ```json5
 [
   {
+    "id": 213,
     "title": "title",
     "content": "content",
     "score": 0,
     "authorUsername": "username",
     "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
-    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
+    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
+    "userVote": 1,
   },
   {
     // ...
@@ -63,7 +69,25 @@ Post structure:
 ]
 ```
 
-Request to publish a post
+Create a post
 ```http request
-POST /post
+POST /createPost
+```
+```json
+{
+  "title": "title",
+  "content": "content",
+  "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
+}
+```
+
+Vote a post
+```http request
+POST /votePost
+```
+```json
+{
+  "postID": 213,
+  "vote": 1
+}
 ```

@@ -2,6 +2,7 @@ from flask import request
 from database import *
 from flask_setup import app
 from utils.utils import *
+from hashlib import md5
 
 
 @app.route("/login", methods=["POST"])
@@ -27,8 +28,9 @@ def signup():
     username = data["username"]
     password_hash = data["password"]
     birthdate = data["birthdate"]
+    profile_pic = f"https://www.gravatar.com/avatar/{md5(email.encode()).digest().hex()}?d=retro"
     try:
-        user = db.register_user_and_get_info(email, username, password_hash, birthdate)
+        user = db.register_user_and_get_info(email, username, password_hash, birthdate, profile_pic)
         return make_login_success_response(user)
     except EmailAlreadyExists:
         return make_error_response("Email already exists", 409)
@@ -40,7 +42,8 @@ def signup():
 
 @app.route("/userInfo", methods=["GET"])
 def get_user_info():
-    session_id = request.args.get("sessionID")
+    session_id = request.cookies.get("sessionID")
+
     try:
         user = get_user_from_session_id(session_id)
     except UserNotFound:
@@ -52,6 +55,62 @@ def get_user_info():
         resp.set_cookie("sessionID", "", expires=0)
         return resp
     return make_login_success_response(user)
+
+
+@app.route("/getPosts", methods=["GET"])
+def get_posts():
+    try:
+        user = get_user_from_session_id(request.cookies.get("sessionID"))
+        email = user["email"]
+    except (UserNotFound, WrongSignature):
+        email = ""
+
+    posts = db.get_posts_for_user(email)
+    ret = []
+    for post in posts:
+        author_user = db.get_user_by_email(post["author_email"])
+        ret.append({
+            "id": post["id"],
+            "title": post["title"],
+            "content": post["content"],
+            "score": post["score"],
+            "authorUsername": author_user["username"],
+            "authorProfilePic": author_user["profile_pic"],
+            "postImage": post["img"],
+            "userVote": post["userVote"]
+        })
+    return ret
+
+
+@app.route("/createPost", methods=["POST"])
+def create_post():
+    data = request.json
+    session_id = request.cookies.get("sessionID")
+    try:
+        user = get_user_from_session_id(session_id)
+    except (UserNotFound, WrongSignature):
+        return make_error_response("User not found", 404)
+    title = data["title"]
+    content = data["content"]
+    img = data["postImage"]
+
+    db.create_post(user["email"], title, content, img)
+    return make_response("Post created", 200)
+
+
+@app.route("/votePost", methods=["POST"])
+def vote_post():
+    data = request.json
+    session_id = request.cookies.get("sessionID")
+    try:
+        user = get_user_from_session_id(session_id)
+    except (UserNotFound, WrongSignature):
+        return make_error_response("User not found", 404)
+    post_id = data["postID"]
+    vote = data["vote"]
+
+    db.vote_post(user["email"], post_id, vote)
+    return make_response("Post voted", 200)
 
 
 def start_app():

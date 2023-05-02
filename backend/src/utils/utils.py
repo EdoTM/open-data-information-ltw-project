@@ -30,6 +30,8 @@ def generate_user_session_id(input_email: str):
 
 
 def get_user_from_session_id(session_id: str):
+    if session_id is None:
+        raise UserNotFound()
     db = Database.get_instance()
     IV = bytes.fromhex(session_id[:32])
     session_id_ciphertext = session_id[32:].split('-')[0]
@@ -59,6 +61,7 @@ def make_login_success_response(user):
         "status": "success",
         "email": user["email"],
         "username": user["username"],
+        "profilePic": user["profile_pic"]
     }
 
     resp = make_response(resp_data)
@@ -70,3 +73,33 @@ def make_login_success_response(user):
 def make_error_response(error_msg, error_code):
     resp_data = {"status": "error", "error": error_msg}
     return make_response(resp_data, error_code)
+
+
+def check_filter_validity(filters):
+    for filter in filters:
+            if filter.key not in ["meetingID", "tsg", "wg", "tdoc"]: # whitelistiamo i filtri che vogliamo accettare
+                raise InvalidFilterKey()
+            
+def wrap_graph(graph, elements):
+    """
+    From [{"tsg1": 10, "tsg2": 7, ...},{"tsg1": 3, "tsg2": 4, ...}, ...]
+    Output is [{"key":"tsg1", "elementName1": 10, "elementName2": 7, ...}, ...]
+    """
+    keys = set()
+    for i in graph:
+        keys.update(i.keys())
+    output = {}
+    for group in keys:
+        output[group] = {"key": group}
+        for i, element in enumerate(elements):
+            output[group][element.elementName] = 0
+
+    for i, element in enumerate(elements):
+        elementName = element.elementName
+        for group in graph[i].keys():
+            output[group][elementName] = graph[i][group]
+
+    # alphabetical order on first element value
+    output = dict(sorted(output.items(), key=lambda item: item[1][elements[0].elementName], reverse=True))
+    return list(output.values())
+

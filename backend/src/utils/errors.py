@@ -12,3 +12,6 @@ class IncorrectPadding(Exception):
 
 class WrongSignature(Exception):
     pass
+
+class InvalidFilterKey(Exception):
+    pass

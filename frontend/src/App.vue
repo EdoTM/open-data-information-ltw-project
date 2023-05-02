@@ -4,7 +4,6 @@ import Login from "./components/LoginForm.vue";
 import { onBeforeMount, ref } from "vue";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
-import { getCookie } from "./utils/cookieUtils";
 import { googleLogout } from "vue3-google-login";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
@@ -21,25 +20,22 @@ function toggleTheme() {
 }
 
 function updateUserInfoIfCookiePresent() {
-  const sessionID = getCookie("sessionID");
-
-  if (sessionID) {
-    axiosInstance
-      .get(`/userInfo?sessionID=${sessionID}`)
-      .then((response) => {
-        const json = response.data;
-        isLogged.value = true;
-        setUserName(json.username);
-        userEmail.value = json.email;
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          console.log("Session ID not found");
-        } else {
-          console.log(error);
-        }
-      });
-  }
+  axiosInstance
+    .get(`/userInfo`)
+    .then((response) => {
+      const json = response.data as UserInfoResponse;
+      isLogged.value = true;
+      setUserName(json.username);
+      userEmail.value = json.email;
+      userPicture.value = json.profilePic;
+    })
+    .catch((error) => {
+      if (error.response.status === 404) {
+        console.log("Session ID not found");
+      } else {
+        console.log(error);
+      }
+    });
 }
 
 function setUserName(name) {
@@ -49,6 +45,7 @@ function setUserName(name) {
 const isLogged = ref(false);
 const userName = ref("");
 const userEmail = ref("");
+const userPicture = ref("");
 
 function handleLogin() {
   isLogged.value = true;
@@ -59,6 +56,7 @@ function handleLogout() {
   isLogged.value = false;
   userName.value = "";
   userEmail.value = "";
+  userPicture.value = "";
   googleLogout();
 }
 </script>
@@ -68,6 +66,7 @@ function handleLogout() {
     :is-logged="isLogged"
     :theme="theme"
     :user-name="userName"
+    :profile-pic="userPicture"
     @log-out="handleLogout()"
     @toggle-theme="toggleTheme"
   />
@@ -96,13 +95,18 @@ function handleLogout() {
             @logged-in="handleLogin()"
             @update:user-email="userEmail = $event"
             @update:user-name="setUserName($event)"
+            @update:user-picture="userPicture = $event"
           />
         </div>
       </div>
     </div>
   </div>
 
-  <div class="m-5">
-    <router-view :is-logged="isLogged" />
-  </div>
+  <router-view :is-logged="isLogged" />
 </template>
+
+<style>
+a {
+    cursor: pointer;
+}
+</style>
