@@ -102,7 +102,11 @@ function handleLogout() {
     </div>
   </div>
 
-  <div class="mt-5">
-    <router-view :is-logged="isLogged" />
-  </div>
+  <router-view :is-logged="isLogged" />
 </template>
+
+<style>
+a {
+    cursor: pointer;
+}
+</style>
