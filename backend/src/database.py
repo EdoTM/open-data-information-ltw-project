@@ -2,7 +2,6 @@ import os
 import sqlite3
 from utils.errors import *
 from utils.classUtils import Filter
-from utils.utils import check_filter_validity
 
 
 
@@ -133,8 +132,12 @@ class Database:
             cursor.close()
         return tdocs
 
+def check_filter_validity(filters):
+    for filter in filters:
+            if filter.key not in ["meetingID", "tsg", "wg", "tdoc"]: # whitelistiamo i filtri che vogliamo accettare
+                raise InvalidFilterKey()
 
-    
+
 if __name__ == "__main__":
     db = Database.get_instance()
     f = Filter("tdoc", "R5-214639,36018")

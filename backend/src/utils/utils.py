@@ -74,11 +74,6 @@ def make_error_response(error_msg, error_code):
     resp_data = {"status": "error", "error": error_msg}
     return make_response(resp_data, error_code)
 
-
-def check_filter_validity(filters):
-    for filter in filters:
-            if filter.key not in ["meetingID", "tsg", "wg", "tdoc"]: # whitelistiamo i filtri che vogliamo accettare
-                raise InvalidFilterKey()
             
 def wrap_graph(graph, elements):
     """
