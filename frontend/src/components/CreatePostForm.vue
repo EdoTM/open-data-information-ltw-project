@@ -6,21 +6,15 @@ function onSubmit() {
   const title = getInputElementById("createPostFormTitle").value;
   const content = getInputElementById("createPostFormContent").value;
   const file = getInputElementById("createPostFormFile").files![0];
-  const base64Image = new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-
-  base64Image.then((postImage) => {
-    console.log(postImage)
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onloadend = () => {
     axiosInstance.post("/createPost", {
       title,
       content,
-      postImage,
+      postImage: reader.result,
     });
-  });
+  };
 }
 </script>
 
