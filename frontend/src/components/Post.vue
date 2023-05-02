@@ -5,7 +5,7 @@ export interface PostData {
   id: number;
   title: string;
   content: string;
-  image: string;
+  postImage: string;
   authorUsername: string;
   authorProfilePic: string;
   score: number;
@@ -16,6 +16,8 @@ const isMobile = bs5Breakpoints.smaller("md");
 
 const post = defineProps<PostData>();
 const emit = defineEmits(["upvote", "downvote", "unvote"]);
+
+const imageZoomModalId = `post-${post.id}-zoomModal`
 </script>
 
 <template>
@@ -48,11 +50,11 @@ const emit = defineEmits(["upvote", "downvote", "unvote"]);
 
       <img
         alt="post-img"
-        :src="post.image"
+        :src="post.postImage"
         :class="'post-img border ' + (!isMobile && 'float-end')"
         type="button"
         data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
+        :data-bs-target="'#' + imageZoomModalId"
       />
       <span class="mb-2 d-flex">
         <img
@@ -71,15 +73,15 @@ const emit = defineEmits(["upvote", "downvote", "unvote"]);
 
   <div
     class="modal fade"
-    id="exampleModal"
+    :id="imageZoomModalId"
     tabindex="-1"
-    aria-labelledby="exampleModalLabel"
+    :aria-labelledby="imageZoomModalId + 'Label'"
     aria-hidden="true"
   >
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-body">
-          <img alt="post-img" :src="post.image" class="w-100" />
+          <img alt="post-img" :src="post.postImage" class="w-100" />
         </div>
       </div>
     </div>
