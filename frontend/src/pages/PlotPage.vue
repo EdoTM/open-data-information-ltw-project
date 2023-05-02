@@ -5,6 +5,15 @@ import PlotTdocsPage from "./plots/PlotTdocsPage.vue";
 import PlotElement from "../components/PlotElement.vue";
 
 const page = ref<"meetings" | "tdocs">("meetings");
+
+const appliedFilters = ref([]);
+
+function applyFilter({ filterName, filterValue }) {
+  appliedFilters.value.push({
+    filterName,
+    filterValue,
+  });
+}
 </script>
 
 <template>
@@ -37,7 +46,27 @@ const page = ref<"meetings" | "tdocs">("meetings");
     <div v-else>
       <PlotTdocsPage />
     </div>
-    
-    <PlotElement />
+
+    <PlotElement
+        :key="0"
+      :possible-filters="[
+        {
+          filterName: 'tsg',
+          filterValues: ['1', '2', '3'],
+        },
+        {
+          filterName: 'year',
+          filterValues: ['2020', '2021'],
+        },
+      ]"
+      @apply-filter="applyFilter"
+      :applied-filters="[
+        {
+          filterName: 'tsg',
+          filterValue: '1',
+        },
+      ]"
+      :element-name="'Element 1'"
+    />
   </div>
 </template>
