@@ -1,19 +1,64 @@
 <script setup lang="ts">
 import Vue3SimpleTypeahead from "vue3-simple-typeahead/src/vue3-simple-typeahead.vue";
+import { computed, ref } from "vue";
 
-defineProps<{
+export type Filter = {
+  filterName: string;
+  filterValues: string[];
+};
+
+export type AppliedFilter = {
+  filterName: string;
+  filterValue: string;
+};
+
+const props = defineProps<{
   elementName: string;
-  appliedFilters: {
-    filterName: string;
-    filterValue: string;
-  }[];
-  possibleFilters: {
-    filterName: string;
-    filterValues: string[];
-  }[];
+  appliedFilters: AppliedFilter[];
+  possibleFilters: Filter[];
 }>();
 
-const emit = defineEmits(["apply-filter"]);
+const emit = defineEmits(["apply-filter", "remove-filter"]);
+
+const availableFilters = computed<Filter[]>(() => {
+  return props.possibleFilters.filter((f) => {
+    return !props.appliedFilters.some(
+      (appliedFilter) => appliedFilter.filterName === f.filterName
+    );
+  });
+});
+
+const selectedFilter = ref<Filter>();
+const currentInputText = ref("");
+
+function handleSelectFilter(event: any) {
+  const value: string = event.target.value;
+  if (value === "") {
+    return;
+  }
+  selectedFilter.value = availableFilters.value.find(
+    (f) => f.filterName === value
+  );
+}
+
+function handleRemoveFilter(event: any) {
+  const value: string = event.target.value;
+  if (value === "") {
+    return;
+  }
+  selectedFilter.value = availableFilters.value.find(
+      (f) => f.filterName === value
+  );
+}
+
+function handleSelectFilterValue(value: string) {
+  console.log(value);
+  emit("apply-filter", {
+    filterName: selectedFilter.value!.filterName,
+    filterValue: value,
+  });
+  selectedFilter.value = undefined;
+}
 </script>
 
 <template>
@@ -24,28 +69,45 @@ const emit = defineEmits(["apply-filter"]);
         Unfiltered.
       </li>
       <li
-        v-for="(filter, i) in appliedFilters"
+        v-for="(appliedFilter, i) in appliedFilters"
         :key="i"
         class="list-group-item"
       >
-        {{ filter.filterName }}: {{ filter.filterValue }}
+        <button
+          class="btn btn-outline-danger p-1 me-2"
+          style="width: 35px; height: 35px"
+          @click="emit('remove-filter', appliedFilter)"
+        >
+          <i class="bi-trash3-fill" />
+        </button>
+        <span
+          >{{ appliedFilter.filterName }}: {{ appliedFilter.filterValue }}</span
+        >
       </li>
     </ul>
 
-    <div class="card-footer input-group">
-      <button
-        class="btn btn-outline-secondary dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
+    <div class="card-footer input-group" v-if="availableFilters.length > 0">
+      <select
+        @change="handleSelectFilter"
+        class="form-select"
+        aria-label="Default select example"
+        :value="selectedFilter?.filterName || ''"
       >
-        Dropdown
-      </button>
+        <option selected value="">Select filter...</option>
+        <option v-for="(filter, i) in availableFilters" :key="i">
+          {{ filter.filterName }}
+        </option>
+      </select>
       <vue3-simple-typeahead
+          select-on-tab
         id="typeahead_id"
         placeholder="Start writing..."
-        :items="['One', 'Two', 'Three']"
-        :minInputLength="1"
+        :items="selectedFilter?.filterValues || []"
+        :minInputLength="0"
+        :disabled="selectedFilter === undefined"
+        @select-item="handleSelectFilterValue"
+        @on-input="currentInputText = $event.input"
+          :value="selectedFilter === undefined ? '' : currentInputText"
       />
     </div>
   </div>

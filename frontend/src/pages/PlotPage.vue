@@ -1,19 +1,30 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import PlotMeetingsPage from "./plots/PlotMeetingsPage.vue";
 import PlotTdocsPage from "./plots/PlotTdocsPage.vue";
-import PlotElement from "../components/PlotElement.vue";
+import PlotElement, { AppliedFilter } from "../components/PlotElement.vue";
 
 const page = ref<"meetings" | "tdocs">("meetings");
 
 const appliedFilters = ref([]);
 
-function applyFilter({ filterName, filterValue }) {
+function applyFilter({ filterName, filterValue }: AppliedFilter) {
   appliedFilters.value.push({
     filterName,
     filterValue,
   });
 }
+
+function removeFilter({ filterName }: AppliedFilter) {
+  appliedFilters.value = appliedFilters.value.filter((f) => {
+    return f.filterName !== filterName;
+  });
+}
+
+computed(() => {
+  console.log("appliedFilters changed");
+  console.log(appliedFilters.value);
+});
 </script>
 
 <template>
@@ -48,7 +59,7 @@ function applyFilter({ filterName, filterValue }) {
     </div>
 
     <PlotElement
-        :key="0"
+      :key="0"
       :possible-filters="[
         {
           filterName: 'tsg',
@@ -60,13 +71,34 @@ function applyFilter({ filterName, filterValue }) {
         },
       ]"
       @apply-filter="applyFilter"
-      :applied-filters="[
-        {
-          filterName: 'tsg',
-          filterValue: '1',
-        },
-      ]"
+      @remove-filter="removeFilter"
+      :applied-filters="appliedFilters"
       :element-name="'Element 1'"
     />
   </div>
+
+  <div class="dropdown-menu rounded-3">
+    <form class="p-2 mb-2 bg-body-tertiary border-bottom">
+      <input type="search" class="form-control" autocomplete="false" placeholder="Type to filter...">
+    </form>
+    <ul class="list-unstyled mb-0">
+      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+        <span class="d-inline-block bg-success rounded-circle p-1"></span>
+        Action
+      </a></li>
+      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+        <span class="d-inline-block bg-primary rounded-circle p-1"></span>
+        Another action
+      </a></li>
+      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+        <span class="d-inline-block bg-danger rounded-circle p-1"></span>
+        Something else here
+      </a></li>
+      <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+        <span class="d-inline-block bg-info rounded-circle p-1"></span>
+        Separated link
+      </a></li>
+    </ul>
+  </div>
+  
 </template>
