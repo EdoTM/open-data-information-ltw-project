@@ -51,7 +51,7 @@ const elements = ref<PlotElement[]>([
   },
 ]);
 
-let elementNameNumber: number = elements.value.length + 1;
+let elementNameNumber = elements.value.length + 1;
 
 function randomColor() {
   return "#" + Math.floor(Math.random() * 0xffffff).toString(16);
@@ -59,10 +59,11 @@ function randomColor() {
 
 function addElement() {
   elements.value.push({
-    name: "Element " + (elementNameNumber++),
+    name: "Element " + elementNameNumber,
     color: randomColor(),
     currentCategory: "Category 1",
   });
+  elementNameNumber++;
 }
 
 function deleteElement(index: number) {
