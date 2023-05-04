@@ -1,132 +1,66 @@
 <script setup lang="ts">
-import Vue3SimpleTypeahead from "vue3-simple-typeahead/src/vue3-simple-typeahead.vue";
-import { computed, ref } from "vue";
-
-export type Filter = {
-  filterName: string;
-  filterValues: string[];
-};
-
-export type AppliedFilter = {
-  filterName: string;
-  filterValue: string;
-};
-
-const props = defineProps<{
+defineProps<{
   elementName: string;
-  appliedFilters: AppliedFilter[];
-  possibleFilters: Filter[];
+  elementColor: string;
+  currentCategory: string;
+  categories: string[];
 }>();
 
-const emit = defineEmits(["apply-filter", "remove-filter"]);
-
-const availableFilters = computed<Filter[]>(() => {
-  return props.possibleFilters.filter((f) => {
-    return !props.appliedFilters.some(
-      (appliedFilter) => appliedFilter.filterName === f.filterName
-    );
-  });
-});
-
-const selectedFilter = ref<Filter>();
-const currentInputText = ref("");
-
-function handleSelectFilter(event: any) {
-  const value: string = event.target.value;
-  if (value === "") {
-    return;
-  }
-  selectedFilter.value = availableFilters.value.find(
-    (f) => f.filterName === value
-  );
-}
-
-function handleRemoveFilter(event: any) {
-  const value: string = event.target.value;
-  if (value === "") {
-    return;
-  }
-  selectedFilter.value = availableFilters.value.find(
-      (f) => f.filterName === value
-  );
-}
-
-function handleSelectFilterValue(value: string) {
-  console.log(value);
-  emit("apply-filter", {
-    filterName: selectedFilter.value!.filterName,
-    filterValue: value,
-  });
-  selectedFilter.value = undefined;
-}
+const emit = defineEmits(["change-category"]);
 </script>
 
 <template>
-  <div class="card" style="width: 30rem">
-    <div class="card-header">Element 1</div>
-    <ul class="list-group list-group-flush">
-      <li v-if="appliedFilters.length === 0" class="list-group-item">
-        Unfiltered.
-      </li>
-      <li
-        v-for="(appliedFilter, i) in appliedFilters"
-        :key="i"
-        class="list-group-item"
-      >
-        <button
-          class="btn btn-outline-danger p-1 me-2"
-          style="width: 35px; height: 35px"
-          @click="emit('remove-filter', appliedFilter)"
-        >
-          <i class="bi-trash3-fill" />
-        </button>
-        <span
-          >{{ appliedFilter.filterName }}: {{ appliedFilter.filterValue }}</span
-        >
-      </li>
-    </ul>
-
-    <div class="card-footer input-group" v-if="availableFilters.length > 0">
-      <select
-        @change="handleSelectFilter"
-        class="form-select"
-        aria-label="Default select example"
-        :value="selectedFilter?.filterName || ''"
-      >
-        <option selected value="">Select filter...</option>
-        <option v-for="(filter, i) in availableFilters" :key="i">
-          {{ filter.filterName }}
-        </option>
-      </select>
-      <vue3-simple-typeahead
-          select-on-tab
-        id="typeahead_id"
-        placeholder="Start writing..."
-        :items="selectedFilter?.filterValues || []"
-        :minInputLength="0"
-        :disabled="selectedFilter === undefined"
-        @select-item="handleSelectFilterValue"
-        @on-input="currentInputText = $event.input"
-          :value="selectedFilter === undefined ? '' : currentInputText"
-      />
+  <div
+    class="card plot-element d-grid pe-2"
+    style="grid-template-columns: 25% auto"
+  >
+    <div :style="{ background: elementColor }" class="element-color m-auto" />
+    <div class="element-content my-auto">
+      <div class="my-2">
+        <b>{{ elementName }}</b>
+      </div>
+      <div class="my-2 d-flex">
+        <label class="d-inline-block" for="">Category:</label>
+        <div class="dropdown ms-1">
+          <button
+            aria-expanded="false"
+            class="btn btn-outline-secondary dropdown-toggle ms-1"
+            data-bs-toggle="dropdown"
+            type="button"
+          >
+            {{ currentCategory }}
+          </button>
+          <ul class="dropdown-menu">
+            <li v-for="(category, i) in categories" :key="i">
+              <a
+                class="dropdown-item"
+                href="#"
+                @click="emit('change-category', category)"
+                >{{ category }}</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<style lang="scss">
-@import "bootstrap/scss/bootstrap.scss";
-
-.simple-typeahead-input {
-  @extend .form-control;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0 10px;
-  border: 0;
+<style scoped>
+.plot-element {
+  aspect-ratio: 3;
+  width: 32%;
+  min-width: 300px;
 }
 
-.simple-typeahead {
-  @extend .form-control;
-  padding: 0;
+.element-color {
+  aspect-ratio: 1;
+  width: 60%;
+  border-radius: 50%;
+}
+
+.element-content {
+  font-size: 1.2rem;
+  line-height: 1.8;
 }
 </style>
