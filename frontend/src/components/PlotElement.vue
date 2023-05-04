@@ -6,7 +6,7 @@ defineProps<{
   categories: string[];
 }>();
 
-const emit = defineEmits(["change-category"]);
+const emit = defineEmits(["change-category", "delete"]);
 </script>
 
 <template>
@@ -14,10 +14,17 @@ const emit = defineEmits(["change-category"]);
     class="card plot-element d-grid pe-2"
     style="grid-template-columns: 25% auto"
   >
-    <div :style="{ background: elementColor }" class="element-color m-auto" />
+    <div
+      :style="{ background: elementColor }"
+      class="element-color m-auto border"
+    />
     <div class="element-content my-auto">
-      <div class="my-2">
-        <b>{{ elementName }}</b>
+      <div class="my-2 d-flex" style="line-height: 1.2">
+        <h5 class="m-0">{{ elementName }}</h5>
+        <a
+          class="bi bi-trash3-fill ms-auto me-2 text-danger delete-element-icon"
+          @click="emit('delete')"
+        ></a>
       </div>
       <div class="my-2 d-flex">
         <label class="d-inline-block" for="">Category:</label>
@@ -49,8 +56,8 @@ const emit = defineEmits(["change-category"]);
 <style scoped>
 .plot-element {
   aspect-ratio: 3;
-  width: 32%;
-  min-width: 300px;
+  width: 30%;
+  min-width: 307px;
 }
 
 .element-color {
@@ -62,5 +69,13 @@ const emit = defineEmits(["change-category"]);
 .element-content {
   font-size: 1.2rem;
   line-height: 1.8;
+}
+
+.delete-element-icon:not(:hover) {
+  color: inherit !important;
+}
+
+.delete-element-icon {
+  transition-duration: 100ms;
 }
 </style>
