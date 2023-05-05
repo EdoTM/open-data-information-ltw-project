@@ -15,3 +15,6 @@ class WrongSignature(Exception):
 
 class InvalidFilterKey(Exception):
     pass
+
+class InvalidIndex(Exception):
+    pass

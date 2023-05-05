@@ -112,6 +112,34 @@ def vote_post():
     db.vote_post(user["email"], post_id, vote)
     return make_response("Post voted", 200)
 
+@app.route("/plot/meetings", methods=["POST"])
+def plot_meetings():
+    response = {
+        'xAxisValues': [],
+        'elements': []
+    }
+    all_nations = [x["nation"] for x in db.get_all_nations()]
+    response['xAxisValues'] = all_nations
+    elements = request.json.get("elements")
+    index = request.json.get("index")
+    
+    for element in elements:
+        name = element["name"]
+        color = element["color"]
+        wg = element["currentCategory"] # da sistemare
+        data = db.count_meetings(index, wg)
+        data = {x["nation"]: x["cnt"] for x in data}
+
+        response['elements'].append({
+            'name': name,
+            'color': color,
+            'data': [data.get(x, 0) for x in all_nations]
+        })
+
+
+    return response
+        
+
 
 def start_app():
     global app

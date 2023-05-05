@@ -1,13 +1,13 @@
 import os
 import sqlite3
 from utils.errors import *
-from utils.classUtils import Filter
 
 
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
     return {key: value for key, value in zip(fields, row)}
+
 
 
 class Database:
@@ -30,9 +30,9 @@ class Database:
         conn.row_factory = dict_factory
         return conn
     
-    def connect_data(self):
+    def connect_data(self, row_factory=dict_factory):
         conn = sqlite3.connect(self.db_data_dir)
-        conn.row_factory = dict_factory
+        conn.row_factory = row_factory
         return conn
 
     def __store_user(self, email, username, password_hash, birthday, profile_pic):
@@ -88,58 +88,44 @@ class Database:
 
     def vote_post(self, email: str, post_id: int, value: int):
         query = """
-        INSERT INTO votes (email, post, value)
-        VALUES (?, ?, ?)
-        ON CONFLICT(email, post) DO UPDATE SET value = ?
+            INSERT INTO votes (email, post, value)
+            VALUES (?, ?, ?)
+            ON CONFLICT(email, post) DO UPDATE SET value = ?
         """
         with self.connect() as conn:
             cursor = conn.cursor()
             cursor.execute(query, (email, post_id, value, value))
             cursor.close()
 
-    def get_meetings_filtered(self, start_date, end_date, filters:list[Filter]):
-        
-        check_filter_validity(filters)
-            
-        filters_query = "".join("AND {} in (".format(filter.key)+ ",".join("?"*len(filter.value)) + ") " for filter in filters)
-        query = "SELECT * FROM Meetings WHERE startDate >= ? AND startDate <= ? " + filters_query
-        args = []
-        for filter in filters:
-            for value in filter.value:
-                args.append(value)
-
+    def count_meetings(self, index, category):
+        if index not in ["nation", "company"]:
+            raise InvalidIndex()
+        if category not in ["RAN 1"]:
+            raise InvalidFilterKey()
+        query = f"""
+            SELECT attendee.{index}, count(*) as cnt
+            FROM AttendeesParticipation attendee JOIN Meetings meeting 
+            ON attendee.meetingID = meeting.meetingID
+            WHERE meeting.wg = '{category}'
+            GROUP BY attendee.{index}
+        """
         with self.connect_data() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (start_date, end_date) + tuple(args))
+            cursor.execute(query)
             meetings = cursor.fetchall()
             cursor.close()
         return meetings
     
-    def get_tdocs_filtered(self, meetingID, filters : list[Filter]):
-        check_filter_validity(filters)
-        filters_query = "".join("AND {} in (".format(filter.key)+ ",".join("?"*len(filter.value)) + ") " for filter in filters)
-        query = "SELECT * FROM Tdocs where meetingID = ? " + filters_query
-        print(query)
-        args = []
-        for filter in filters:
-            for value in filter.value:
-                args.append(value)
-
+    def get_all_nations(self):
+        query = """
+            SELECT DISTINCT nation
+            FROM AttendeesParticipation
+        """
         with self.connect_data() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (meetingID,) + tuple(args))
-            tdocs = cursor.fetchall()
+            cursor.execute(query)
+            nations = cursor.fetchall()
             cursor.close()
-        return tdocs
-
-def check_filter_validity(filters):
-    for filter in filters:
-            if filter.key not in ["meetingID", "tsg", "wg", "tdoc"]: # whitelistiamo i filtri che vogliamo accettare
-                raise InvalidFilterKey()
-
-
-if __name__ == "__main__":
-    db = Database.get_instance()
-    f = Filter("tdoc", "R5-214639,36018")
-    f2 = Filter("meetingID", "36017,36018")
-    print(db.get_tdocs_filtered("60013", [f]))
+        return nations
+    
+    

@@ -75,26 +75,3 @@ def make_error_response(error_msg, error_code):
     return make_response(resp_data, error_code)
 
             
-def wrap_graph(graph, elements):
-    """
-    From [{"tsg1": 10, "tsg2": 7, ...},{"tsg1": 3, "tsg2": 4, ...}, ...]
-    Output is [{"key":"tsg1", "elementName1": 10, "elementName2": 7, ...}, ...]
-    """
-    keys = set()
-    for i in graph:
-        keys.update(i.keys())
-    output = {}
-    for group in keys:
-        output[group] = {"key": group}
-        for i, element in enumerate(elements):
-            output[group][element.elementName] = 0
-
-    for i, element in enumerate(elements):
-        elementName = element.elementName
-        for group in graph[i].keys():
-            output[group][elementName] = graph[i][group]
-
-    # alphabetical order on first element value
-    output = dict(sorted(output.items(), key=lambda item: item[1][elements[0].elementName], reverse=True))
-    return list(output.values())
-

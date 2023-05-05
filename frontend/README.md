@@ -104,16 +104,19 @@ POST /plot/meetings
 ```
 
 ```json5
-[
-  {
-    name: "Element 6",
-    color: "#fffc23",
-    currentCategory: "All",
-  },
-  {
-    // ...
-  }
-]
+{
+  "index" : "nation",
+  "elements": [
+    {
+      "name": "Element 6",
+      "color": "#fffc23",
+      "currentCategory": "All",
+    },
+    {
+      // ...
+    }
+  ]
+}
 ```
 
 ### Response
