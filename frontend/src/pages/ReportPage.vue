@@ -2,14 +2,12 @@
 import Post, { PostData } from "../components/Post.vue";
 import axiosInstance from "../utils/axiosInstance";
 import { onBeforeMount, ref } from "vue";
-import CreatePostForm from "../components/CreatePostForm.vue";
 
 const posts = ref([] as PostData[]);
 
 function getPosts() {
   axiosInstance.get("/getPosts").then((response) => {
     posts.value = response.data;
-    console.log("cose:", posts.value)
   });
 }
 
@@ -32,8 +30,6 @@ onBeforeMount(getPosts);
 <template>
   <div class="mx-auto" style="max-width: 1000px; width: 90%">
     <h1>Report page!</h1>
-    <CreatePostForm />
-    <hr />
     <Post
       v-for="post in posts"
       :key="post.id"

@@ -2,24 +2,28 @@
 import { getInputElementById } from "../utils/tsUtils";
 import axiosInstance from "../utils/axiosInstance";
 
-function onSubmit() {
+defineExpose({ submitPost });
+
+function submitPost(postImage: string) {
+  const form = getInputElementById("createPostForm");
+  if (!form.checkValidity()) {
+    form.classList.add("was-validated");
+    return;
+  }
+
+  console.log("create");
   const title = getInputElementById("createPostFormTitle").value;
   const content = getInputElementById("createPostFormContent").value;
-  const file = getInputElementById("createPostFormFile").files![0];
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onloadend = () => {
-    axiosInstance.post("/createPost", {
-      title,
-      content,
-      postImage: reader.result,
-    });
-  };
+  axiosInstance.post("/createPost", {
+    title,
+    content,
+    postImage,
+  });
 }
 </script>
 
 <template>
-  <form id="createPostForm" @submit="onSubmit">
+  <form id="createPostForm" class="has-validation">
     <div class="mb-3">
       <input
         required
@@ -37,18 +41,6 @@ function onSubmit() {
         rows="3"
         placeholder="Write something statistical..."
       />
-    </div>
-    <div class="mb-3">
-      <input
-        type="file"
-        required
-        accept="image/*"
-        class="form-control"
-        id="createPostFormFile"
-      />
-    </div>
-    <div class="mb-3">
-      <button type="submit" class="btn btn-primary">Post</button>
     </div>
   </form>
 </template>

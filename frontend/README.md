@@ -85,9 +85,66 @@ Vote a post
 ```http request
 POST /votePost
 ```
+
 ```json
 {
   "postID": 213,
   "vote": 1
+}
+```
+
+# Plot Data
+
+## Meetings
+
+### Request
+
+```http request
+POST /plot/meetings
+```
+
+```json5
+[
+  {
+    name: "Element 6",
+    color: "#fffc23",
+    currentCategory: "All",
+  },
+  {
+    // ...
+  }
+]
+```
+
+### Response
+
+```json5
+{
+  "xAxisValues": [
+    "Samsung",
+    "Apple",
+    "Google"
+  ],
+  "elements": [
+    {
+      "name": "Element 1",
+      "data": [
+        5,
+        10,
+        15
+      ],
+      "color": "#fffc23",
+    },
+    {
+      "name": "Element 2",
+      "data": [
+        10,
+        15,
+        5
+      ],
+      "color": "#2abcab",
+    },
+    // ...
+  ]
 }
 ```
