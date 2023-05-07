@@ -135,8 +135,6 @@ def plot_meetings():
             'color': color,
             'data': [data.get(x, 0) for x in all_nations]
         })
-
-
     return response
         
 

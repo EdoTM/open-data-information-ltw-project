@@ -2,7 +2,7 @@ import os
 import sqlite3
 from utils.errors import *
 
-
+wg_whitelist = ["All", "CT", "OP", "PCG", "RAN", "SA", "CT 1", "CT 3", "CT 4", "CT 6", "RAN 1", "RAN 2", "RAN 3", "RAN 4", "RAN 5", "SA 1", "SA 2", "SA 3", "SA 4", "SA 5", "SA 6"]
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -97,16 +97,18 @@ class Database:
             cursor.execute(query, (email, post_id, value, value))
             cursor.close()
 
-    def count_meetings(self, index, category):
+    def count_meetings(self, index, wg):
         if index not in ["nation", "company"]:
             raise InvalidIndex()
-        if category not in ["RAN 1"]:
+        if wg not in wg_whitelist:
             raise InvalidFilterKey()
+        if wg == "All":
+            wg = "' OR '1'='1"
         query = f"""
             SELECT attendee.{index}, count(*) as cnt
             FROM AttendeesParticipation attendee JOIN Meetings meeting 
             ON attendee.meetingID = meeting.meetingID
-            WHERE meeting.wg = '{category}'
+            WHERE meeting.wg = '{wg}'
             GROUP BY attendee.{index}
         """
         with self.connect_data() as conn:
