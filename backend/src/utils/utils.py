@@ -74,4 +74,15 @@ def make_error_response(error_msg, error_code):
     resp_data = {"status": "error", "error": error_msg}
     return make_response(resp_data, error_code)
 
-            
+def parse_category(category):
+    categories ={
+        "Physical layer": "RAN 1",
+        "Layer 2 protocols": "RAN 2",
+        "Radio performance": "RAN 4",
+        "UE conformance": "RAN 5",
+        "Security": "SA 3",
+        "Multimedia": "SA 4",
+        "Quality of service": "CT 3",
+        "Network protocols": "CT 4",
+    }
+    return categories[category]
