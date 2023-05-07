@@ -14,11 +14,22 @@ function submitPost(postImage: string) {
   console.log("create");
   const title = getInputElementById("createPostFormTitle").value;
   const content = getInputElementById("createPostFormContent").value;
-  axiosInstance.post("/createPost", {
-    title,
-    content,
-    postImage,
-  });
+  axiosInstance
+    .post("/createPost", {
+      title,
+      content,
+      postImage,
+    })
+    .then(() => {
+      console.log("Post created");
+      window.location.href = "/report";
+    })
+    .catch((error) => {
+      if (error.response.status === 404) {
+        alert("You have to log in");
+      }
+      console.log(error);
+    });
 }
 </script>
 
@@ -35,7 +46,6 @@ function submitPost(postImage: string) {
     </div>
     <div class="mb-3">
       <textarea
-        required
         class="form-control"
         id="createPostFormContent"
         rows="3"

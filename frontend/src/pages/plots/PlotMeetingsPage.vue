@@ -3,7 +3,7 @@ import PlotElement from "../../components/PlotElement.vue";
 import plusIcon from "../../assets/plus-element.svg";
 import { computed, provide, ref } from "vue";
 import VChart, { THEME_KEY } from "vue-echarts";
-import { CanvasRenderer } from "echarts/renderers";
+import { SVGRenderer } from "echarts/renderers";
 import { use } from "echarts/core";
 import { BarChart } from "echarts/charts";
 import {
@@ -26,7 +26,7 @@ type PlotDataType = {
 };
 
 use([
-  CanvasRenderer,
+  SVGRenderer,
   BarChart,
   TitleComponent,
   LegendComponent,
@@ -55,7 +55,7 @@ const plotImageData = ref<string>();
 const elements = ref<PlotElement[]>([
   {
     name: "Element 1",
-    color: "#f8f9fa",
+    color: randomColor(),
     currentCategory: categories[0],
   },
 ]);
@@ -94,12 +94,31 @@ const chartOptions = computed(() => {
   return {
     backgroundColor: "transparent",
     tooltip: {},
-    legend: {},
+    legend: {
+      top: 50,
+    },
+    grid: {
+      top: 100,
+      bottom: 100,
+    },
     xAxis: {
       data: plotData.value?.xAxisValues,
+      axisLabel: {
+        interval: 0,
+        rotate: 45,
+        formatter: (value) => {
+          if (value.length > 15) {
+            return value.substring(0, 15) + "...";
+          } else {
+            return value;
+          }
+        },
+      },
     },
     yAxis: {},
-    dataZoom: {},
+    dataZoom: {
+      top: {},
+    },
     series: plotData.value?.elements.map((e: any) => ({
       name: e.name,
       type: "bar",
@@ -155,7 +174,7 @@ const createPostFormRef = ref<any>();
       />
     </button>
   </div>
-  <div class="mx-auto my-3 float-end">
+  <div class="my-3" style="text-align: right">
     <button
       class="btn btn-primary mx-3 my-auto align-items-center"
       type="button"
@@ -170,7 +189,7 @@ const createPostFormRef = ref<any>();
   <div
     v-if="plotData"
     class="text-center mx-auto mb-5 mt-5"
-    style="width: 100%; height: 400px"
+    style="width: 100%; height: 570px"
   >
     <v-chart
       ref="plotRef"

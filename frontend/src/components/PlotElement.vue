@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { bs5Breakpoints } from "../utils/appUtils";
+
 defineProps<{
   elementName: string;
   elementColor: string;
@@ -7,19 +9,28 @@ defineProps<{
 }>();
 
 const emit = defineEmits(["change-category", "delete"]);
+
+const isDesktop = bs5Breakpoints.greater("sm");
 </script>
 
 <template>
   <div
-    class="card plot-element d-grid pe-2"
-    style="grid-template-columns: 25% auto"
+    :class="!isDesktop && ['d-flex plot-element-sm']"
+    class="card plot-element pe-2 d-grid"
+    style="grid-template-columns: auto 75%"
   >
     <div
+      v-if="isDesktop"
       :style="{ background: elementColor }"
       class="element-color m-auto border"
     />
-    <div class="element-content my-auto">
-      <div class="my-2 d-flex" style="line-height: 1.2">
+    <div :class="!isDesktop && 'ms-3'" class="element-content my-auto">
+      <div class="my-2 d-flex align-items-center" style="line-height: 1.2">
+        <span
+          v-if="!isDesktop"
+          :style="{ background: elementColor }"
+          class="element-color-sm"
+        />
         <h5 class="m-0">{{ elementName }}</h5>
         <a
           class="bi bi-trash3-fill ms-auto me-2 text-danger delete-element-icon"
@@ -60,10 +71,22 @@ const emit = defineEmits(["change-category", "delete"]);
   min-width: 370px;
 }
 
+.plot-element-sm {
+  aspect-ratio: 3;
+  min-width: 300px;
+}
+
 .element-color {
   aspect-ratio: 1;
   width: 60%;
   border-radius: 50%;
+}
+
+.element-color-sm {
+  aspect-ratio: 1;
+  width: 7%;
+  border-radius: 50%;
+  margin-right: 0.5rem;
 }
 
 .element-content {
