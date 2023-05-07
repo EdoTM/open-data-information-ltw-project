@@ -1,3 +1,4 @@
+import datetime
 import os
 import sqlite3
 from utils.errors import *
@@ -69,6 +70,7 @@ class Database:
             from posts p left join votes v on p.id = v.post
                         left join votes v2 on p.id = v2.post and v2.email = ?
             group by p.id
+            order by p.timestamp desc
         """
         with self.connect() as conn:
             cursor = conn.execute(query, (email,))
@@ -80,10 +82,11 @@ class Database:
         return self.get_posts_for_user("")
 
     def create_post(self, email: str, title: str, content: str, img: str):
-        query = "INSERT INTO posts (author_email, title, content, img) VALUES (?, ?, ?, ?)"
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        query = "INSERT INTO posts (author_email, title, content, img, timestamp) VALUES (?, ?, ?, ?, ?)"
         with self.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (email, title, content, img))
+            cursor.execute(query, (email, title, content, img, timestamp))
             cursor.close()
 
     def vote_post(self, email: str, post_id: int, value: int):
