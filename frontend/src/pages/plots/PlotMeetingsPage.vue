@@ -3,10 +3,11 @@ import PlotElement from "../../components/PlotElement.vue";
 import plusIcon from "../../assets/plus-element.svg";
 import { computed, provide, ref } from "vue";
 import VChart, { THEME_KEY } from "vue-echarts";
-import { SVGRenderer } from "echarts/renderers";
+import { CanvasRenderer } from "echarts/renderers";
 import { use } from "echarts/core";
 import { BarChart } from "echarts/charts";
 import {
+  DataZoomComponent,
   GridComponent,
   LegendComponent,
   TitleComponent,
@@ -14,6 +15,7 @@ import {
 } from "echarts/components";
 import { ECharts, EChartsOption } from "echarts";
 import CreatePostForm from "../../components/CreatePostForm.vue";
+import axiosInstance from "../../utils/axiosInstance";
 
 type PlotDataType = {
   xAxisValues: string[];
@@ -24,13 +26,26 @@ type PlotDataType = {
 };
 
 use([
-  SVGRenderer,
+  CanvasRenderer,
   BarChart,
   TitleComponent,
   LegendComponent,
   GridComponent,
   TooltipComponent,
+  DataZoomComponent,
 ]);
+
+const categories = [
+  "All",
+  "Physical layer",
+  "Layer 2 protocols",
+  "Network protocols",
+  "Security",
+  "Radio performance",
+  "Multimedia",
+  "UE conformance",
+  "Quality of service",
+];
 
 // @ts-ignore
 provide(THEME_KEY, localStorage.getItem("theme"));
@@ -41,47 +56,7 @@ const elements = ref<PlotElement[]>([
   {
     name: "Element 1",
     color: "#f8f9fa",
-    currentCategory: "Category 1",
-  },
-  {
-    name: "Element 2",
-    color: "#a56fda",
-    currentCategory: "Category 2",
-  },
-  {
-    name: "Element 3",
-    color: "#dee2e6",
-    currentCategory: "Category 1",
-  },
-  {
-    name: "Element 4",
-    color: "#ced4da",
-    currentCategory: "Category 2",
-  },
-  {
-    name: "Element 5",
-    color: "#58aefa",
-    currentCategory: "Category 1",
-  },
-  {
-    name: "Element 6",
-    color: "#e4fd45",
-    currentCategory: "Category 2",
-  },
-  {
-    name: "Element 7",
-    color: "#ff61bc",
-    currentCategory: "Category 1",
-  },
-  {
-    name: "Element 8",
-    color: "#e8e08c",
-    currentCategory: "Category 2",
-  },
-  {
-    name: "Element 9",
-    color: "#13ffa8",
-    currentCategory: "Category 1",
+    currentCategory: categories[0],
   },
 ]);
 
@@ -96,7 +71,7 @@ function addElement() {
   elements.value.push({
     name: "Element " + elementNameNumber,
     color: randomColor(),
-    currentCategory: "Category 1",
+    currentCategory: categories[0],
   });
   elementNameNumber++;
 }
@@ -105,31 +80,14 @@ function deleteElement(index: number) {
   elements.value.splice(index, 1);
 }
 
-function getPlotData() {
-  return {
-    xAxisValues: ["Samsung", "Apple", "Google"],
-    elements: [
-      {
-        name: "Element 1",
-        data: [5, 10, 15],
-        color: "#f8f9fa",
-      },
-      {
-        name: "Element 2",
-        data: [10, 15, 5],
-        color: "#a56fda",
-      },
-      {
-        name: "Element 3",
-        data: [15, 5, 10],
-        color: "#bd2f87",
-      },
-    ],
-  };
-}
-
 function requestPlot() {
-  plotData.value = getPlotData();
+  const requestData = {
+    index: "nation",
+    elements: elements.value,
+  };
+  axiosInstance.post("/plot/meetings", requestData).then((response) => {
+    plotData.value = response.data;
+  });
 }
 
 const chartOptions = computed(() => {
@@ -141,6 +99,7 @@ const chartOptions = computed(() => {
       data: plotData.value?.xAxisValues,
     },
     yAxis: {},
+    dataZoom: {},
     series: plotData.value?.elements.map((e: any) => ({
       name: e.name,
       type: "bar",
@@ -176,7 +135,7 @@ const createPostFormRef = ref<any>();
     <PlotElement
       v-for="(element, i) in elements"
       :key="i"
-      :categories="['Category 1', 'Category 2']"
+      :categories="categories"
       :current-category="element.currentCategory"
       :element-color="element.color"
       :element-name="element.name"
@@ -211,7 +170,7 @@ const createPostFormRef = ref<any>();
   <div
     v-if="plotData"
     class="text-center mx-auto mb-5 mt-5"
-    style="width: 800px; height: 400px"
+    style="width: 100%; height: 400px"
   >
     <v-chart
       ref="plotRef"

@@ -55,9 +55,9 @@ const emit = defineEmits(["change-category", "delete"]);
 
 <style scoped>
 .plot-element {
-  aspect-ratio: 3;
-  width: 30%;
-  min-width: 307px;
+  aspect-ratio: 3.5;
+  width: 33%;
+  min-width: 370px;
 }
 
 .element-color {
