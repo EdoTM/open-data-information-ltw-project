@@ -76,6 +76,7 @@ def make_error_response(error_msg, error_code):
 
 def parse_category(category):
     categories ={
+        "All": "All",
         "Physical layer": "RAN 1",
         "Layer 2 protocols": "RAN 2",
         "Radio performance": "RAN 4",
