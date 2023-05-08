@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { bs5Breakpoints } from "../utils/appUtils";
+import { ref } from "vue";
 
 export interface PostData {
   id: number;
@@ -17,7 +18,9 @@ const isMobile = bs5Breakpoints.smaller("md");
 const post = defineProps<PostData>();
 const emit = defineEmits(["upvote", "downvote", "unvote"]);
 
-const imageZoomModalId = `post-${post.id}-zoomModal`
+const imageZoomModalId = `post-${post.id}-zoomModal`;
+
+const starred = ref(false);
 </script>
 
 <template>
@@ -43,6 +46,15 @@ const imageZoomModalId = `post-${post.id}-zoomModal`
         @click="userVote === -1 ? emit('unvote') : emit('downvote')"
       >
         <i class="bi-caret-down-fill vote-icon"></i>
+      </a>
+      <a
+        :class="starred ? 'star-icon-selected' : 'star-button'"
+        @click="starred = !starred"
+      >
+        <i
+          :class="starred ? 'bi-star-fill' : 'bi-star'"
+          class="bi star-icon"
+        ></i>
       </a>
     </div>
     <div class="card-body">
@@ -126,6 +138,21 @@ img {
 
 .vote-icon {
   font-size: 40px;
+}
+
+.star-icon {
+  font-size: 30px;
+  color: inherit;
+}
+
+.star-button {
+  color: inherit;
+  cursor: pointer;
+}
+
+.star-icon-selected,
+.star-button:hover {
+  color: var(--bs-warning);
 }
 
 .vote-number {
