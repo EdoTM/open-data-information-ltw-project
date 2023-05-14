@@ -71,10 +71,15 @@ function randomColor() {
 }
 
 function addElement() {
+  const category =
+    categories.filter(
+      (c) => !elements.value.map((e) => e.currentCategory).includes(c)
+    )[0] ?? categories[0];
+
   elements.value.push({
     name: "Element " + elementNameNumber.value,
     color: randomColor(),
-    currentCategory: categories[0],
+    currentCategory: category,
     number: elementNameNumber.value,
   });
 }
@@ -157,6 +162,7 @@ function handleRequestPlot() {
     <transition-group name="plot-element">
       <PlotElement
         v-for="(element, i) in elements"
+        :is-deleteable="elements.length > 1"
         :key="i"
         :categories="categories"
         :color="element.color"
@@ -171,6 +177,7 @@ function handleRequestPlot() {
       class="btn btn-success mx-3 add-element-button my-auto"
       type="button"
       @click="addElement"
+      v-if="elements.length < categories.length"
     >
       <img
         :src="plusIcon"
@@ -269,12 +276,12 @@ function handleRequestPlot() {
   transition: all 0.2s;
 }
 
-.plot-element-leave-to {
-  opacity: 0;
-  transform: translateY(-30%);
+.plot-element-leave-active {
+  transition: all 0.15s;
 }
 
-.plot-element-leave-active {
-  transition: all 0.2s;
+.plot-element-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>
