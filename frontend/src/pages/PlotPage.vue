@@ -7,7 +7,7 @@ const page = ref<"meetings" | "tdocs">("meetings");
 </script>
 
 <template>
-  <div class="mx-auto element-grid">
+  <div class="mx-auto element-grid position-relative">
     <div class="d-flex">
       <ul class="nav nav-pills mt-2 mx-auto">
         <li class="nav-item mx-1">
@@ -29,13 +29,14 @@ const page = ref<"meetings" | "tdocs">("meetings");
         </li>
       </ul>
     </div>
-
-    <div v-if="page === 'meetings'">
-      <PlotMeetingsPage />
-    </div>
-    <div v-else>
-      <PlotTdocsPage />
-    </div>
+    <transition mode="out-in" name="plot-page">
+      <div v-if="page === 'meetings'">
+        <PlotMeetingsPage />
+      </div>
+      <div v-else>
+        <PlotTdocsPage />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -50,5 +51,29 @@ const page = ref<"meetings" | "tdocs">("meetings");
   height: 59px;
   font-size: 1rem;
   font-weight: bolder;
+}
+
+.plot-page-enter-active {
+  transition: all 0.2s ease-out;
+  position: absolute;
+}
+
+.plot-page-leave-active {
+  transition: all 0.2s;
+  position: absolute;
+}
+
+.plot-page-leave-to {
+  opacity: 0;
+  transform: translateX(-400px);
+}
+
+.plot-page-enter-from {
+  opacity: 0;
+  transform: translateX(400px);
+}
+
+.plot-page-move {
+  transition: all 0.5s ease;
 }
 </style>
