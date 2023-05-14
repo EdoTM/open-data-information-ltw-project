@@ -5,6 +5,7 @@ import { PlotElementData } from "../types/plotElementData";
 defineProps<
   PlotElementData & {
     categories: string[];
+    isDeleteable: boolean;
   }
 >();
 
@@ -34,8 +35,13 @@ const isDesktop = bs5Breakpoints.greater("sm");
         />
         <h5 class="m-0">{{ name }}</h5>
         <a
-          class="bi bi-trash3-fill ms-auto me-2 text-danger delete-element-icon"
-          @click="emit('delete')"
+          :class="
+            isDeleteable
+              ? 'text-danger delete-element-icon'
+              : 'delete-element-disabled'
+          "
+          class="bi bi-trash3-fill ms-auto me-2"
+          @click="isDeleteable && emit('delete')"
         ></a>
       </div>
       <div class="my-2 d-flex">
@@ -106,5 +112,10 @@ const isDesktop = bs5Breakpoints.greater("sm");
 
 .delete-element-icon {
   transition-duration: 100ms;
+}
+
+.delete-element-disabled {
+  color: var(--bs-secondary-bg) !important;
+  cursor: not-allowed;
 }
 </style>
