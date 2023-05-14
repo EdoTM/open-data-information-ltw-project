@@ -32,10 +32,10 @@ onBeforeMount(getPosts);
     <h1>Report page!</h1>
     <transition-group appear name="posts">
       <div
-        v-for="post in posts"
+        v-for="(post, i) in posts"
         :key="post.id"
         :style="{
-          transitionDelay: `${(posts.indexOf(post) + 1) * 0.1}s`,
+          transitionDelay: `${(i + 1) * 0.1}s`,
         }"
       >
         <Post

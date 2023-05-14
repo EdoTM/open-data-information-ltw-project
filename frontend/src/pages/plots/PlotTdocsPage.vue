@@ -15,6 +15,6 @@ function requestPlot(index: string, elements: PlotElementData[]) {
   <PlotBasePage :request-plot="requestPlot" page-title="Contributions">
     Nations' or companies' <b>contributions</b> shows how much a nation or
     company has contributed to the specific category by submitting documents
-    that aim to <b>change the current networking RFC standards</b>.
+    that aim to <b>change the current networking standards</b>.
   </PlotBasePage>
 </template>

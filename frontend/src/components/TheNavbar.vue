@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { deleteCookie } from "../utils/cookieUtils";
 import { bs5Breakpoints } from "../utils/appUtils";
+import { inject, Ref } from "vue";
 
 defineProps<{
-  isLogged: boolean;
   theme: string;
   userName?: string;
   profilePic?: string;
 }>();
+
+const isLogged = inject<Ref<boolean>>("is-logged");
 
 const navbarBreakpoint = "sm";
 const isDesktop = bs5Breakpoints.greater(navbarBreakpoint);

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Navbar from "./components/TheNavbar.vue";
 import Login from "./components/LoginForm.vue";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, provide, ref } from "vue";
+import "@popperjs/core/dist/umd/popper.min.js";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
 import { googleLogout } from "vue3-google-login";
@@ -59,11 +60,12 @@ function handleLogout() {
   userPicture.value = "";
   googleLogout();
 }
+
+provide("is-logged", isLogged);
 </script>
 
 <template>
   <Navbar
-    :is-logged="isLogged"
     :theme="theme"
     :user-name="userName"
     :profile-pic="userPicture"

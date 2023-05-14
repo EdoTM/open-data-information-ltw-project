@@ -53,13 +53,9 @@ const page = ref<"meetings" | "tdocs">("meetings");
   font-weight: bolder;
 }
 
-.plot-page-enter-active {
-  transition: all 0.2s ease-out;
-  position: absolute;
-}
-
+.plot-page-enter-active,
 .plot-page-leave-active {
-  transition: all 0.2s;
+  transition: all 0.2s ease-out;
   position: absolute;
 }
 
