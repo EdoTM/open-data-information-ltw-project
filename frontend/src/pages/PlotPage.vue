@@ -16,7 +16,7 @@ const page = ref<"meetings" | "tdocs">("meetings");
             :class="page === 'meetings' && 'active'"
             aria-current="page"
             @click="page = 'meetings'"
-            >Plot meetings</a
+            >Interest</a
           >
         </li>
         <li class="nav-item mx-1">
@@ -24,7 +24,7 @@ const page = ref<"meetings" | "tdocs">("meetings");
             class="nav-link"
             :class="page === 'tdocs' && 'active'"
             @click="page = 'tdocs'"
-            >Plot tdocs</a
+            >Contributions</a
           >
         </li>
       </ul>

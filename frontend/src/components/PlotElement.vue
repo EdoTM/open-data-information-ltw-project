@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { bs5Breakpoints } from "../utils/appUtils";
+import { PlotElementData } from "../types/plotElementData";
 
-defineProps<{
-  elementName: string;
-  elementColor: string;
-  currentCategory: string;
-  categories: string[];
-}>();
+defineProps<
+  PlotElementData & {
+    categories: string[];
+  }
+>();
 
 const emit = defineEmits(["change-category", "delete"]);
 
@@ -18,20 +18,21 @@ const isDesktop = bs5Breakpoints.greater("sm");
     :class="!isDesktop && ['d-flex plot-element-sm']"
     class="card plot-element pe-2 d-grid"
     style="grid-template-columns: auto 75%"
+    id="plot-element-card"
   >
     <div
       v-if="isDesktop"
-      :style="{ background: elementColor }"
+      :style="{ background: color }"
       class="element-color m-auto border"
     />
     <div :class="!isDesktop && 'ms-3'" class="element-content my-auto">
       <div class="my-2 d-flex align-items-center" style="line-height: 1.2">
         <span
           v-if="!isDesktop"
-          :style="{ background: elementColor }"
+          :style="{ background: color }"
           class="element-color-sm"
         />
-        <h5 class="m-0">{{ elementName }}</h5>
+        <h5 class="m-0">{{ name }}</h5>
         <a
           class="bi bi-trash3-fill ms-auto me-2 text-danger delete-element-icon"
           @click="emit('delete')"
@@ -65,6 +66,11 @@ const isDesktop = bs5Breakpoints.greater("sm");
 </template>
 
 <style scoped>
+:root {
+  --x: 0.5;
+  --y: 0.5;
+}
+
 .plot-element {
   aspect-ratio: 3.5;
   width: 33%;
