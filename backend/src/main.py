@@ -129,7 +129,7 @@ def plot_meetings():
         category = element["currentCategory"] # da sistemare
         wg = parse_category(category)
         data = db.count_meetings(index, wg)
-        data = {x["nation"]: x["cnt"] for x in data}
+        data = {x[index]: x["cnt"] for x in data}
 
         response['elements'].append({
             'name': name,
