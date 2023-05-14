@@ -118,10 +118,14 @@ def plot_meetings():
         'xAxisValues': [],
         'elements': []
     }
-    all_nations = [x["nation"] for x in db.get_all_nations()]
-    response['xAxisValues'] = all_nations
     elements = request.json.get("elements")
     index = request.json.get("index")
+    if index == "nation":
+        all_nations = [x["nation"] for x in db.get_all_nations()]
+    else:
+        all_nations = [x["company"] for x in db.get_all_companies()]
+
+    response['xAxisValues'] = all_nations
     
     for element in elements:
         name = element["name"]

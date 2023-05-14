@@ -133,4 +133,16 @@ class Database:
             cursor.close()
         return nations
     
+    def get_all_companies(self):
+        query = """
+            SELECT DISTINCT company
+            FROM AttendeesParticipation
+        """
+        with self.connect_data() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            companies = cursor.fetchall()
+            cursor.close()
+        return companies
+    
     
