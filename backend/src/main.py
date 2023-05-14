@@ -134,6 +134,7 @@ def plot_meetings():
         wg = parse_category(category)
         data = db.count_meetings(index, wg)
         data = {x[index]: x["cnt"] for x in data}
+        data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1], reverse=True)}
 
         response['elements'].append({
             'name': name,
