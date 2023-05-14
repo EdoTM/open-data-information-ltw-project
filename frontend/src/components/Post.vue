@@ -10,7 +10,7 @@ export interface PostData {
   authorUsername: string;
   authorProfilePic: string;
   score: number;
-  userVote: 1 | 0 | -1;
+  userVote: UserVote;
 }
 
 const isMobile = bs5Breakpoints.smaller("md");
