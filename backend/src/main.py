@@ -78,7 +78,8 @@ def get_posts():
             "authorProfilePic": author_user["profile_pic"],
             "postImage": post["img"],
             "userVote": post["userVote"],
-            "starred": bool(post["starred"])
+            "starred": bool(post["starred"]),
+            "timestamp": post["timestamp"]
         })
     return ret
 
