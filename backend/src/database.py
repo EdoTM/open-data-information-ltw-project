@@ -66,14 +66,15 @@ class Database:
 
     def get_posts_for_user(self, email: str):
         query = """
-            select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote
+            select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred
             from posts p left join votes v on p.id = v.post
-                        left join votes v2 on p.id = v2.post and v2.email = ?
+            left join votes v2 on p.id = v2.post and v2.email = ?
+            left join favorites f on p.id = f.post and f.email = ?
             group by p.id
             order by p.timestamp desc
         """
         with self.connect() as conn:
-            cursor = conn.execute(query, (email,))
+            cursor = conn.execute(query, (email,email,))
             posts = cursor.fetchall()
             cursor.close()
         return posts

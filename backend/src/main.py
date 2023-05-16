@@ -77,7 +77,8 @@ def get_posts():
             "authorUsername": author_user["username"],
             "authorProfilePic": author_user["profile_pic"],
             "postImage": post["img"],
-            "userVote": post["userVote"]
+            "userVote": post["userVote"],
+            "starred": bool(post["starred"])
         })
     return ret
 
