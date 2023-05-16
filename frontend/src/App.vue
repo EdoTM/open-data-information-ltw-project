@@ -6,6 +6,7 @@ import "@popperjs/core/dist/umd/popper.min.js";
 import { Modal } from "bootstrap";
 import axiosInstance from "./utils/axiosInstance";
 import { googleLogout } from "vue3-google-login";
+import { getCookie } from "./utils/cookieUtils";
 
 onBeforeMount(updateUserInfoIfCookiePresent);
 
@@ -21,6 +22,10 @@ function toggleTheme() {
 }
 
 function updateUserInfoIfCookiePresent() {
+  if (getCookie("sessionID") === undefined) {
+    return;
+  }
+
   axiosInstance
     .get(`/userInfo`)
     .then((response) => {

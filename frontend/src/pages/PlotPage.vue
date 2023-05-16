@@ -55,7 +55,7 @@ const page = ref<"meetings" | "tdocs">("meetings");
 
 .plot-page-enter-active,
 .plot-page-leave-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.1s ease-out;
   position: absolute;
 }
 
@@ -67,9 +67,5 @@ const page = ref<"meetings" | "tdocs">("meetings");
 .plot-page-enter-from {
   opacity: 0;
   transform: translateX(400px);
-}
-
-.plot-page-move {
-  transition: all 0.5s ease;
 }
 </style>

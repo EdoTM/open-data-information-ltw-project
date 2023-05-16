@@ -11,6 +11,7 @@ import {
   GridComponent,
   LegendComponent,
   TitleComponent,
+  ToolboxComponent,
   TooltipComponent,
 } from "echarts/components";
 import { ECharts, EChartsOption } from "echarts";
@@ -34,12 +35,12 @@ use([
   GridComponent,
   TooltipComponent,
   DataZoomComponent,
+  ToolboxComponent,
 ]);
 
 const isLogged = inject<Ref<boolean>>("is-logged")!;
 
 const categories = [
-  "All",
   "Physical layer",
   "Layer 2 protocols",
   "Network protocols",
@@ -48,6 +49,7 @@ const categories = [
   "Multimedia",
   "UE conformance",
   "Quality of service",
+  "All",
 ];
 
 // @ts-ignore
@@ -105,20 +107,24 @@ const chartOptions = computed(() => {
     xAxis: {
       data: plotData.value?.xAxisValues,
       axisLabel: {
-        interval: 0,
         rotate: 45,
-        formatter: (value) => {
-          if (value.length > 15) {
-            return value.substring(0, 15) + "...";
-          } else {
-            return value;
-          }
-        },
+        interval: 0,
+        overflow: "truncate",
+        width: 100,
+        showMinLabel: true,
       },
     },
     yAxis: {},
     dataZoom: {
       top: {},
+    },
+    toolbox: {
+      feature: {
+        dataView: {
+          readOnly: true,
+        },
+        saveAsImage: {},
+      },
     },
     series: plotData.value?.elements.map((e) => ({
       name: e.name,
@@ -155,25 +161,26 @@ function createTooltip() {
 }
 
 function handleRequestPlot() {
-  props.requestPlot(plotIndex.value, elements.value).then((data) => {
+  const newElements = elements.value.map((e) => ({
+    name: e.currentCategory,
+    color: e.color,
+    currentCategory: e.currentCategory,
+  }));
+  props.requestPlot(plotIndex.value, newElements).then((data) => {
     plotData.value = data;
     if (!isLogged.value) {
-      console.log("here");
       nextTick(createTooltip);
     }
   });
 }
 
 watch(isLogged, () => {
-  console.log("isLogged changed");
   if (isLogged.value) {
     // @ts-ignore
     tooltip.value?.disable();
   } else if (plotData.value) {
-    console.log("enabling...");
     // @ts-ignore
     tooltip.value?.enable();
-    console.log(tooltip.value);
   }
 });
 
