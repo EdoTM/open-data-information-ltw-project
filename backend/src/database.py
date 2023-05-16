@@ -144,5 +144,17 @@ class Database:
             companies = cursor.fetchall()
             cursor.close()
         return companies
+
+    def star_post(self, email, post, starred):
+        query = """
+            INSERT INTO favorites (email, post, starred)
+            VALUES (?, ?, ?)
+            ON CONFLICT(email, post) DO UPDATE SET starred = ?
+        """
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, post, int(starred), int(starred)))
+            cursor.close()
+        
     
     

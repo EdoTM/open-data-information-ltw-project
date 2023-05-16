@@ -144,6 +144,19 @@ def plot_meetings():
     return response
         
 
+@app.route("/starPost", methods=["POST"])
+def star_post():
+    data = request.json
+    session_id = request.cookies.get("sessionID")
+    try:
+        user = get_user_from_session_id(session_id)
+    except (UserNotFound, WrongSignature):
+        return make_error_response("User not found", 404)
+    post_id = data["postID"]
+    starred = data["starred"]
+    db.star_post(user["email"], post_id, starred)
+    return make_response("Post starred", 200)
+
 
 def start_app():
     global app
