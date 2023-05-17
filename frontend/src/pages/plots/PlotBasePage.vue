@@ -25,6 +25,7 @@ const props = defineProps<{
     elements: PlotElementData[]
   ) => Promise<PlotDataType>;
   pageTitle: string;
+  isForTdoc: boolean;
 }>();
 
 use([
@@ -63,6 +64,7 @@ const elements = ref<(PlotElementData & { number: number })[]>([
     color: randomColor(),
     currentCategory: categories[0],
     number: 1,
+    tdocFilter: props.isForTdoc ? "all" : undefined,
   },
 ]);
 
@@ -86,6 +88,7 @@ function addElement() {
     color: randomColor(),
     currentCategory: category,
     number: elementNameNumber.value,
+    tdocFilter: props.isForTdoc ? "all" : undefined,
   });
 }
 
@@ -222,9 +225,11 @@ const plotIndex = computed(() =>
           :current-category="element.currentCategory"
           :is-deleteable="elements.length > 1"
           :name="element.name"
+          :tdoc-filter="element.tdocFilter"
           class="m-2"
           @delete="deleteElement(i)"
           @change-category="(c) => (element.currentCategory = c)"
+          @change-tdoc-filter="(f) => (element.tdocFilter = f)"
         />
       </transition-group>
       <button

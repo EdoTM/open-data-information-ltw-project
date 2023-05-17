@@ -12,7 +12,11 @@ function requestPlot(index: string, elements: PlotElementData[]) {
 </script>
 
 <template>
-  <PlotBasePage :request-plot="requestPlot" page-title="Interest">
+  <PlotBasePage
+    :is-for-tdoc="false"
+    :request-plot="requestPlot"
+    page-title="Interest"
+  >
     The <b>interest</b> is a measure of how much a nation or company is
     interested in the specific category. It is calculated as the total number of
     meetings of that specific category where that nation or company has

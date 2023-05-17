@@ -12,7 +12,11 @@ function requestPlot(index: string, elements: PlotElementData[]) {
 </script>
 
 <template>
-  <PlotBasePage :request-plot="requestPlot" page-title="Contributions">
+  <PlotBasePage
+    :is-for-tdoc="true"
+    :request-plot="requestPlot"
+    page-title="Contributions"
+  >
     Nations' or companies' <b>contributions</b> shows how much a nation or
     company has contributed to the specific category by submitting documents
     that aim to <b>change the current networking standards</b>.
