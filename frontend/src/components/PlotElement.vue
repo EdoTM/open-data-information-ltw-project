@@ -155,7 +155,7 @@ const showTdocRadios = ref(false);
   background: linear-gradient(
       0.5turn,
       rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 1) 200%
+      var(--bs-body-color) 200%
     )
     0 100px / 100% 100% no-repeat;
 }
