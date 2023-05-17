@@ -29,5 +29,5 @@ type GoogleUserData = {
   given_name: string;
   name: string;
   picture: string;
-  id: string;
+  sub: string;
 };

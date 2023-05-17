@@ -62,6 +62,8 @@ GET /getPosts
     "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
     "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
     "userVote": 1,
+    "starred": true,
+    "timestamp": "2020-12-12 12:12:12"
   },
   {
     // ...
@@ -90,6 +92,19 @@ POST /votePost
 {
   "postID": 213,
   "vote": 1
+}
+```
+
+Star a post
+
+```http request
+POST /starPost
+```
+
+```json
+{
+  "postID": 213,
+  "starred": true
 }
 ```
 

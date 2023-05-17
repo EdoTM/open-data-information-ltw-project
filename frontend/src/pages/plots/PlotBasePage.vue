@@ -108,7 +108,6 @@ const chartOptions = computed(() => {
       data: plotData.value?.xAxisValues,
       axisLabel: {
         rotate: 45,
-        interval: 0,
         overflow: "truncate",
         width: 100,
         showMinLabel: true,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Post, { PostData } from "../components/Post.vue";
 import axiosInstance from "../utils/axiosInstance";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 
 const posts = ref([] as PostData[]);
 
@@ -24,12 +24,82 @@ function votePost(post: PostData, vote: UserVote) {
     });
 }
 
+function starPost(post: PostData, starred: boolean) {
+  return axiosInstance
+    .post("/starPost", {
+      postID: post.id,
+      starred,
+    })
+    .then(() => {
+      post.starred = starred;
+    });
+}
+
 onBeforeMount(getPosts);
+
+enum SortBy {
+  Newest = "Most recent",
+  Oldest = "Least recent",
+  MostVoted = "Most voted",
+  LeastVoted = "Least voted",
+}
+
+const sortBy = ref<SortBy>(SortBy.Newest);
+
+watch(sortBy, () => {
+  const sort = sortBy.value;
+  if (sort === SortBy.Newest) {
+    posts.value.sort((a, b) => b.id - a.id);
+  } else if (sort === SortBy.Oldest) {
+    posts.value.sort((a, b) => a.id - b.id);
+  } else if (sort === SortBy.MostVoted) {
+    posts.value.sort((a, b) => b.score - a.score);
+  } else if (sort === SortBy.LeastVoted) {
+    posts.value.sort((a, b) => a.score - b.score);
+  }
+});
 </script>
 
 <template>
-  <div class="mx-auto" style="max-width: 1000px; width: 90%">
-    <h1>Report page!</h1>
+  <div class="mx-auto mt-4" style="max-width: 1000px; width: 90%">
+    <h1 class="mb-4">User reports</h1>
+    <div class="alert alert-info mb-4" role="doc-abstract">
+      <i class="bi-info-circle-fill me-2"></i>
+      Here users share their findings. Lorem ipsum dolor sit amet, consectetur
+      adipiscing elit.
+    </div>
+    <div class="dropdown">
+      <button
+        aria-expanded="false"
+        class="btn btn-outline-secondary dropdown-toggle"
+        data-bs-toggle="dropdown"
+        type="button"
+      >
+        <i class="bi-sort-down" /> Sort by: {{ sortBy }}
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" href="#" @click="sortBy = SortBy.Newest"
+            >Most recent</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" @click="sortBy = SortBy.Oldest"
+            >Least recent</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" @click="sortBy = SortBy.MostVoted"
+            >Most voted</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" @click="sortBy = SortBy.LeastVoted"
+            >Least voted</a
+          >
+        </li>
+      </ul>
+    </div>
     <transition-group appear name="posts">
       <div
         v-for="(post, i) in posts"
@@ -43,6 +113,7 @@ onBeforeMount(getPosts);
           @downvote="votePost(post, -1)"
           @unvote="votePost(post, 0)"
           @upvote="votePost(post, 1)"
+          @star="starPost(post, $event)"
         />
       </div>
     </transition-group>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { bs5Breakpoints } from "../utils/appUtils";
-import { ref } from "vue";
+import { computed } from "vue";
 
 export interface PostData {
   id: number;
@@ -11,16 +11,35 @@ export interface PostData {
   authorProfilePic: string;
   score: number;
   userVote: UserVote;
+  starred: boolean;
+  timestamp: string;
 }
 
 const isMobile = bs5Breakpoints.smaller("md");
 
 const post = defineProps<PostData>();
-const emit = defineEmits(["upvote", "downvote", "unvote"]);
+const emit = defineEmits(["upvote", "downvote", "unvote", "star"]);
 
 const imageZoomModalId = `post-${post.id}-zoomModal`;
 
-const starred = ref(false);
+const displayTimestamp = computed(() => {
+  const date = new Date(post.timestamp + "Z");
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diff / (1000 * 3600 * 24));
+  const diffHours = Math.floor(diff / (1000 * 3600));
+  const diffMinutes = Math.floor(diff / (1000 * 60));
+  const diffSeconds = Math.floor(diff / 1000);
+  if (diffDays > 0) {
+    return `${diffDays} days ago`;
+  } else if (diffHours > 0) {
+    return `${diffHours} hours ago`;
+  } else if (diffMinutes > 0) {
+    return `${diffMinutes} minutes ago`;
+  } else {
+    return `${diffSeconds} seconds ago`;
+  }
+});
 </script>
 
 <template>
@@ -49,7 +68,7 @@ const starred = ref(false);
       </a>
       <a
         :class="starred ? 'star-icon-selected' : 'star-button'"
-        @click="starred = !starred"
+        @click="starred ? emit('star', false) : emit('star', true)"
       >
         <i
           :class="starred ? 'bi-star-fill' : 'bi-star'"
@@ -75,6 +94,9 @@ const starred = ref(false);
           class="username-profile-picture"
         />
         <span class="my-auto username-handle">@{{ post.authorUsername }}</span>
+        <span class="my-auto me-auto text-secondary"
+          >&nbsp;• {{ displayTimestamp }}</span
+        >
       </span>
 
       <p style="text-align: justify">

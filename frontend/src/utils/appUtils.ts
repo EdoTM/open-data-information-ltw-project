@@ -2,7 +2,7 @@ import md5 from "crypto-js/md5";
 import axiosInstance from "./axiosInstance";
 import { decodeCredential } from "vue3-google-login";
 import { AxiosResponse } from "axios";
-import {breakpointsBootstrapV5, useBreakpoints} from "@vueuse/core";
+import { breakpointsBootstrapV5, useBreakpoints } from "@vueuse/core";
 
 export function generatePasswordMD5(plainPassword: string) {
   return md5(plainPassword).toString();
@@ -22,8 +22,8 @@ export function sendLoginRequest(
 
 export function sendGoogleSignInRequest(response: { credential: string }) {
   const userData = decodeCredential(response.credential) as GoogleUserData;
-  const { email, id, name } = userData;
-  const password = generatePasswordMD5(id);
+  const { email, sub, name } = userData;
+  const password = generatePasswordMD5(sub);
   const signup: SignUpRequest = {
     email,
     password,
