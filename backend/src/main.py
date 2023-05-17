@@ -5,7 +5,7 @@ from utils.utils import *
 from hashlib import md5
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
     email = data["email"]
@@ -21,7 +21,7 @@ def login():
     return make_login_success_response(user)
 
 
-@app.route("/signup", methods=["POST"])
+@app.route("/api/signup", methods=["POST"])
 def signup():
     data = request.json
     email = data["email"]
@@ -40,7 +40,7 @@ def signup():
         return make_error_response("Unknown error", 500)
 
 
-@app.route("/userInfo", methods=["GET"])
+@app.route("/api/userInfo", methods=["GET"])
 def get_user_info():
     session_id = request.cookies.get("sessionID")
 
@@ -57,7 +57,7 @@ def get_user_info():
     return make_login_success_response(user)
 
 
-@app.route("/getPosts", methods=["GET"])
+@app.route("/api/getPosts", methods=["GET"])
 def get_posts():
     try:
         user = get_user_from_session_id(request.cookies.get("sessionID"))
@@ -84,7 +84,7 @@ def get_posts():
     return ret
 
 
-@app.route("/createPost", methods=["POST"])
+@app.route("/api/createPost", methods=["POST"])
 def create_post():
     data = request.json
     session_id = request.cookies.get("sessionID")
@@ -100,7 +100,7 @@ def create_post():
     return make_response("Post created", 200)
 
 
-@app.route("/votePost", methods=["POST"])
+@app.route("/api/votePost", methods=["POST"])
 def vote_post():
     data = request.json
     session_id = request.cookies.get("sessionID")
@@ -114,7 +114,7 @@ def vote_post():
     db.vote_post(user["email"], post_id, vote)
     return make_response("Post voted", 200)
 
-@app.route("/plot/meetings", methods=["POST"])
+@app.route("/api/plot/meetings", methods=["POST"])
 def plot_meetings():
     response = {
         'xAxisValues': [],
@@ -146,7 +146,7 @@ def plot_meetings():
     return response
         
 
-@app.route("/starPost", methods=["POST"])
+@app.route("/api/starPost", methods=["POST"])
 def star_post():
     data = request.json
     session_id = request.cookies.get("sessionID")
