@@ -53,9 +53,14 @@ enum SortBy {
   LeastVoted = "Least voted",
 }
 
+const timer = ref<NodeJS.Timeout | null>(null);
+
 function showVoteLoginAlert() {
+  if (timer.value !== null) {
+    clearTimeout(timer.value!);
+  }
   showVoteAlert.value = true;
-  setTimeout(() => {
+  timer.value = setTimeout(() => {
     showVoteAlert.value = false;
   }, 4000);
 }
