@@ -74,7 +74,8 @@ const elementNameNumber = computed(
 const plotData = ref<PlotDataType>();
 
 function randomColor() {
-  return "#" + Math.floor(Math.random() * 0xffffff).toString(16);
+  const colorCode = Math.floor(Math.random() * 0xffffff).toString(16);
+  return "#" + "0".repeat(6 - colorCode.length) + colorCode;
 }
 
 function addElement() {
