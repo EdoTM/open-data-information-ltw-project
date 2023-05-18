@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import Post, { PostData } from "../components/Post.vue";
 import axiosInstance from "../utils/axiosInstance";
-import { onBeforeMount, ref, watch } from "vue";
+import { inject, onBeforeMount, Ref, ref, watch } from "vue";
 
 const posts = ref([] as PostData[]);
+
+const isLogged = inject<Ref<boolean>>("is-logged")!;
 
 function getPosts() {
   axiosInstance.get("/getPosts").then((response) => {
@@ -12,6 +14,10 @@ function getPosts() {
 }
 
 function votePost(post: PostData, vote: UserVote) {
+  if (!isLogged.value) {
+    showVoteLoginAlert();
+    return;
+  }
   return axiosInstance
     .post("/votePost", {
       postID: post.id,
@@ -25,6 +31,9 @@ function votePost(post: PostData, vote: UserVote) {
 }
 
 function starPost(post: PostData, starred: boolean) {
+  if (!isLogged.value) {
+    return;
+  }
   return axiosInstance
     .post("/starPost", {
       postID: post.id,
@@ -44,6 +53,13 @@ enum SortBy {
   LeastVoted = "Least voted",
 }
 
+function showVoteLoginAlert() {
+  showVoteAlert.value = true;
+  setTimeout(() => {
+    showVoteAlert.value = false;
+  }, 4000);
+}
+
 const sortBy = ref<SortBy>(SortBy.Newest);
 
 watch(sortBy, () => {
@@ -58,10 +74,26 @@ watch(sortBy, () => {
     posts.value.sort((a, b) => a.score - b.score);
   }
 });
+
+const showVoteAlert = ref(false);
 </script>
 
 <template>
-  <div class="mx-auto mt-4" style="max-width: 1000px; width: 90%">
+  <div
+    class="mx-auto mt-4 position-relative"
+    style="max-width: 1000px; width: 90%"
+  >
+    <transition name="login-vote-alert">
+      <div
+        v-if="showVoteAlert"
+        class="alert alert-danger position-fixed z-3 mt-3 ms-3"
+        role="alert"
+        style="width: max-content; left: var(--x); top: var(--y)"
+      >
+        <i class="bi-exclamation-triangle-fill me-2"></i>
+        You must be logged in to vote.
+      </div>
+    </transition>
     <h1 class="mb-4">User reports</h1>
     <div class="alert alert-info mb-4" role="doc-abstract">
       <i class="bi-info-circle-fill me-2"></i>
@@ -104,9 +136,7 @@ watch(sortBy, () => {
       <div
         v-for="(post, i) in posts"
         :key="post.id"
-        :style="{
-          transitionDelay: `${(i + 1) * 0.1}s`,
-        }"
+        :style="{ transitionDelay: `${(i + 1) * 0.1}s` }"
       >
         <Post
           v-bind="post"
@@ -130,5 +160,16 @@ watch(sortBy, () => {
 .posts-leave-to {
   opacity: 0;
   transform: translateY(100%);
+}
+
+.login-vote-alert-enter-active,
+.login-vote-alert-leave-active {
+  transition: all 0.15s;
+}
+
+.login-vote-alert-enter-from,
+.login-vote-alert-leave-to {
+  opacity: 0;
+  transform: scale(0);
 }
 </style>
