@@ -168,6 +168,7 @@ function handleRequestPlot() {
     name: e.currentCategory,
     color: e.color,
     currentCategory: e.currentCategory,
+    tdocFilter: e.tdocFilter,
   }));
   props.requestPlot(plotIndex.value, newElements).then((data) => {
     plotData.value = data;
