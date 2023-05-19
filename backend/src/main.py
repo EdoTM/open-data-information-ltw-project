@@ -129,8 +129,7 @@ def plot_meetings():
     else:
         return make_error_response("Invalid index", 404)
 
-    response['xAxisValues'] = all_nations
-    
+    is_sorted = False
     for element in elements:
         name = element["name"]
         color = element["color"]
@@ -138,13 +137,19 @@ def plot_meetings():
         wg = parse_category(category)
         data = db.count_meetings(index, wg)
         data = {x[index]: x["cnt"] for x in data}
-        data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1], reverse=True)}
+
+        if not is_sorted:
+            all_nations = sorted(all_nations, key=lambda x: data.get(x, 0), reverse=True)
+            is_sorted = True
 
         response['elements'].append({
             'name': name,
             'color': color,
             'data': [data.get(x, 0) for x in all_nations]
         })
+
+    response['xAxisValues'] = all_nations
+
     return response
 
 
@@ -159,26 +164,28 @@ def plot_tdocs():
     if index == "nation":
         all_nations = [x["nation"] for x in db.get_all_nations()]
     elif index == "company":
-        all_nations = [x["nation"] for x in db.get_all_nations()]
+        all_nations = [x["company"] for x in db.get_all_companies()]
     else:
         return make_error_response("Invalid index", 404)
     
-    response['xAxisValues'] = all_nations
-    
+    is_sorted = False
     for element in elements:
         name = element["name"]
         color = element["color"]
-        category = element["currentCategory"] # da sistemare
         tdoc_filter = element["tdocFilter"]
         data = db.count_tdocs(index, tdoc_filter)
         data = {x[index]: x["cnt"] for x in data}
         data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1], reverse=True)}
-
+        if not is_sorted:
+            all_nations = sorted(all_nations, key=lambda x: data.get(x, 0), reverse=True)
+            is_sorted = True
         response['elements'].append({
             'name': name,
             'color': color,
             'data': [data.get(x, 0) for x in all_nations]
         })
+
+    response['xAxisValues'] = all_nations
     return response
     
         

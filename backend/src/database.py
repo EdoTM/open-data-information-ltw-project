@@ -111,7 +111,7 @@ class Database:
         query = f"""
             SELECT attendee.{index}, count(*) as cnt
             FROM AttendeesParticipation attendee JOIN Meetings meeting 
-            ON attendee.meetingID = meeting.meetingID
+            ON attendee.meeting_id = meeting.meeting_id
             WHERE meeting.wg = '{wg}'
             GROUP BY attendee.{index}
         """
@@ -123,8 +123,10 @@ class Database:
         return meetings
     
     def count_tdocs(self, index, tdoc_status):
+        if index not in ["nation", "company"]:
+            raise InvalidIndex()
         if tdoc_status == 'all':
-            tdoc_status = "() or 1=1"
+            tdoc_status = ('agreed','approved','withdrawn','rejected','not concluded','not pursued')
         elif tdoc_status == 'accepted':
             tdoc_status = ('agreed','approved')
         elif tdoc_status == 'rejected':
