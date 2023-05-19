@@ -122,6 +122,32 @@ class Database:
             cursor.close()
         return meetings
     
+    def count_tdocs(self, index, tdoc_status):
+        if tdoc_status == 'all':
+            tdoc_status = "() or 1=1"
+        elif tdoc_status == 'accepted':
+            tdoc_status = ('agreed','approved')
+        elif tdoc_status == 'rejected':
+            tdoc_status = ('withdrawn','rejected','not concluded','not pursued')
+        else:
+            raise InvalidFilterKey()
+
+        query = f"""
+            SELECT attendee.{index}, count(*) as cnt
+            FROM AttendeesParticipation attendee JOIN Tdocs tdocs 
+            ON attendee.meeting_id = tdocs.meeting_id
+            AND tdocs.contact_id = attendee.person_id
+            WHERE tdocs.type = 'CR'
+            AND tdocs.tdoc_status in {tdoc_status}
+            GROUP BY attendee.{index}
+            """
+        with self.connect_data() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            tdocs = cursor.fetchall()
+            cursor.close()
+        return tdocs
+    
     def get_all_nations(self):
         query = """
             SELECT DISTINCT nation

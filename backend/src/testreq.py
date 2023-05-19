@@ -1,17 +1,26 @@
 import requests
 
-url = "http://localhost:5000"
+url = "http://127.0.0.1:5000"
 
 s = requests.Session()
 
-r = s.post(url + "/login", json = {"email": "bianchi.1942637@studenti.uniroma1.it", "password": "d41d8cd98f00b204e9800998ecf8427e"})
+r = s.post(url + "/api/login", json = {"email": "fiocchi.1934851@studenti.uniroma1.it", "password": "f53db7021b3b60e052ee1b97b3dfbbcf"})
 
 
 
 body = {
-  "postID": 34,
-  "starred": True
+    "elements": [
+        {
+            "name": "3GPP",
+            "color": "#ff0000",
+            "currentCategory": "3GPP",
+            "tdocFilter": "all",
+        }
+    ],
+    "index": "nation"
+               
 }
 
-r = s.post(url + "/starPost", json = body)
+r = s.post(url + "/api/plot/tdocs", json = body)
+
 print(r.text)

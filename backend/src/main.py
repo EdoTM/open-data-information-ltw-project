@@ -124,8 +124,10 @@ def plot_meetings():
     index = request.json.get("index")
     if index == "nation":
         all_nations = [x["nation"] for x in db.get_all_nations()]
-    else:
+    elif index =="company":
         all_nations = [x["company"] for x in db.get_all_companies()]
+    else:
+        return make_error_response("Invalid index", 404)
 
     response['xAxisValues'] = all_nations
     
@@ -144,6 +146,41 @@ def plot_meetings():
             'data': [data.get(x, 0) for x in all_nations]
         })
     return response
+
+
+@app.route("/api/plot/tdocs", methods=["POST"])
+def plot_tdocs():
+    elements = request.json.get("elements")
+    index = request.json.get("index")
+    response = {
+            'xAxisValues': [],
+            'elements': []
+        }
+    if index == "nation":
+        all_nations = [x["nation"] for x in db.get_all_nations()]
+    elif index == "company":
+        all_nations = [x["nation"] for x in db.get_all_nations()]
+    else:
+        return make_error_response("Invalid index", 404)
+    
+    response['xAxisValues'] = all_nations
+    
+    for element in elements:
+        name = element["name"]
+        color = element["color"]
+        category = element["currentCategory"] # da sistemare
+        tdoc_filter = element["tdocFilter"]
+        data = db.count_tdocs(index, tdoc_filter)
+        data = {x[index]: x["cnt"] for x in data}
+        data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1], reverse=True)}
+
+        response['elements'].append({
+            'name': name,
+            'color': color,
+            'data': [data.get(x, 0) for x in all_nations]
+        })
+    return response
+    
         
 
 @app.route("/api/starPost", methods=["POST"])
