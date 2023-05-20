@@ -1,0 +1,14 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    name: deploy to staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST to endpoint
+      - run: |
+          curl -X POST $ENDPOINT_URL \
+           -H "Content-Type: application/json" \
+           -d '$POST_DATA'
