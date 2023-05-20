@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: POST to endpoint
-      - run: |
+        run: |
           curl -X POST $ENDPOINT_URL \
            -H "Content-Type: application/json" \
            -d '$POST_DATA'
