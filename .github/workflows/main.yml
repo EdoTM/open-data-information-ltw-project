@@ -9,9 +9,7 @@ jobs:
     steps:
       - name: POST to endpoint
         run: |
-          echo url
-          echo $ENDPOINT_URL
-          echo ${GITHUB_ENDPOINT_URL}
-          curl -X POST $ENDPOINT_URL \
+          echo ${{ vars.ENDPOINT_URL }}
+          curl -X POST ${{ vars.ENDPOINT_URL }} \
            -H "Content-Type: application/json" \
-           -d '$POST_DATA'
+           -d '${{ vars.POST_DATA }}'
