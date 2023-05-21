@@ -3,13 +3,28 @@ import Post, { PostData } from "../components/Post.vue";
 import axiosInstance from "../utils/axiosInstance";
 import { inject, onBeforeMount, Ref, ref, watch } from "vue";
 
-const posts = ref([] as PostData[]);
-
 const isLogged = inject<Ref<boolean>>("is-logged")!;
+
+const allPosts = ref([] as PostData[]);
+const shownPosts = ref([] as PostData[]);
+console.log(shownPosts.value);
+const searchQuery = ref<string>();
+
+enum SortBy {
+  Newest = "Most recent",
+  Oldest = "Least recent",
+  MostVoted = "Most voted",
+  LeastVoted = "Least voted",
+}
+
+const timer = ref<NodeJS.Timeout | null>(null);
+const sortBy = ref<SortBy>(SortBy.Newest);
+const showVoteAlert = ref(false);
 
 function getPosts() {
   axiosInstance.get("/getPosts").then((response) => {
-    posts.value = response.data;
+    allPosts.value = response.data;
+    shownPosts.value = allPosts.value;
   });
 }
 
@@ -46,15 +61,6 @@ function starPost(post: PostData, starred: boolean) {
 
 onBeforeMount(getPosts);
 
-enum SortBy {
-  Newest = "Most recent",
-  Oldest = "Least recent",
-  MostVoted = "Most voted",
-  LeastVoted = "Least voted",
-}
-
-const timer = ref<NodeJS.Timeout | null>(null);
-
 function showVoteLoginAlert() {
   if (timer.value !== null) {
     clearTimeout(timer.value!);
@@ -65,22 +71,36 @@ function showVoteLoginAlert() {
   }, 4000);
 }
 
-const sortBy = ref<SortBy>(SortBy.Newest);
-
 watch(sortBy, () => {
-  const sort = sortBy.value;
-  if (sort === SortBy.Newest) {
-    posts.value.sort((a, b) => b.id - a.id);
-  } else if (sort === SortBy.Oldest) {
-    posts.value.sort((a, b) => a.id - b.id);
-  } else if (sort === SortBy.MostVoted) {
-    posts.value.sort((a, b) => b.score - a.score);
-  } else if (sort === SortBy.LeastVoted) {
-    posts.value.sort((a, b) => a.score - b.score);
-  }
+  sortPosts(sortBy.value);
 });
 
-const showVoteAlert = ref(false);
+function sortPosts(sort: SortBy) {
+  if (sort === SortBy.Newest) {
+    shownPosts.value.sort((a, b) => b.id - a.id);
+  } else if (sort === SortBy.Oldest) {
+    shownPosts.value.sort((a, b) => a.id - b.id);
+  } else if (sort === SortBy.MostVoted) {
+    shownPosts.value.sort((a, b) => b.score - a.score);
+  } else if (sort === SortBy.LeastVoted) {
+    shownPosts.value.sort((a, b) => a.score - b.score);
+  }
+}
+
+function handleQueryChange(newQuery: string) {
+  searchQuery.value = newQuery;
+  if (newQuery === "") {
+    shownPosts.value = allPosts.value;
+    return;
+  }
+  shownPosts.value = allPosts.value.filter(
+    (post) =>
+      post.title.toLowerCase().includes(newQuery.toLowerCase()) ||
+      post.content.toLowerCase().includes(newQuery.toLowerCase())
+  );
+
+  sortPosts(sortBy.value);
+}
 </script>
 
 <template>
@@ -105,41 +125,56 @@ const showVoteAlert = ref(false);
       Here users share their findings. Lorem ipsum dolor sit amet, consectetur
       adipiscing elit.
     </div>
-    <div class="dropdown">
-      <button
-        aria-expanded="false"
-        class="btn btn-outline-secondary dropdown-toggle"
-        data-bs-toggle="dropdown"
-        type="button"
-      >
-        <i class="bi-sort-down" /> Sort by: {{ sortBy }}
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <a class="dropdown-item" href="#" @click="sortBy = SortBy.Newest"
-            >Most recent</a
-          >
-        </li>
-        <li>
-          <a class="dropdown-item" href="#" @click="sortBy = SortBy.Oldest"
-            >Least recent</a
-          >
-        </li>
-        <li>
-          <a class="dropdown-item" href="#" @click="sortBy = SortBy.MostVoted"
-            >Most voted</a
-          >
-        </li>
-        <li>
-          <a class="dropdown-item" href="#" @click="sortBy = SortBy.LeastVoted"
-            >Least voted</a
-          >
-        </li>
-      </ul>
+    <div class="d-flex">
+      <div class="dropdown">
+        <button
+          aria-expanded="false"
+          class="btn btn-outline-secondary dropdown-toggle"
+          data-bs-toggle="dropdown"
+          type="button"
+        >
+          <i class="bi-sort-down" /> Sort by: {{ sortBy }}
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Newest"
+              >Most recent</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Oldest"
+              >Least recent</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.MostVoted"
+              >Most voted</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              href="#"
+              @click="sortBy = SortBy.LeastVoted"
+              >Least voted</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="input-group mb-3 ms-5">
+        <span class="input-group-text"><i class="bi-search" /></span>
+        <input
+          :value="searchQuery"
+          class="form-control"
+          placeholder="Search..."
+          type="text"
+          @input="handleQueryChange($event.target.value)"
+        />
+      </div>
     </div>
     <transition-group appear name="posts">
       <div
-        v-for="(post, i) in posts"
+        v-for="(post, i) in shownPosts"
         :key="post.id"
         :style="{ transitionDelay: `${(i + 1) * 0.1}s` }"
       >
