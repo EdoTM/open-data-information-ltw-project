@@ -166,7 +166,7 @@ function handleQueryChange(newQuery: string) {
         <input
           :value="searchQuery"
           class="form-control"
-          placeholder="Search..."
+          placeholder="Search the posts..."
           type="text"
           @input="handleQueryChange($event.target.value)"
         />
