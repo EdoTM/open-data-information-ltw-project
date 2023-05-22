@@ -13,12 +13,13 @@ export interface PostData {
   userVote: UserVote;
   starred: boolean;
   timestamp: string;
+  hidden: boolean;
 }
 
 const isMobile = bs5Breakpoints.smaller("md");
 
 const post = defineProps<PostData>();
-const emit = defineEmits(["upvote", "downvote", "unvote", "star"]);
+const emit = defineEmits(["upvote", "downvote", "unvote", "star", "hide"]);
 
 const imageZoomModalId = `post-${post.id}-zoomModal`;
 
@@ -77,7 +78,18 @@ const displayTimestamp = computed(() => {
       </a>
     </div>
     <div class="card-body">
-      <h2>{{ post.title }}</h2>
+      <div class="d-flex">  
+        <h2>{{ post.title }}</h2>
+        <a
+          class="ms-auto hide-button" 
+          @click="hidden ? emit('hide', false) : emit('hide', true)"
+        >
+          <i 
+          :class="hidden ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
+          class="bi hide-icon"
+          ></i>
+        </a>
+      </div>
 
       <img
         alt="post-img"
@@ -165,6 +177,21 @@ img {
 .star-icon {
   font-size: 30px;
   color: inherit;
+}
+
+.hide-icon {
+  font-size: 20px;
+  color: inherit;
+}
+
+.hide-button {
+  color: inherit;
+  cursor: pointer;
+}
+
+.hide-button:hover {
+  color: var(--bs-danger);
+  transition-duration: 200ms;
 }
 
 .star-button {

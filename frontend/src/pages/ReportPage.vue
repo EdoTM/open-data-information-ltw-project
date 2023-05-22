@@ -62,6 +62,20 @@ function starPost(post: PostData, starred: boolean) {
     });
 }
 
+function hidePost(post: PostData, hidden: boolean) {
+  if (!isLogged.value) {
+    return;
+  }
+  return axiosInstance
+    .post("/hidePost", {
+      postID: post.id,
+      hidden,
+    })
+    .then(() => {
+      post.hidden = hidden;
+    });
+}
+
 onBeforeMount(getPosts);
 
 function showVoteLoginAlert() {
@@ -168,7 +182,7 @@ function handleQueryChange(newQuery: string) {
     <transition-group appear name="posts">
       <div v-for="(post, i) in shownPosts" :key="post.id" :style="{ transitionDelay: `${(i + 1) * 0.1}s` }">
         <Post v-bind="post" @downvote="votePost(post, -1)" @unvote="votePost(post, 0)" @upvote="votePost(post, 1)"
-          @star="starPost(post, $event)" />
+          @star="starPost(post, $event)" @hide="hidePost(post, $event)" />
       </div>
     </transition-group>
   </div>
