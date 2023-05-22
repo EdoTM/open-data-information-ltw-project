@@ -18,8 +18,10 @@ enum SortBy {
 }
 
 const timer = ref<NodeJS.Timeout | null>(null);
+const starTimer = ref<NodeJS.Timeout | null>(null);
 const sortBy = ref<SortBy>(SortBy.Newest);
 const showVoteAlert = ref(false);
+const showStarAlert = ref(false);
 
 function getPosts() {
   axiosInstance.get("/getPosts").then((response) => {
@@ -47,6 +49,7 @@ function votePost(post: PostData, vote: UserVote) {
 
 function starPost(post: PostData, starred: boolean) {
   if (!isLogged.value) {
+    showStarLoginAlert();
     return;
   }
   return axiosInstance
@@ -68,7 +71,17 @@ function showVoteLoginAlert() {
   showVoteAlert.value = true;
   timer.value = setTimeout(() => {
     showVoteAlert.value = false;
-  }, 1500);
+  }, 1000);
+}
+
+function showStarLoginAlert() {
+  if (starTimer.value !== null) {
+    clearTimeout(starTimer.value!);
+  }
+  showStarAlert.value = true;
+  starTimer.value = setTimeout(() => {
+    showStarAlert.value = false;
+  }, 1000);
 }
 
 watch(sortBy, () => {
@@ -110,6 +123,13 @@ function handleQueryChange(newQuery: string) {
         style="width: max-content; left: var(--x); top: var(--y)">
         <i class="bi-exclamation-triangle-fill me-2"></i>
         You must be logged in to vote.
+      </div>
+    </transition>
+    <transition name="login-star-alert">
+      <div v-if="showStarAlert" class="alert alert-danger position-fixed z-3 mt-3 ms-3" role="alert"
+        style="width: max-content; left: var(--x); top: var(--y)">
+        <i class="bi-exclamation-triangle-fill me-2"></i>
+        You must be logged in to star a post.
       </div>
     </transition>
     <h1 class="mb-4">User reports</h1>
