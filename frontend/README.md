@@ -63,6 +63,7 @@ GET /getPosts
     "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
     "userVote": 1,
     "starred": true,
+    "hidden": false,
     "timestamp": "2020-12-12 12:12:12"
   },
   {

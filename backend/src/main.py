@@ -94,7 +94,8 @@ def get_posts(user):
             "postImage": post["img"],
             "userVote": post["userVote"],
             "starred": bool(post["starred"]),
-            "timestamp": post["timestamp"]
+            "timestamp": post["timestamp"],
+            "hidden": bool(post["hidden"])
         })
     return ret
 
