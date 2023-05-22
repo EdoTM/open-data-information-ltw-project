@@ -8,19 +8,22 @@ r = s.post(url + "/api/login", json = {"email": "fiocchi.1934851@studenti.unirom
 
 
 
-body = {
-    "elements": [
-        {
-            "name": "3GPP",
-            "color": "#ff0000",
-            "currentCategory": "3GPP",
-            "tdocFilter": "all",
-        }
-    ],
-    "index": "nation"
+# body = {
+#     "elements": [
+#         {
+#             "name": "3GPP",
+#             "color": "#ff0000",
+#             "currentCategory": "3GPP",
+#             "tdocFilter": "all",
+#         }
+#     ],
+#     "index": "nation"
                
-}
+# }
 
-r = s.post(url + "/api/plot/tdocs", json = body)
+# r = s.post(url + "/api/plot/tdocs", json = body)
+
+# /api/votePost
+r = s.post(url + "/api/hidePost", json = {"postID": 1, "hidden": 1})
 
 print(r.text)

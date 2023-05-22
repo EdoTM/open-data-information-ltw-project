@@ -3,6 +3,22 @@ from database import *
 from flask_setup import app
 from utils.utils import *
 from hashlib import md5
+from functools import wraps
+
+
+def get_user_decorator(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        session_id = request.cookies.get("sessionID")
+        try:
+            user = get_user_from_session_id(session_id)
+        except (UserNotFound, WrongSignature):
+            return func(None, *args, **kwargs)
+        
+        return func(user, *args, **kwargs)
+    
+    return wrapper
+
 
 
 @app.route("/api/login", methods=["POST"])
@@ -58,12 +74,11 @@ def get_user_info():
 
 
 @app.route("/api/getPosts", methods=["GET"])
-def get_posts():
-    try:
-        user = get_user_from_session_id(request.cookies.get("sessionID"))
+@get_user_decorator
+def get_posts(user):
+    email = ""
+    if user is not None:
         email = user["email"]
-    except (UserNotFound, WrongSignature):
-        email = ""
 
     posts = db.get_posts_for_user(email)
     ret = []
@@ -85,12 +100,10 @@ def get_posts():
 
 
 @app.route("/api/createPost", methods=["POST"])
-def create_post():
+@get_user_decorator
+def create_post(user):
     data = request.json
-    session_id = request.cookies.get("sessionID")
-    try:
-        user = get_user_from_session_id(session_id)
-    except (UserNotFound, WrongSignature):
+    if user is None:
         return make_error_response("User not found", 404)
     title = data["title"]
     content = data["content"]
@@ -101,12 +114,10 @@ def create_post():
 
 
 @app.route("/api/votePost", methods=["POST"])
-def vote_post():
+@get_user_decorator
+def vote_post(user):
     data = request.json
-    session_id = request.cookies.get("sessionID")
-    try:
-        user = get_user_from_session_id(session_id)
-    except (UserNotFound, WrongSignature):
+    if user is None:
         return make_error_response("User not found", 404)
     post_id = data["postID"]
     vote = data["vote"]
@@ -191,17 +202,26 @@ def plot_tdocs():
         
 
 @app.route("/api/starPost", methods=["POST"])
-def star_post():
+@get_user_decorator
+def star_post(user):
     data = request.json
-    session_id = request.cookies.get("sessionID")
-    try:
-        user = get_user_from_session_id(session_id)
-    except (UserNotFound, WrongSignature):
+    if user is None:
         return make_error_response("User not found", 404)
     post_id = data["postID"]
     starred = data["starred"]
     db.star_post(user["email"], post_id, starred)
     return make_response("Post starred", 200)
+
+@app.route("/api/hidePost", methods=["POST"])
+@get_user_decorator
+def hide_post(user):
+    data = request.json
+    if user is None:
+        return make_error_response("User not found", 404)
+    post_id = data["postID"]
+    hidden = data["hidden"]
+    db.hide_post(user["email"], post_id, hidden)
+    return make_response("Post hidden", 200)
 
 
 def start_app():

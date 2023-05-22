@@ -184,6 +184,17 @@ class Database:
             cursor = conn.cursor()
             cursor.execute(query, (email, post, int(starred), int(starred)))
             cursor.close()
+
+    def hide_post(self, email, post, hidden):
+        query = """
+            INSERT INTO hidden (email, post, hidden)
+            VALUES (?, ?, ?)
+            ON CONFLICT(email, post) DO UPDATE SET hidden = ?
+        """
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, post, int(hidden), int(hidden)))
+            cursor.close()
         
     
     
