@@ -108,6 +108,19 @@ POST /starPost
 }
 ```
 
+Hide a post
+  
+  ```http request
+  POST /hidePost
+  ```
+  
+  ```json
+  {
+    "postID": 213,
+    "hidden": true
+  }
+  ```
+
 # Plot Data
 
 ## Meetings
