@@ -71,6 +71,7 @@ class Database:
             left join votes v2 on p.id = v2.post and v2.email = ?
             left join favorites f on p.id = f.post and f.email = ?
             left join hidden h on p.id = h.post and h.email = ?
+            where h.hidden = 0
             group by p.id
             order by p.timestamp desc
         """
