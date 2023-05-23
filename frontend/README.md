@@ -48,23 +48,58 @@ Response: same of Login request (sets cookie `sessionID`).
 # Posts
 
 Get posts 
+
+  ```http request
+  GET /getPosts
+  ```
+
+  ```json5
+  [
+    {
+      "id": 213,
+      "title": "title",
+      "content": "content",
+      "score": 0,
+      "authorUsername": "username",
+      "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
+      "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
+      "userVote": 1,
+      "starred": true,
+      "hidden": false,
+      "timestamp": "2020-12-12 12:12:12"
+    },
+    {
+      // ...
+    }
+  ]
+  ```
+
+Create a post
+
+  ```http request
+  POST /createPost
+  ```
+
+  ```json
+  {
+    "title": "title",
+    "content": "content",
+    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
+  }
+  ```
+
+Get comments for a post
+
 ```http request
-GET /getPosts
+GET /getComments/:postID
 ```
+
 ```json5
 [
   {
-    "id": 213,
-    "title": "title",
-    "content": "content",
-    "score": 0,
-    "authorUsername": "username",
-    "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
-    "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
-    "userVote": 1,
-    "starred": true,
-    "hidden": false,
-    "timestamp": "2020-12-12 12:12:12"
+    "content": "CHE BELLO commento TOP",
+    "timestamp": "2001-09-11 08:46:00",
+    "username": "edoardo-fiocchi"
   },
   {
     // ...
@@ -72,42 +107,32 @@ GET /getPosts
 ]
 ```
 
-Create a post
-```http request
-POST /createPost
-```
-```json
-{
-  "title": "title",
-  "content": "content",
-  "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA..."
-}
-```
 
 Vote a post
-```http request
-POST /votePost
-```
 
-```json
-{
-  "postID": 213,
-  "vote": 1
-}
-```
+  ```http request
+  POST /votePost
+  ```
+
+  ```json
+  {
+    "postID": 213,
+    "vote": 1
+  }
+  ```
 
 Star a post
 
-```http request
-POST /starPost
-```
+  ```http request
+  POST /starPost
+  ```
 
-```json
-{
-  "postID": 213,
-  "starred": true
-}
-```
+  ```json
+  {
+    "postID": 213,
+    "starred": true
+  }
+  ```
 
 Hide a post
   
@@ -119,6 +144,19 @@ Hide a post
   {
     "postID": 213,
     "hidden": true
+  }
+  ```
+
+Comment a post
+
+  ```http request
+  POST /newComment
+  ```
+
+  ```json
+  {
+    "postID": 213,
+    "content": "CHE BELLO commento TOP"
   }
   ```
 

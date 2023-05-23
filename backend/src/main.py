@@ -224,6 +224,28 @@ def hide_post(user):
     db.hide_post(user["email"], post_id, hidden)
     return make_response("Post hidden", 200)
 
+@app.route("/api/newComment", methods=["POST"])
+@get_user_decorator
+def comment(user):
+    data = request.json
+    if user is None:
+        return make_error_response("User not found", 404)
+    post_id = data["postID"]
+    content = data["content"]
+    db.comment(user["email"], post_id, content)
+    return make_response("Comment created", 200)
+
+
+@app.route("/api/getComments/<int:post_id>", methods=["GET"])
+@get_user_decorator
+def get_comments(user, post_id):
+    if user is None:
+        return make_error_response("User not found", 404)
+    comments = db.get_comments_for_post(post_id)
+    return comments, 200
+
+
+
 
 def start_app():
     global app

@@ -196,6 +196,28 @@ class Database:
             cursor = conn.cursor()
             cursor.execute(query, (email, post, int(hidden), int(hidden)))
             cursor.close()
+
+    def comment(self, email, post, content):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        query = "INSERT INTO comments (email, post, content, timestamp) VALUES (?, ?, ?, ?)"
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, post, content, timestamp))
+            cursor.close()
+
+    def get_comments_for_post(self, post_id):
+        query = """
+            select u.username, c.content, c.timestamp
+            from comments c join users u on c.email = u.email
+            where c.post = ?
+            order by c.timestamp asc
+        """
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (post_id,))
+            comments = cursor.fetchall()
+            cursor.close()
+        return comments
         
     
     

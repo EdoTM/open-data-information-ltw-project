@@ -24,6 +24,10 @@ r = s.post(url + "/api/login", json = {"email": "fiocchi.1934851@studenti.unirom
 # r = s.post(url + "/api/plot/tdocs", json = body)
 
 # /api/votePost
-r = s.post(url + "/api/hidePost", json = {"postID": 1, "hidden": 1})
+# r = s.post(url + "/api/hidePost", json = {"postID": 1, "hidden": 1})
+
+# /api/getComments
+r = s.post(url + "/api/newComment", json = {"postID": 39, "content": "test comment"})
+r = s.get(url + "/api/getComments/39")
 
 print(r.text)
