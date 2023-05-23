@@ -68,7 +68,7 @@ const dotsMenuOptions = ref([
 
 <template>
   <div
-    class="card post my-4 py-2 container d-grid"
+    class="card my-4 py-2 container d-grid"
     style="grid-template-columns: 1fr 20fr"
   >
     <div

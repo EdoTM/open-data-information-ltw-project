@@ -98,7 +98,7 @@ Create a post
 Get comments for a post
 
 ```http request
-GET /getComments/:postID
+GET /getComments/<postID>
 ```
 
 ```json5
