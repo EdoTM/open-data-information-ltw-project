@@ -7,6 +7,7 @@ const isLogged = inject<Ref<boolean>>("is-logged")!;
 
 defineProps<{
   posts: PostData[];
+  noCommentsModal?: boolean;
 }>();
 
 const emits = defineEmits(["hide-post"]);
@@ -121,6 +122,7 @@ function showStarLoginAlert() {
           @star="starPost(post, $event)"
           @unvote="votePost(post, 0)"
           @upvote="votePost(post, 1)"
+          :no-comments-modal="noCommentsModal"
         />
       </div>
     </transition-group>

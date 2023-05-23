@@ -1,27 +1,23 @@
 <script lang="ts" setup>
 import { PostData } from "../../components/Post.vue";
 import PostList from "../../components/PostList.vue";
-import { ref } from "vue";
 import axiosInstance from "../../utils/axiosInstance";
 import Comment, { CommentData } from "../../components/Comment.vue";
 
 defineProps<{
   post: PostData;
+  comments: CommentData[];
 }>();
 
-const comments = ref<CommentData[]>([]);
+const emits = defineEmits(["like", "unlike"]);
 
 function updateLike(commentId: number, liked: boolean) {
   const endpoint = liked ? "like" : "unlike";
   axiosInstance
     .get(`/${endpoint}/${commentId}`)
     .then((res) => {
-      console.log(res);
-      const comment = comments.value.find((c) => c.id === commentId);
-      if (comment) {
-        comment.liked = liked;
-        comment.likes += liked ? 1 : -1;
-      }
+      console.log(res.data);
+      emits(liked ? "like" : "unlike", commentId);
     })
     .catch((err) => {
       console.log(err);
@@ -30,8 +26,7 @@ function updateLike(commentId: number, liked: boolean) {
 </script>
 
 <template>
-  <h1>Hello</h1>
-  <PostList v-if="post" :posts="[post]" />
+  <PostList v-if="post" :no-comments-modal="true" :posts="[post]" />
   <div class="container w-75">
     <div class="card ps-0">
       <ul class="list-group list-group-flush">

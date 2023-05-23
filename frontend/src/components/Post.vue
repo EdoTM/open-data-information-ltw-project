@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { bs5Breakpoints } from "../utils/appUtils";
 import { computed, ref } from "vue";
+import "../styles/Post.css";
+import CommentsPage from "../pages/posts/CommentsPage.vue";
+import axiosInstance from "../utils/axiosInstance";
+import { CommentData } from "./Comment.vue";
 
 export interface PostData {
   id: number;
@@ -17,12 +21,20 @@ export interface PostData {
   commentCount: number;
 }
 
-const isMobile = bs5Breakpoints.smaller("md");
-
-const post = defineProps<PostData>();
+const post = defineProps<
+  PostData & {
+    noCommentsModal?: boolean;
+  }
+>();
 const emit = defineEmits(["upvote", "downvote", "unvote", "star", "hide"]);
 
+const comments = ref<CommentData[]>([]);
+
+const isMobile = bs5Breakpoints.smaller("md");
+const showCoverImage = bs5Breakpoints.smaller("md");
+
 const imageZoomModalId = `post-${post.id}-zoomModal`;
+const commentsModalId = `post-${post.id}-commentsModal`;
 
 const displayTimestamp = computed(() => {
   const date = new Date(post.timestamp + "Z");
@@ -65,6 +77,29 @@ const dotsMenuOptions = ref([
     action: () => console.log("Share"),
   },
 ]);
+
+function getComments() {
+  if (post.noCommentsModal) {
+    return;
+  }
+  axiosInstance.get(`/getComments/${post.id}`).then(
+    (res) => {
+      comments.value = res.data;
+      console.log("Comments", comments.value);
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+}
+
+function updateLike(commentId: number, liked: boolean) {
+  const comment = comments.value.find((c) => c.id === commentId);
+  if (comment) {
+    comment.liked = liked;
+    comment.likes += liked ? 1 : -1;
+  }
+}
 </script>
 
 <template>
@@ -80,7 +115,7 @@ const dotsMenuOptions = ref([
       >
         <i class="bi-caret-up-fill vote-icon"></i>
       </a>
-      <span class="vote-number">{{ post.score }}</span>
+      <span class="vote-number my-2">{{ post.score }}</span>
       <a
         class="vote-button"
         :class="userVote === -1 && 'vote-selected'"
@@ -89,6 +124,7 @@ const dotsMenuOptions = ref([
         <i class="bi-caret-down-fill vote-icon"></i>
       </a>
       <a
+        class="my-2"
         :class="starred ? 'star-icon-selected' : 'star-button'"
         @click="starred ? emit('star', false) : emit('star', true)"
       >
@@ -97,8 +133,13 @@ const dotsMenuOptions = ref([
           class="bi star-icon"
         ></i>
       </a>
-      <div class="d-flex flex-column mx-auto">
-        <a><i class="bi-chat comments-icon" /></a>
+      <div class="d-flex flex-column mx-auto my-2">
+        <a
+          :data-bs-target="'#' + commentsModalId"
+          data-bs-toggle="modal"
+          @click="getComments()"
+          ><i class="bi-chat comments-icon"
+        /></a>
         <span v-if="commentCount > 0" class="text-center comments-text">
           {{ commentCount }}
         </span>
@@ -128,7 +169,11 @@ const dotsMenuOptions = ref([
       <img
         alt="post-img"
         :src="post.postImage"
-        :class="'post-img border ' + (!isMobile && 'float-end')"
+        :class="[
+          showCoverImage ? 'post-img-cover' : 'post-img',
+          'border',
+          !isMobile && 'float-end',
+        ]"
         type="button"
         data-bs-toggle="modal"
         :data-bs-target="'#' + imageZoomModalId"
@@ -166,101 +211,25 @@ const dotsMenuOptions = ref([
       </div>
     </div>
   </div>
+
+  <div
+    v-if="!noCommentsModal"
+    :id="commentsModalId"
+    aria-hidden="true"
+    class="modal fade"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-body">
+          <CommentsPage
+            :comments="comments"
+            :post="post"
+            @like="updateLike($event, true)"
+            @unlike="updateLike($event, false)"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-
-<style scoped lang="scss">
-@import "bootstrap/scss/bootstrap";
-
-
-.post {
-  width: 100%;
-}
-
-img {
-  border-radius: 10px;
-}
-
-.post-img {
-  margin-left: 15px;
-  margin-top: 10px;
-  width: 50%;
-}
-
-@include media-breakpoint-down(md) {
-  .post-img {
-    width: 100%;
-    margin-left: 0;
-    margin-bottom: 10px;
-  }
-}
-
-.username-profile-picture {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.username-handle {
-  font-weight: bold;
-}
-
-.vote-icon {
-  font-size: 40px;
-  line-height: 1;
-}
-
-.star-icon {
-  font-size: 1.7rem;
-  color: inherit;
-}
-
-.dots-icon {
-  font-size: 20px;
-  color: inherit;
-}
-
-.dots-button {
-  color: inherit;
-  cursor: pointer;
-}
-
-.star-button {
-  color: inherit;
-  cursor: pointer;
-}
-
-.star-icon-selected,
-.star-button:hover {
-  color: var(--bs-warning);
-}
-
-.vote-number {
-  font-size: 25px;
-}
-
-.vote-button {
-  color: inherit;
-  cursor: pointer;
-}
-
-.vote-button:hover {
-  color: var(--bs-link-color);
-  transition-duration: 200ms;
-  cursor: pointer;
-}
-
-.vote-selected {
-  color: var(--bs-link-color) !important;
-  cursor: pointer;
-}
-
-.comments-icon {
-  font-size: 1.7rem;
-  line-height: 1;
-}
-
-.comments-text {
-  font-size: small;
-}
-</style>

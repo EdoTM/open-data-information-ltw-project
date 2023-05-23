@@ -1,0 +1,94 @@
+:root {
+    --star-icon-size: 2rem;
+    --comment-icon-size: 1.7rem;
+}
+
+.post {
+    width: 100%;
+}
+
+img {
+    border-radius: 10px;
+}
+
+.post-img {
+    margin-left: 15px;
+    margin-top: 10px;
+    width: 50%;
+}
+
+.post-img-cover {
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.username-profile-picture {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.username-handle {
+    font-weight: bold;
+}
+
+.vote-icon {
+    font-size: 40px;
+    line-height: 1;
+}
+
+.star-icon {
+    font-size: var(--star-icon-size);
+    color: inherit;
+}
+
+.dots-icon {
+    font-size: 20px;
+    color: inherit;
+}
+
+.dots-button {
+    color: inherit;
+    cursor: pointer;
+}
+
+.star-button {
+    color: inherit;
+    cursor: pointer;
+}
+
+.star-icon-selected,
+.star-button:hover {
+    color: var(--bs-warning);
+}
+
+.vote-number {
+    font-size: 25px;
+}
+
+.vote-button {
+    color: inherit;
+    cursor: pointer;
+}
+
+.vote-button:hover {
+    color: var(--bs-link-color);
+    transition-duration: 200ms;
+    cursor: pointer;
+}
+
+.vote-selected {
+    color: var(--bs-link-color) !important;
+    cursor: pointer;
+}
+
+.comments-icon {
+    font-size: var(--comment-icon-size);
+    color: inherit;
+    line-height: 1;
+}
+
+.comments-text {
+}
