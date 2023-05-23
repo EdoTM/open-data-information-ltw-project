@@ -85,7 +85,7 @@ function showVoteLoginAlert() {
   showVoteAlert.value = true;
   timer.value = setTimeout(() => {
     showVoteAlert.value = false;
-  }, 1000);
+  }, 3500);
 }
 
 function showStarLoginAlert() {
@@ -131,17 +131,28 @@ function handleQueryChange(newQuery: string) {
 </script>
 
 <template>
-  <div class="mx-auto mt-4 position-relative" style="max-width: 1000px; width: 90%">
+  <div
+    class="mx-auto mt-4 position-relative"
+    style="max-width: 1000px; width: 90%"
+  >
     <transition name="login-vote-alert">
-      <div v-if="showVoteAlert" class="alert alert-danger position-fixed z-3 mt-3 ms-3" role="alert"
-        style="width: max-content; left: var(--x); top: var(--y)">
+      <div
+        v-if="showVoteAlert"
+        class="alert alert-danger position-fixed z-3 mt-3 ms-3"
+        role="alert"
+        style="width: max-content; left: var(--x); top: var(--y)"
+      >
         <i class="bi-exclamation-triangle-fill me-2"></i>
         You must be logged in to vote.
       </div>
     </transition>
     <transition name="login-star-alert">
-      <div v-if="showStarAlert" class="alert alert-danger position-fixed z-3 mt-3 ms-3" role="alert"
-        style="width: max-content; left: var(--x); top: var(--y)">
+      <div
+        v-if="showStarAlert"
+        class="alert alert-danger position-fixed z-3 mt-3 ms-3"
+        role="alert"
+        style="width: max-content; left: var(--x); top: var(--y)"
+      >
         <i class="bi-exclamation-triangle-fill me-2"></i>
         You must be logged in to star a post.
       </div>
@@ -154,35 +165,65 @@ function handleQueryChange(newQuery: string) {
     </div>
     <div class="d-flex">
       <div class="dropdown">
-        <button aria-expanded="false" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
-          type="button">
+        <button
+          aria-expanded="false"
+          class="btn btn-outline-secondary dropdown-toggle"
+          data-bs-toggle="dropdown"
+          type="button"
+        >
           <i class="bi-sort-down" /> Sort by: {{ sortBy }}
         </button>
         <ul class="dropdown-menu">
           <li>
-            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Newest">Most recent</a>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Newest"
+              >Most recent</a
+            >
           </li>
           <li>
-            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Oldest">Least recent</a>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.Oldest"
+              >Least recent</a
+            >
           </li>
           <li>
-            <a class="dropdown-item" href="#" @click="sortBy = SortBy.MostVoted">Most voted</a>
+            <a class="dropdown-item" href="#" @click="sortBy = SortBy.MostVoted"
+              >Most voted</a
+            >
           </li>
           <li>
-            <a class="dropdown-item" href="#" @click="sortBy = SortBy.LeastVoted">Least voted</a>
+            <a
+              class="dropdown-item"
+              href="#"
+              @click="sortBy = SortBy.LeastVoted"
+              >Least voted</a
+            >
           </li>
         </ul>
       </div>
       <div class="input-group mb-3 ms-5">
         <span class="input-group-text"><i class="bi-search" /></span>
-        <input :value="searchQuery" class="form-control" placeholder="Search the posts..." type="text"
-          @input="handleQueryChange($event.target.value)" />
+        <input
+          :value="searchQuery"
+          class="form-control"
+          placeholder="Search the posts..."
+          type="text"
+          @input="handleQueryChange($event.target.value)"
+        />
       </div>
     </div>
     <transition-group appear name="posts">
-      <div v-for="(post, i) in shownPosts" :key="post.id" :style="{ transitionDelay: `${(i + 1) * 0.1}s` }">
-        <Post v-bind="post" @downvote="votePost(post, -1)" @unvote="votePost(post, 0)" @upvote="votePost(post, 1)"
-          @star="starPost(post, $event)" @hide="hidePost(post, $event)" />
+      <div
+        v-for="(post, i) in shownPosts"
+        :key="post.id"
+        :style="{ transitionDelay: `${(i + 1) * 0.1}s` }"
+      >
+        <Post
+          v-bind="post"
+          @downvote="votePost(post, -1)"
+          @hide="hidePost(post, $event)"
+          @star="starPost(post, $event)"
+          @unvote="votePost(post, 0)"
+          @upvote="votePost(post, 1)"
+        />
       </div>
     </transition-group>
   </div>
