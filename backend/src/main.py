@@ -81,24 +81,7 @@ def get_posts(user):
         email = user["email"]
 
     posts = db.get_posts_for_user(email)
-    ret = []
-    for post in posts:
-        author_user = db.get_user_by_email(post["author_email"])
-        ret.append({
-            "id": post["id"],
-            "title": post["title"],
-            "content": post["content"],
-            "score": post["score"],
-            "authorUsername": author_user["username"],
-            "authorProfilePic": author_user["profile_pic"],
-            "postImage": post["img"],
-            "userVote": post["userVote"],
-            "starred": bool(post["starred"]),
-            "timestamp": post["timestamp"],
-            "hidden": bool(post["hidden"]),
-            "commentCount": post["comment_count"]
-        })
-    return ret
+    return wrap_posts(posts)
 
 @app.route("/api/getFavoritePosts", methods=["GET"])
 @get_user
@@ -108,24 +91,7 @@ def get_favorite_posts(user):
         email = user["email"]
 
     posts = db.get_favorite_posts_for_user(email)
-    ret = []
-    for post in posts:
-        author_user = db.get_user_by_email(post["author_email"])
-        ret.append({
-            "id": post["id"],
-            "title": post["title"],
-            "content": post["content"],
-            "score": post["score"],
-            "authorUsername": author_user["username"],
-            "authorProfilePic": author_user["profile_pic"],
-            "postImage": post["img"],
-            "userVote": post["userVote"],
-            "starred": bool(post["starred"]),
-            "timestamp": post["timestamp"],
-            "hidden": bool(post["hidden"]),
-            "commentCount": post["comment_count"]
-        })
-    return ret
+    return wrap_posts(posts)
 
 @app.route("/api/getHiddenPosts", methods=["GET"])
 @get_user
@@ -135,6 +101,9 @@ def get_hidden_posts(user):
         email = user["email"]
 
     posts = db.get_hidden_posts_for_user(email)
+    return wrap_posts(posts)
+
+def wrap_posts(posts):
     ret = []
     for post in posts:
         author_user = db.get_user_by_email(post["author_email"])
