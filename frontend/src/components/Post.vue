@@ -41,6 +41,29 @@ const displayTimestamp = computed(() => {
     return `${diffSeconds} seconds ago`;
   }
 });
+
+const dotsMenuOptions = [
+  {
+    text: "Hide",
+    icon: "bi-eye-slash-fill",
+    action: () => emit("hide"),
+  },
+  {
+    text: "Report",
+    icon: "bi-flag-fill",
+    action: () => console.log("Report"),
+  },
+  {
+    text: "Copy link",
+    icon: "bi-link-45deg",
+    action: () => console.log("Copy link"),
+  },
+  {
+    text: "Share",
+    icon: "bi-share-fill",
+    action: () => console.log("Share"),
+  },
+];
 </script>
 
 <template>
@@ -78,19 +101,26 @@ const displayTimestamp = computed(() => {
       </a>
     </div>
     <div class="card-body">
-      <div class="d-flex">  
+      <div class="d-flex">
         <h2>{{ post.title }}</h2>
-        <a
-          class="ms-auto hide-button" 
-          @click="hidden ? emit('hide', false) : emit('hide', true)"
-        >
-          <i 
-          :class="hidden ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
-          class="bi hide-icon"
-          ></i>
-        </a>
+        <div class="dropdown ms-auto">
+          <a
+            aria-expanded="false"
+            class="dots-button"
+            data-bs-toggle="dropdown"
+          >
+            <i class="bi-three-dots-vertical dots-icon"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li v-for="option in dotsMenuOptions">
+              <a class="dropdown-item" @click="option.action">
+                <i :class="option.icon" class="me-2"></i>
+                {{ option.text }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
-
       <img
         alt="post-img"
         :src="post.postImage"
@@ -175,23 +205,18 @@ img {
 }
 
 .star-icon {
-  font-size: 30px;
+  font-size: 25px;
   color: inherit;
 }
 
-.hide-icon {
+.dots-icon {
   font-size: 20px;
   color: inherit;
 }
 
-.hide-button {
+.dots-button {
   color: inherit;
   cursor: pointer;
-}
-
-.hide-button:hover {
-  color: var(--bs-danger);
-  transition-duration: 200ms;
 }
 
 .star-button {
