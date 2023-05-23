@@ -95,7 +95,8 @@ def get_posts(user):
             "userVote": post["userVote"],
             "starred": bool(post["starred"]),
             "timestamp": post["timestamp"],
-            "hidden": bool(post["hidden"])
+            "hidden": bool(post["hidden"]),
+            "commentCount": post["comment_count"]
         })
     return ret
 
@@ -121,7 +122,8 @@ def get_favorite_posts(user):
             "userVote": post["userVote"],
             "starred": bool(post["starred"]),
             "timestamp": post["timestamp"],
-            "hidden": bool(post["hidden"])
+            "hidden": bool(post["hidden"]),
+            "commentCount": post["comment_count"]
         })
     return ret
 
@@ -147,7 +149,8 @@ def get_hidden_posts(user):
             "userVote": post["userVote"],
             "starred": bool(post["starred"]),
             "timestamp": post["timestamp"],
-            "hidden": bool(post["hidden"])
+            "hidden": bool(post["hidden"]),
+            "commentCount": post["comment_count"]
         })
     return ret
 
