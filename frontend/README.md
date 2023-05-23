@@ -106,7 +106,9 @@ GET /getComments/:postID
   {
     "content": "CHE BELLO commento TOP",
     "timestamp": "2001-09-11 08:46:00",
-    "username": "edoardo-fiocchi"
+    "authorUsername": "edoardo-fiocchi",
+    "authorProfilePic": "https://www.gravatar.com/avatar/13974a7667745ecd3e3676943ad87d2b?d=retro",
+    "likes": 2,
   },
   {
     // ...
