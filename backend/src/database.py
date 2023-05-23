@@ -251,7 +251,7 @@ class Database:
             ) as liked
             from comments c join users u on c.email = u.email
             where c.post = ?
-            order by c.timestamp asc
+            order by c.timestamp desc
         """
         with self.connect() as conn:
             cursor = conn.cursor()
