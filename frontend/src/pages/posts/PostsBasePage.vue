@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import Post, { PostData } from "../components/Post.vue";
-import axiosInstance from "../utils/axiosInstance";
+import Post, { PostData } from "../../components/Post.vue";
+import axiosInstance from "../../utils/axiosInstance";
 import { inject, onBeforeMount, Ref, ref, watch } from "vue";
 
 const isLogged = inject<Ref<boolean>>("is-logged")!;
+
+const props = defineProps<{
+  apiEndpoint: string;
+  showInfoAlert: boolean;
+}>();
 
 const allPosts = ref([] as PostData[]);
 const shownPosts = ref([] as PostData[]);
@@ -24,7 +29,7 @@ const showVoteAlert = ref(false);
 const showStarAlert = ref(false);
 
 function getPosts() {
-  axiosInstance.get("/getPosts").then((response) => {
+  axiosInstance.get(props.apiEndpoint).then((response) => {
     allPosts.value = response.data;
     shownPosts.value = allPosts.value;
   });
@@ -73,6 +78,8 @@ function hidePost(post: PostData, hidden: boolean) {
     })
     .then(() => {
       post.hidden = hidden;
+      allPosts.value = allPosts.value.filter((p) => p.id !== post.id);
+      shownPosts.value = shownPosts.value.filter((p) => p.id !== post.id);
     });
 }
 
@@ -157,11 +164,12 @@ function handleQueryChange(newQuery: string) {
         You must be logged in to star a post.
       </div>
     </transition>
-    <h1 class="mb-4">User reports</h1>
-    <div class="alert alert-info mb-4" role="doc-abstract">
+    <h1 class="mb-4">
+      <slot name="header" />
+    </h1>
+    <div v-if="showInfoAlert" class="alert alert-info mb-4" role="doc-abstract">
       <i class="bi-info-circle-fill me-2"></i>
-      Here users share their findings. Lorem ipsum dolor sit amet, consectetur
-      adipiscing elit.
+      <slot name="info" />
     </div>
     <div class="d-flex">
       <div class="dropdown">

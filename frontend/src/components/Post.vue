@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { bs5Breakpoints } from "../utils/appUtils";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 export interface PostData {
   id: number;
@@ -42,15 +42,15 @@ const displayTimestamp = computed(() => {
   }
 });
 
-const dotsMenuOptions = [
+const dotsMenuOptions = ref([
   {
-    text: "Hide",
-    icon: "bi-eye-slash-fill",
-    action: () => emit("hide"),
+    text: post.hidden ? "Unhide" : "Hide",
+    icon: post.hidden ? "bi-eye-slash-fill" : "bi-eye-fill",
+    action: () => emit("hide", !post.hidden),
   },
   {
     text: "Report",
-    icon: "bi-flag-fill",
+    icon: "bi-flag-fill text-danger",
     action: () => console.log("Report"),
   },
   {
@@ -63,7 +63,7 @@ const dotsMenuOptions = [
     icon: "bi-share-fill",
     action: () => console.log("Share"),
   },
-];
+]);
 </script>
 
 <template>
@@ -112,7 +112,7 @@ const dotsMenuOptions = [
             <i class="bi-three-dots-vertical dots-icon"></i>
           </a>
           <ul class="dropdown-menu">
-            <li v-for="option in dotsMenuOptions">
+            <li v-for="(option, i) in dotsMenuOptions" :key="i">
               <a class="dropdown-item" @click="option.action">
                 <i :class="option.icon" class="me-2"></i>
                 {{ option.text }}

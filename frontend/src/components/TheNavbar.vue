@@ -82,10 +82,43 @@ function handleLogout() {
           </router-link>
         </div>
         <div v-else class="navbar-nav">
-          <span class="my-auto me-2">
+          <span v-if="isDesktop" class="my-auto">
             <img alt="profilePic" class="profile-pic" :src="profilePic" />
           </span>
-          <span v-if="isDesktop" class="navbar-text me-3">{{ userName }}</span>
+          <div class="nav-item dropdown me-2">
+            <a
+              aria-expanded="false"
+              class="nav-link dropdown-toggle"
+              data-bs-toggle="dropdown"
+              href="#"
+              role="button"
+            >
+              {{ userName }}
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="bi-person-fill me-2" />
+                  Profile
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <a class="dropdown-item" href="/favorites">
+                  <i class="bi-star-fill me-2" />
+                  Favorite posts
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/hidden">
+                  <i class="bi-eye-slash-fill me-2" />
+                  Hidden posts
+                </a>
+              </li>
+            </ul>
+          </div>
           <a
             aria-current="page"
             :class="[
