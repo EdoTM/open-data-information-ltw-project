@@ -240,16 +240,22 @@ class Database:
             cursor.execute(query, (email, post, content, timestamp))
             cursor.close()
 
-    def get_comments_for_post(self, post_id):
+    def get_comments_for_post(self, post_id, email = ''):
         query = """
-            select u.username as authorUsername,u.profile_pic as authorProfilePic , c.content, c.timestamp, c.likes
+            select u.username as authorUsername,u.profile_pic as authorProfilePic , c.id, c.content, c.timestamp, c.likes, (
+                select count(*) > 0
+                FROM likes
+                where c.id = likes.comment_id
+                AND likes.email = ?
+                
+            ) as liked
             from comments c join users u on c.email = u.email
             where c.post = ?
             order by c.timestamp asc
         """
         with self.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (post_id,))
+            cursor.execute(query, (email, post_id,))
             comments = cursor.fetchall()
             cursor.close()
         return comments

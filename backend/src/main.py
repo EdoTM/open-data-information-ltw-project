@@ -263,9 +263,10 @@ def comment(user):
 @app.route("/api/getComments/<int:post_id>", methods=["GET"])
 @get_user
 def get_comments(user, post_id):
-    if user is None:
-        return make_error_response("User not found", 404)
-    comments = db.get_comments_for_post(post_id)
+    email = ''
+    if user is not None:
+        email = user["email"]
+    comments = db.get_comments_for_post(post_id, email)
     return comments, 200
 
 @app.route("/api/like/<int:comment_id>", methods=["GET"])

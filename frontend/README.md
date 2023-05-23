@@ -109,6 +109,8 @@ GET /getComments/:postID
     "authorUsername": "edoardo-fiocchi",
     "authorProfilePic": "https://www.gravatar.com/avatar/13974a7667745ecd3e3676943ad87d2b?d=retro",
     "likes": 2,
+    "id": 1,
+    "liked": true
   },
   {
     // ...
