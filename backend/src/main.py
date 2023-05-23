@@ -6,7 +6,7 @@ from hashlib import md5
 from functools import wraps
 
 
-def get_user_decorator(func):
+def get_user(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         session_id = request.cookies.get("sessionID")
@@ -74,7 +74,7 @@ def get_user_info():
 
 
 @app.route("/api/getPosts", methods=["GET"])
-@get_user_decorator
+@get_user
 def get_posts(user):
     email = ""
     if user is not None:
@@ -100,7 +100,7 @@ def get_posts(user):
     return ret
 
 @app.route("/api/getFavoritePosts", methods=["GET"])
-@get_user_decorator
+@get_user
 def get_favorite_posts(user):
     email = ""
     if user is not None:
@@ -125,9 +125,35 @@ def get_favorite_posts(user):
         })
     return ret
 
+@app.route("/api/getHiddenPosts", methods=["GET"])
+@get_user
+def get_hidden_posts(user):
+    email = ""
+    if user is not None:
+        email = user["email"]
+
+    posts = db.get_hidden_posts_for_user(email)
+    ret = []
+    for post in posts:
+        author_user = db.get_user_by_email(post["author_email"])
+        ret.append({
+            "id": post["id"],
+            "title": post["title"],
+            "content": post["content"],
+            "score": post["score"],
+            "authorUsername": author_user["username"],
+            "authorProfilePic": author_user["profile_pic"],
+            "postImage": post["img"],
+            "userVote": post["userVote"],
+            "starred": bool(post["starred"]),
+            "timestamp": post["timestamp"],
+            "hidden": bool(post["hidden"])
+        })
+    return ret
+
 
 @app.route("/api/createPost", methods=["POST"])
-@get_user_decorator
+@get_user
 def create_post(user):
     data = request.json
     if user is None:
@@ -141,7 +167,7 @@ def create_post(user):
 
 
 @app.route("/api/votePost", methods=["POST"])
-@get_user_decorator
+@get_user
 def vote_post(user):
     data = request.json
     if user is None:
@@ -229,7 +255,7 @@ def plot_tdocs():
         
 
 @app.route("/api/starPost", methods=["POST"])
-@get_user_decorator
+@get_user
 def star_post(user):
     data = request.json
     if user is None:
@@ -240,7 +266,7 @@ def star_post(user):
     return make_response("Post starred", 200)
 
 @app.route("/api/hidePost", methods=["POST"])
-@get_user_decorator
+@get_user
 def hide_post(user):
     data = request.json
     if user is None:
@@ -251,7 +277,7 @@ def hide_post(user):
     return make_response("Post hidden", 200)
 
 @app.route("/api/newComment", methods=["POST"])
-@get_user_decorator
+@get_user
 def comment(user):
     data = request.json
     if user is None:
@@ -263,7 +289,7 @@ def comment(user):
 
 
 @app.route("/api/getComments/<int:post_id>", methods=["GET"])
-@get_user_decorator
+@get_user
 def get_comments(user, post_id):
     if user is None:
         return make_error_response("User not found", 404)

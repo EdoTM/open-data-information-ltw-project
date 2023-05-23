@@ -96,6 +96,23 @@ class Database:
             posts = cursor.fetchall()
             cursor.close()
         return posts
+    
+    def get_hidden_posts_for_user(self, email: str):
+        query = """
+            select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred, coalesce(h.hidden, 0) as hidden
+            from posts p left join votes v on p.id = v.post
+            left join votes v2 on p.id = v2.post and v2.email = ?
+            left join favorites f on p.id = f.post and f.email = ?
+            left join hidden h on p.id = h.post and h.email = ?
+            where h.hidden = 1
+            group by p.id
+            order by p.timestamp desc
+        """
+        with self.connect() as conn:
+            cursor = conn.execute(query, (email,email,email))
+            posts = cursor.fetchall()
+            cursor.close()
+        return posts
 
     def get_posts_without_user(self):
         return self.get_posts_for_user("")
