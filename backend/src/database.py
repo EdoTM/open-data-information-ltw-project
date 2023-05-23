@@ -242,7 +242,7 @@ class Database:
 
     def get_comments_for_post(self, post_id):
         query = """
-            select u.username, c.content, c.timestamp
+            select u.username as authorUsername,u.profile_pic as authorProfilePic , c.content, c.timestamp
             from comments c join users u on c.email = u.email
             where c.post = ?
             order by c.timestamp asc
@@ -253,6 +253,27 @@ class Database:
             comments = cursor.fetchall()
             cursor.close()
         return comments
+    
+    def like_comment(self, email, comment_id):
+        query = """
+            INSERT INTO likes (email, comment_id)
+            VALUES (?, ?)
+            ON CONFLICT(email, comment_id) DO NOTHING"""
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, comment_id))
+            cursor.close()
+
+    def unlike_comment(self, email, comment_id):
+        query = """
+            DELETE FROM likes
+            WHERE email = ? AND comment_id = ?"""
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email, comment_id))
+            cursor.close()
+
+
         
     
     

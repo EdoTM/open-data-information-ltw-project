@@ -114,6 +114,18 @@ GET /getComments/:postID
 ]
 ```
 
+Like a comment
+
+  ```http request
+  GET like/<comment_id>
+  ```
+
+Unlike a comment
+
+  ```http request
+  GET unlike/<comment_id>
+  ```
+
 
 Vote a post
 
