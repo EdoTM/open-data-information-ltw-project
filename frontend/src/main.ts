@@ -7,8 +7,11 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "./pages/HomePage.vue";
 import SignupPage from "./pages/SignupPage.vue";
-import ReportPage from "./pages/ReportPage.vue";
 import PlotPage from "./pages/PlotPage.vue";
+import CommentsPage from "./pages/posts/CommentsPage.vue";
+import FavoritePosts from "./pages/posts/FavoritePosts.vue";
+import ReportPage from "./pages/posts/ReportPage.vue";
+import HiddenPosts from "./pages/posts/HiddenPosts.vue";
 
 let router = createRouter({
   history: createWebHistory(),
@@ -28,6 +31,18 @@ let router = createRouter({
     {
       path: "/plot",
       component: PlotPage,
+    },
+    {
+      path: "/favorites",
+      component: FavoritePosts,
+    },
+    {
+      path: "/hidden",
+      component: HiddenPosts,
+    },
+    {
+      path: "/comment",
+      component: CommentsPage,
     },
   ],
 });
