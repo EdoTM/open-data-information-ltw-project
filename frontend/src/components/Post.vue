@@ -171,7 +171,6 @@ const dotsMenuOptions = ref([
 <style scoped lang="scss">
 @import "bootstrap/scss/bootstrap";
 
-$post-icon-size: 2rem;
 
 .post {
   width: 100%;
@@ -212,7 +211,7 @@ img {
 }
 
 .star-icon {
-  font-size: $post-icon-size;
+  font-size: 1.7rem;
   color: inherit;
 }
 
@@ -257,7 +256,7 @@ img {
 }
 
 .comments-icon {
-  font-size: $post-icon-size;
+  font-size: 1.7rem;
   line-height: 1;
 }
 
