@@ -242,7 +242,7 @@ class Database:
 
     def get_comments_for_post(self, post_id):
         query = """
-            select u.username as authorUsername,u.profile_pic as authorProfilePic , c.content, c.timestamp
+            select u.username as authorUsername,u.profile_pic as authorProfilePic , c.content, c.timestamp, c.likes
             from comments c join users u on c.email = u.email
             where c.post = ?
             order by c.timestamp asc
