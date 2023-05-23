@@ -52,6 +52,12 @@ Get posts
   ```http request
   GET /getPosts
   ```
+    ```http request
+  GET /getFavoritePosts
+  ```
+    ```http request
+  GET /getHiddenPosts
+  ```
 
   ```json5
   [
