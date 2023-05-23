@@ -26,6 +26,9 @@ const post = defineProps<
     noCommentsModal?: boolean;
   }
 >();
+
+const postCommentCount = ref(post.commentCount);
+
 const emit = defineEmits(["upvote", "downvote", "unvote", "star", "hide"]);
 
 const comments = ref<CommentData[]>([]);
@@ -85,6 +88,7 @@ function getComments() {
   axiosInstance.get(`/getComments/${post.id}`).then(
     (res) => {
       comments.value = res.data;
+      postCommentCount.value = res.data.length;
       console.log("Comments", comments.value);
     },
     (err) => {
@@ -133,15 +137,15 @@ function updateLike(commentId: number, liked: boolean) {
           class="bi star-icon"
         ></i>
       </a>
-      <div class="d-flex flex-column mx-auto my-2">
+      <div v-if="!noCommentsModal" class="d-flex flex-column mx-auto my-2">
         <a
           :data-bs-target="'#' + commentsModalId"
           data-bs-toggle="modal"
           @click="getComments()"
           ><i class="bi-chat comments-icon"
         /></a>
-        <span v-if="commentCount > 0" class="text-center comments-text">
-          {{ commentCount }}
+        <span v-if="postCommentCount > 0" class="text-center comments-text">
+          {{ postCommentCount }}
         </span>
       </div>
     </div>
@@ -227,6 +231,7 @@ function updateLike(commentId: number, liked: boolean) {
             :post="post"
             @like="updateLike($event, true)"
             @unlike="updateLike($event, false)"
+            @update-comments="getComments"
           />
         </div>
       </div>

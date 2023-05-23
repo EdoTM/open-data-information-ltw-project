@@ -34,9 +34,7 @@ const emits = defineEmits(["like", "unlike"]);
         <span class="comment-author-username"> @{{ authorUsername }} </span>
       </span>
       <span class="comment-body">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        voluptatum, quibusdam, quia, quae voluptates voluptatem quod
-        voluptatibus quos dolorum quas voluptate.
+        {{ content }}
       </span>
     </div>
   </div>
