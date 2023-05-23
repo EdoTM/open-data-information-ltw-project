@@ -14,6 +14,7 @@ export interface PostData {
   starred: boolean;
   timestamp: string;
   hidden: boolean;
+  commentCount: number;
 }
 
 const isMobile = bs5Breakpoints.smaller("md");
@@ -71,10 +72,7 @@ const dotsMenuOptions = ref([
     class="card my-4 py-2 container d-grid"
     style="grid-template-columns: 1fr 20fr"
   >
-    <div
-      class="my-auto text-center d-grid"
-      style="grid-template-rows: 60px auto"
-    >
+    <div class="my-auto text-center d-flex flex-column">
       <a
         class="vote-button"
         :class="userVote === 1 && 'vote-selected'"
@@ -99,6 +97,12 @@ const dotsMenuOptions = ref([
           class="bi star-icon"
         ></i>
       </a>
+      <div class="d-flex flex-column mx-auto">
+        <a><i class="bi-chat comments-icon" /></a>
+        <span v-if="commentCount > 0" class="text-center comments-text">
+          {{ commentCount }}
+        </span>
+      </div>
     </div>
     <div class="card-body">
       <div class="d-flex">
@@ -167,6 +171,8 @@ const dotsMenuOptions = ref([
 <style scoped lang="scss">
 @import "bootstrap/scss/bootstrap";
 
+$post-icon-size: 2rem;
+
 .post {
   width: 100%;
 }
@@ -202,10 +208,11 @@ img {
 
 .vote-icon {
   font-size: 40px;
+  line-height: 1;
 }
 
 .star-icon {
-  font-size: 25px;
+  font-size: $post-icon-size;
   color: inherit;
 }
 
@@ -233,6 +240,11 @@ img {
   font-size: 25px;
 }
 
+.vote-button {
+  color: inherit;
+  cursor: pointer;
+}
+
 .vote-button:hover {
   color: var(--bs-link-color);
   transition-duration: 200ms;
@@ -244,8 +256,12 @@ img {
   cursor: pointer;
 }
 
-.vote-button {
-  color: inherit;
-  cursor: pointer;
+.comments-icon {
+  font-size: $post-icon-size;
+  line-height: 1;
+}
+
+.comments-text {
+  font-size: small;
 }
 </style>
