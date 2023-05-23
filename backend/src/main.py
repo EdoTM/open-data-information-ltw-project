@@ -99,6 +99,32 @@ def get_posts(user):
         })
     return ret
 
+@app.route("/api/getFavoritePosts", methods=["GET"])
+@get_user_decorator
+def get_favorite_posts(user):
+    email = ""
+    if user is not None:
+        email = user["email"]
+
+    posts = db.get_favorite_posts_for_user(email)
+    ret = []
+    for post in posts:
+        author_user = db.get_user_by_email(post["author_email"])
+        ret.append({
+            "id": post["id"],
+            "title": post["title"],
+            "content": post["content"],
+            "score": post["score"],
+            "authorUsername": author_user["username"],
+            "authorProfilePic": author_user["profile_pic"],
+            "postImage": post["img"],
+            "userVote": post["userVote"],
+            "starred": bool(post["starred"]),
+            "timestamp": post["timestamp"],
+            "hidden": bool(post["hidden"])
+        })
+    return ret
+
 
 @app.route("/api/createPost", methods=["POST"])
 @get_user_decorator
