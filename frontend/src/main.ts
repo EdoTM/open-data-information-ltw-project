@@ -12,6 +12,7 @@ import CommentsPage from "./pages/posts/CommentsPage.vue";
 import FavoritePosts from "./pages/posts/FavoritePosts.vue";
 import ReportPage from "./pages/posts/ReportPage.vue";
 import HiddenPosts from "./pages/posts/HiddenPosts.vue";
+import ProfilePage from "./pages/profile/ProfilePage.vue";
 
 let router = createRouter({
   history: createWebHistory(),
@@ -43,6 +44,10 @@ let router = createRouter({
     {
       path: "/comment",
       component: CommentsPage,
+    },
+    {
+      path: "/profile",
+      component: ProfilePage,
     },
   ],
 });

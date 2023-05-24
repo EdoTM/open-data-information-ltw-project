@@ -97,7 +97,7 @@ function handleLogout() {
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/profile">
                   <i class="bi-person-fill me-2" />
                   Profile
                 </a>
