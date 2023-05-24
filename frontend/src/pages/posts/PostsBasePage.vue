@@ -32,9 +32,9 @@ function getPosts() {
   });
 }
 
-function hidePost(post: PostData) {
-  allPosts.value = allPosts.value.filter((p) => p.id !== post.id);
-  shownPosts.value = shownPosts.value.filter((p) => p.id !== post.id);
+function hidePost(postId: number) {
+  allPosts.value = allPosts.value.filter((p) => p.id !== postId);
+  shownPosts.value = shownPosts.value.filter((p) => p.id !== postId);
 }
 
 onBeforeMount(getPosts);
