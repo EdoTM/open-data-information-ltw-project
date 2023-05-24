@@ -72,6 +72,13 @@ def get_user_info():
         return resp
     return make_login_success_response(user)
 
+@app.route("/api/getUser/<username>", methods=["GET"])
+def get_user_by_username(username):
+    user = db.get_user_by_username(username)
+    if user is None:
+        return make_error_response("User not found", 404)
+    return make_response(user, 200)
+
 @app.route("/api/editUser", methods=["POST"])
 @get_user
 def edit_user(user):

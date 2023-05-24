@@ -64,6 +64,16 @@ class Database:
             raise UserNotFound()
         return user
     
+    def get_user_by_username(self, username: str):
+        query = "SELECT * FROM users WHERE username=?"
+        with self.connect() as conn:
+            cursor = conn.execute(query, (username,))
+            user = cursor.fetchone()
+            cursor.close()
+        if user is None:
+            raise UserNotFound()
+        return user
+    
     def edit_user(self, email, birthday, bio, cv):
         query = "UPDATE users SET birthday=?, bio=?, cv=? WHERE email=?"
         with self.connect() as conn:
