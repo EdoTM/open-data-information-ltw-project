@@ -3,6 +3,7 @@ import { PostData } from "../../components/Post.vue";
 import axiosInstance from "../../utils/axiosInstance";
 import { onBeforeMount, ref, watch } from "vue";
 import PostList from "../../components/PostList.vue";
+import { bs5Breakpoints } from "../../utils/appUtils";
 
 const props = defineProps<{
   apiEndpoint: string;
@@ -12,6 +13,8 @@ const props = defineProps<{
 const allPosts = ref([] as PostData[]);
 const shownPosts = ref([] as PostData[]);
 const searchQuery = ref<string>();
+
+const isMobile = bs5Breakpoints.smaller("md");
 
 enum SortBy {
   Newest = "Most recent",
@@ -80,7 +83,7 @@ function handleQueryChange(newQuery: string) {
       <i class="bi-info-circle-fill me-2"></i>
       <slot name="info" />
     </div>
-    <div class="d-flex">
+    <div :class="isMobile && 'flex-column'" class="d-flex">
       <div class="dropdown">
         <button
           aria-expanded="false"
@@ -116,7 +119,7 @@ function handleQueryChange(newQuery: string) {
           </li>
         </ul>
       </div>
-      <div class="input-group mb-3 ms-5">
+      <div :class="isMobile ? 'mt-2' : 'mb-3 ms-5'" class="input-group">
         <span class="input-group-text"><i class="bi-search" /></span>
         <input
           :value="searchQuery"

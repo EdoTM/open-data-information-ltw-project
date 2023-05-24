@@ -11,7 +11,7 @@ defineProps<{
 
 const isLogged = inject<Ref<boolean>>("is-logged");
 
-const navbarBreakpoint = "sm";
+const navbarBreakpoint = "md";
 const isDesktop = bs5Breakpoints.greater(navbarBreakpoint);
 
 const emits = defineEmits(["log-out", "toggle-theme"]);
@@ -97,7 +97,7 @@ function handleLogout() {
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="/profile">
                   <i class="bi-person-fill me-2" />
                   Profile
                 </a>
