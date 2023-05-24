@@ -40,7 +40,7 @@ class Database:
         query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, '', '')"
         with self.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute(query, (email, username, password_hash, birthday, profile_pic))
+            cursor.execute(query, (email, username, password_hash, profile_pic, birthday))
             cursor.close()
 
     def register_user_and_get_info(self, email, username, password_hash, birthday, profile_pic):
