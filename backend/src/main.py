@@ -52,8 +52,8 @@ def signup():
         return make_error_response("Email already exists", 409)
     except UserAlreadyExists:
         return make_error_response("Username already exists", 409)
-    except Exception:
-        return make_error_response("Unknown error", 500)
+    except Exception as e:
+        return make_error_response(f"Unknown error {str(e)}", 500)
 
 
 @app.route("/api/userInfo", methods=["GET"])

@@ -37,7 +37,7 @@ class Database:
         return conn
 
     def __store_user(self, email, username, password_hash, birthday, profile_pic):
-        query = "INSERT INTO users VALUES (?, ?, ?, ?, ?)"
+        query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, '', '')"
         with self.connect() as conn:
             cursor = conn.cursor()
             cursor.execute(query, (email, username, password_hash, birthday, profile_pic))
