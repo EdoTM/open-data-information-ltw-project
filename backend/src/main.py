@@ -72,7 +72,7 @@ def get_user_info():
         return resp
     return make_login_success_response(user)
 
-@app.route("/api/getUser/<username>", methods=["GET"])
+@app.route("/api/profile/<username>", methods=["GET"])
 def get_user_by_username(username):
     user = db.get_user_by_username(username)
     if user is None:

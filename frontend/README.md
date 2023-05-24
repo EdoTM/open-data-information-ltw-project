@@ -44,6 +44,67 @@ POST /signup
 
 Response: same of Login request (sets cookie `sessionID`).
 
+# User profile
+
+Get user profile
+
+  ```http request
+  GET /profile/<username>
+  ```
+
+  ```json5
+  {
+    "bio": null,
+    "birthday": "2000-01-01",
+    "cv": null,
+    "email": "fiocchi.1934851@studenti.uniroma1.it",
+    "password_md5": "f53db7021b3b60e052ee1b97b3dfbbcf",
+    "profile_pic": "https://www.gravatar.com/avatar/13974a7667745ecd3e3676943ad87d2b?d=retro",
+    "username": "edoardo-fiocchi"
+  }
+  ```
+
+Update user profile
+
+  ```http request
+  POST /editUser
+  ```
+
+  ```json
+  {
+    "bio": "bio",
+    "birthdate": "2001-09-11",
+    "cv": "cv"
+  }
+  ```
+
+Get post published by a user
+
+  ```http request
+  GET getUsersPosts/<username>
+  ```
+  
+  ```json5
+  [
+    {
+      "id": 213,
+      "title": "title",
+      "content": "content",
+      "score": 0,
+      "authorUsername": "username",
+      "authorProfilePic": "https://www.gravatar.com/avatar/f9879d71855b5ff21e4963273a886bfc?d=retro",
+      "postImage": "iVBORw0KGgoAAAANSUhEUgAAAeAAAAEOCAYA...",
+      "commentCount": 0,
+      "userVote": 1,
+      "starred": true,
+      "hidden": false,
+      "timestamp": "2020-12-12 12:12:12"
+    },
+    {
+      // ...
+    }
+  ]
+  ```
 
 # Posts
 
