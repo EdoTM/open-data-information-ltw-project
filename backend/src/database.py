@@ -63,6 +63,14 @@ class Database:
         if user is None:
             raise UserNotFound()
         return user
+    
+    def edit_user(self, email, birthday, bio, cv):
+        query = "UPDATE users SET birthday=?, bio=?, cv=? WHERE email=?"
+        with self.connect() as conn:
+            cursor = conn.execute(query, (birthday, bio, cv, email))
+            cursor.close()
+
+    
 
     def get_posts_for_user(self, email: str):
         query = """
@@ -80,6 +88,26 @@ class Database:
             posts = cursor.fetchall()
             cursor.close()
         return posts
+    
+    def get_user_posts(self, email, author_username):
+        # get posts published by author_username
+        query = """
+            select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred, coalesce(h.hidden, 0) as hidden
+            from posts p left join votes v on p.id = v.post
+            left join votes v2 on p.id = v2.post and v2.email = ?
+            left join favorites f on p.id = f.post and f.email = ?
+            left join hidden h on p.id = h.post and h.email = ?
+            where p.author = ?
+            group by p.id
+            order by p.timestamp desc
+        """
+        with self.connect() as conn:
+            cursor = conn.execute(query, (email,email,email,author_username))
+            posts = cursor.fetchall()
+            cursor.close()
+        return posts
+    
+
     
     def get_favorite_posts_for_user(self, email: str):
         query = """

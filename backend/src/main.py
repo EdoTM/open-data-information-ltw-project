@@ -72,6 +72,28 @@ def get_user_info():
         return resp
     return make_login_success_response(user)
 
+@app.route("/api/editUser", methods=["POST"])
+@get_user
+def edit_user(user):
+    if user is None:
+        return make_error_response("User not found", 404)
+    data = request.json
+    birthdate = data["birthdate"]
+    bio = data["bio"]   
+    cv = data["cv"]
+
+    db.edit_user(user["email"], birthdate, bio, cv)
+    return make_response("User edited", 200)
+
+@app.route("/api/getUserPosts/<username>", methods=["GET"])
+@get_user
+def get_user_posts(user, username):
+    email = ''
+    if user is not None:
+        email = user["email"]
+    posts = db.get_user_posts(email, author_username=username)
+    return wrap_posts(posts)
+
 
 @app.route("/api/getPosts", methods=["GET"])
 @get_user
