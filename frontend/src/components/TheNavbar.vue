@@ -11,7 +11,7 @@ defineProps<{
 
 const isLogged = inject<Ref<boolean>>("is-logged");
 
-const navbarBreakpoint = "sm";
+const navbarBreakpoint = "md";
 const isDesktop = bs5Breakpoints.greater(navbarBreakpoint);
 
 const emits = defineEmits(["log-out", "toggle-theme"]);
