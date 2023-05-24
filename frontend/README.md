@@ -58,7 +58,6 @@ Get user profile
     "birthday": "2000-01-01",
     "cv": null,
     "email": "fiocchi.1934851@studenti.uniroma1.it",
-    "password_md5": "f53db7021b3b60e052ee1b97b3dfbbcf",
     "profile_pic": "https://www.gravatar.com/avatar/13974a7667745ecd3e3676943ad87d2b?d=retro",
     "username": "edoardo-fiocchi"
   }

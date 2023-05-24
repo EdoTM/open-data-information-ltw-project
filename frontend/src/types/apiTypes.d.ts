@@ -4,7 +4,14 @@ type UserInfoResponse = {
   profilePic: string;
 };
 
-type ProfileResponse = {};
+type ProfileResponse = {
+  bio?: string;
+  birthday: string;
+  cv?: string;
+  email: string;
+  profile_pic: string;
+  username: string;
+};
 
 type SignUpRequest = {
   username: string;
