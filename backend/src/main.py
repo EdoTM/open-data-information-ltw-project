@@ -86,9 +86,9 @@ def edit_user(user):
     if user is None:
         return make_error_response("User not found", 404)
     data = request.json
-    birthdate = data["birthdate"]
-    bio = data["bio"]   
-    cv = data["cv"]
+    birthdate = data.get("birthdate", user["birthday"])
+    bio = data.get("bio", user["bio"])   
+    cv = data.get("cv", user["cv"])
 
     db.edit_user(user["email"], birthdate, bio, cv)
     return make_response("User edited", 200)
