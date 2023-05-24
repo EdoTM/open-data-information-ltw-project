@@ -65,7 +65,7 @@ class Database:
         return user
     
     def get_user_by_username(self, username: str):
-        query = "SELECT * FROM users WHERE username=?"
+        query = "SELECT email, username, profile_pic, birthday, bio, cv FROM users WHERE username=?"
         with self.connect() as conn:
             cursor = conn.execute(query, (username,))
             user = cursor.fetchone()

@@ -74,6 +74,7 @@ def get_user_info():
 
 @app.route("/api/profile/<username>", methods=["GET"])
 def get_user_by_username(username):
+    username = username.replace("@", "")
     user = db.get_user_by_username(username)
     if user is None:
         return make_error_response("User not found", 404)
