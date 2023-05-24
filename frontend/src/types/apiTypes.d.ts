@@ -4,6 +4,8 @@ type UserInfoResponse = {
   profilePic: string;
 };
 
+type ProfileResponse = {};
+
 type SignUpRequest = {
   username: string;
   password: string;

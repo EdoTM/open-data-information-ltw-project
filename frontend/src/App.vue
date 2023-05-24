@@ -67,6 +67,9 @@ function handleLogout() {
 }
 
 provide("is-logged", isLogged);
+provide("user-name", userName);
+provide("user-email", userEmail);
+provide("user-picture", userPicture);
 
 document.addEventListener("mousemove", (e) => {
   document.documentElement.style.setProperty("--x", `${e.clientX}px`);
