@@ -7,7 +7,6 @@ import { useRoute, useRouter } from "vue-router";
 
 const MAX_BIO_CHARS = 100;
 
-const isLogged = inject<Ref<boolean>>("is-logged")!;
 const localUserName = inject<Ref<string>>("user-name")!;
 
 const username = ref("");
@@ -41,6 +40,7 @@ function getUserInfo(username: string) {
       const json = response.data as ProfileInfo;
       console.log(json);
       userInfo.value = json;
+      userInfo.value.username = "@" + json.username;
       userInfo.value.bio = json.bio.replace(/(^[ \t]+)/gm, "");
     })
     .catch((error) => {
@@ -73,8 +73,6 @@ onMounted(() => {
   const { username } = useRoute().query as string;
   if (username) {
     getUserInfo(username);
-  } else if (isLogged.value) {
-    getUserInfo(localUserName.value);
   } else {
     router.push("/");
   }
@@ -86,7 +84,7 @@ onMounted(() => {
     <div class="mx-auto">
       <div
         class="card mt-4 position-relative bg-transparent"
-        style="max-width: 60rem"
+        style="max-width: 60rem; width: 100vw"
       >
         <div class="profile-card-bg position-absolute z-n1" />
         <div class="card-body p-5">
@@ -102,11 +100,13 @@ onMounted(() => {
           </h4>
           <div class="card mx-auto w-100 bg-transparent">
             <div class="card-body">
-              <a v-if="!editUserBio" @click="editUserBio = true"
+              <a
+                v-if="!editUserBio && localUserName === userInfo.username"
+                @click="editUserBio = true"
                 ><i class="bi-pencil-fill float-end px-2"
               /></a>
               <a
-                v-else
+                v-else-if="localUserName === userInfo.username"
                 @click="
                   () => {
                     editUserBio = false;

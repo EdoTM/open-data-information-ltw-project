@@ -97,7 +97,10 @@ function handleLogout() {
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="/profile">
+                <a
+                  :href="'/profile?username=' + userName"
+                  class="dropdown-item"
+                >
                   <i class="bi-person-fill me-2" />
                   Profile
                 </a>
