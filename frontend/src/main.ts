@@ -13,6 +13,7 @@ import FavoritePosts from "./pages/posts/FavoritePosts.vue";
 import ReportPage from "./pages/posts/ReportPage.vue";
 import HiddenPosts from "./pages/posts/HiddenPosts.vue";
 import ProfilePage from "./pages/profile/ProfilePage.vue";
+import ProfileNotExistsPage from "./pages/profile/ProfileNotExistsPage.vue";
 
 let router = createRouter({
   history: createWebHistory(),
@@ -48,6 +49,10 @@ let router = createRouter({
     {
       path: "/profile",
       component: ProfilePage,
+    },
+    {
+      path: "/profile404",
+      component: ProfileNotExistsPage,
     },
   ],
 });

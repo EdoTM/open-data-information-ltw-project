@@ -5,21 +5,7 @@ import "../styles/Post.css";
 import CommentsPage from "../pages/posts/CommentsPage.vue";
 import axiosInstance from "../utils/axiosInstance";
 import { CommentData } from "./Comment.vue";
-
-export interface PostData {
-  id: number;
-  title: string;
-  content: string;
-  postImage: string;
-  authorUsername: string;
-  authorProfilePic: string;
-  score: number;
-  userVote: UserVote;
-  starred: boolean;
-  timestamp: string;
-  hidden: boolean;
-  commentCount: number;
-}
+import { PostData } from "../types/apiTypes";
 
 const post = defineProps<
   PostData & {

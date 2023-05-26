@@ -1,9 +1,9 @@
-from flask import request
-from database import *
-from flask_setup import app
-from utils.utils import *
-from hashlib import md5
 from functools import wraps
+from hashlib import md5
+
+from flask import request
+
+from utils.utils import *
 
 
 def get_user(func):
@@ -14,11 +14,10 @@ def get_user(func):
             user = get_user_from_session_id(session_id)
         except (UserNotFound, WrongSignature):
             return func(None, *args, **kwargs)
-        
-        return func(user, *args, **kwargs)
-    
-    return wrapper
 
+        return func(user, *args, **kwargs)
+
+    return wrapper
 
 
 @app.route("/api/login", methods=["POST"])
@@ -72,13 +71,19 @@ def get_user_info():
         return resp
     return make_login_success_response(user)
 
+
 @app.route("/api/profile/<username>", methods=["GET"])
 def get_user_by_username(username):
     username = username.replace("@", "")
-    user = db.get_user_by_username(username)
-    if user is None:
+    try:
+        user = db.get_user_by_username(username)
+    except UserNotFound:
         return make_error_response("User not found", 404)
+    posts = get_user_posts(user["email"])
+    user["posts"] = posts
+    user["postCount"] = len(posts)
     return make_response(user, 200)
+
 
 @app.route("/api/editUser", methods=["POST"])
 @get_user
@@ -87,19 +92,15 @@ def edit_user(user):
         return make_error_response("User not found", 404)
     data = request.json
     birthdate = data.get("birthdate", user["birthday"])
-    bio = data.get("bio", user["bio"])   
+    bio = data.get("bio", user["bio"])
     cv = data.get("cv", user["cv"])
 
     db.edit_user(user["email"], birthdate, bio, cv)
     return make_response("User edited", 200)
 
-@app.route("/api/getUserPosts/<username>", methods=["GET"])
-@get_user
-def get_user_posts(user, username):
-    email = ''
-    if user is not None:
-        email = user["email"]
-    posts = db.get_user_posts(email, author_username=username)
+
+def get_user_posts(email):
+    posts = db.get_user_posts(email)
     return wrap_posts(posts)
 
 
@@ -113,6 +114,7 @@ def get_posts(user):
     posts = db.get_posts_for_user(email)
     return wrap_posts(posts)
 
+
 @app.route("/api/getFavoritePosts", methods=["GET"])
 @get_user
 def get_favorite_posts(user):
@@ -123,6 +125,7 @@ def get_favorite_posts(user):
     posts = db.get_favorite_posts_for_user(email)
     return wrap_posts(posts)
 
+
 @app.route("/api/getHiddenPosts", methods=["GET"])
 @get_user
 def get_hidden_posts(user):
@@ -132,6 +135,7 @@ def get_hidden_posts(user):
 
     posts = db.get_hidden_posts_for_user(email)
     return wrap_posts(posts)
+
 
 def wrap_posts(posts):
     ret = []
@@ -180,6 +184,7 @@ def vote_post(user):
     db.vote_post(user["email"], post_id, vote)
     return make_response("Post voted", 200)
 
+
 @app.route("/api/plot/meetings", methods=["POST"])
 def plot_meetings():
     response = {
@@ -190,7 +195,7 @@ def plot_meetings():
     index = request.json.get("index")
     if index == "nation":
         all_nations = [x["nation"] for x in db.get_all_nations()]
-    elif index =="company":
+    elif index == "company":
         all_nations = [x["company"] for x in db.get_all_companies()]
     else:
         return make_error_response("Invalid index", 404)
@@ -199,7 +204,7 @@ def plot_meetings():
     for element in elements:
         name = element["name"]
         color = element["color"]
-        category = element["currentCategory"] # da sistemare
+        category = element["currentCategory"]  # da sistemare
         wg = parse_category(category)
         data = db.count_meetings(index, wg)
         data = {x[index]: x["cnt"] for x in data}
@@ -224,16 +229,16 @@ def plot_tdocs():
     elements = request.json.get("elements")
     index = request.json.get("index")
     response = {
-            'xAxisValues': [],
-            'elements': []
-        }
+        'xAxisValues': [],
+        'elements': []
+    }
     if index == "nation":
         all_nations = [x["nation"] for x in db.get_all_nations()]
     elif index == "company":
         all_nations = [x["company"] for x in db.get_all_companies()]
     else:
         return make_error_response("Invalid index", 404)
-    
+
     is_sorted = False
     for element in elements:
         name = element["name"]
@@ -253,8 +258,7 @@ def plot_tdocs():
 
     response['xAxisValues'] = all_nations
     return response
-    
-        
+
 
 @app.route("/api/starPost", methods=["POST"])
 @get_user
@@ -267,6 +271,7 @@ def star_post(user):
     db.star_post(user["email"], post_id, starred)
     return make_response("Post starred", 200)
 
+
 @app.route("/api/hidePost", methods=["POST"])
 @get_user
 def hide_post(user):
@@ -277,6 +282,7 @@ def hide_post(user):
     hidden = data["hidden"]
     db.hide_post(user["email"], post_id, hidden)
     return make_response("Post hidden", 200)
+
 
 @app.route("/api/newComment", methods=["POST"])
 @get_user
@@ -299,6 +305,7 @@ def get_comments(user, post_id):
     comments = db.get_comments_for_post(post_id, email)
     return comments, 200
 
+
 @app.route("/api/like/<int:comment_id>", methods=["GET"])
 @get_user
 def like_comment(user, comment_id):
@@ -306,6 +313,7 @@ def like_comment(user, comment_id):
         return make_error_response("User not found", 404)
     db.like_comment(user["email"], comment_id)
     return make_response("Comment liked", 200)
+
 
 @app.route("/api/unlike/<int:comment_id>", methods=["GET"])
 @get_user

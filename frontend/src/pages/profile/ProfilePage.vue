@@ -1,38 +1,51 @@
 <script lang="ts" setup>
-import { computed, inject, ref, Ref, watch } from "vue";
+import { computed, inject, onMounted, ref, Ref } from "vue";
 import axiosInstance from "../../utils/axiosInstance";
+import { ProfileInfo } from "../../types/apiTypes";
+import PostList from "../../components/PostList.vue";
+import { useRoute, useRouter } from "vue-router";
 
 const MAX_BIO_CHARS = 100;
 
 const isLogged = inject<Ref<boolean>>("is-logged")!;
-const userName = inject<Ref<string>>("user-name")!;
-const userEmail = inject<Ref<string>>("user-email")!;
-const userPicture = inject<Ref<string>>("user-picture")!;
+const localUserName = inject<Ref<string>>("user-name")!;
 
-const userBio = ref("");
+const username = ref("");
 
-userBio.value = userBio.value.replace(/(^[ \t]+)/gm, "");
+const router = useRouter();
+
+const userInfo = ref<ProfileInfo>({
+  bio: "",
+  email: "",
+  birthday: "",
+  posts: [],
+  postCount: 0,
+  profile_pic: "",
+  username: "",
+});
+
+const postsText = computed(() => {
+  return userInfo.value.postCount === 1 ? "post" : "posts";
+});
+
 const editUserBio = ref(false);
 
 const userPictureCssUrl = computed(() => {
-  return `url(${userPicture.value})`;
+  return `url(${userInfo.value.profile_pic})`;
 });
 
-function getUserInfo() {
-  if (!isLogged.value) {
-    console.log("suckler");
-    return;
-  }
+function getUserInfo(username: string) {
   axiosInstance
-    .get(`/profile/${userName.value}`)
+    .get(`/profile/${username}`)
     .then((response) => {
-      const json = response.data as ProfileResponse;
+      const json = response.data as ProfileInfo;
       console.log(json);
-      userBio.value = json.bio || "";
+      userInfo.value = json;
+      userInfo.value.bio = json.bio.replace(/(^[ \t]+)/gm, "");
     })
     .catch((error) => {
       if (error.response.status === 404) {
-        console.log("Session ID not found");
+        router.push("/profile404");
       } else {
         console.log(error);
       }
@@ -42,7 +55,7 @@ function getUserInfo() {
 function updateBio() {
   axiosInstance
     .post(`/editUser`, {
-      bio: userBio.value,
+      bio: userInfo.value.bio,
     })
     .then((response) => {
       console.log(response);
@@ -56,70 +69,87 @@ function updateBio() {
     });
 }
 
-watch(isLogged, (newVal) => {
-  if (newVal) {
-    getUserInfo();
+onMounted(() => {
+  const { username } = useRoute().query as string;
+  if (username) {
+    getUserInfo(username);
+  } else if (isLogged.value) {
+    getUserInfo(localUserName.value);
+  } else {
+    router.push("/");
   }
 });
 </script>
 
 <template>
-  <div class="d-flex">
-    <div
-      class="card mx-auto mt-4 position-relative bg-transparent"
-      style="max-width: 60rem"
-    >
-      <div class="profile-card-bg position-absolute z-n1" />
-      <div class="card-body p-5">
-        <img
-          :src="userPicture"
-          alt="profile picture"
-          class="rounded-circle mx-auto d-block"
-          style="width: 100px; height: 100px"
-        />
-        <h2 class="card-title text-center my-3 mb-4">{{ userName }}</h2>
-        <div class="card mx-auto w-100 bg-transparent">
-          <div class="card-body" style="width: 100vw; max-width: 100%">
-            <a v-if="!editUserBio" @click="editUserBio = true"
-              ><i class="bi-pencil-fill float-end px-2"
-            /></a>
-            <a
-              v-else
-              @click="
-                () => {
-                  editUserBio = false;
-                  updateBio();
-                }
-              "
-              ><i
-                class="bi-check-lg float-end px-2"
-                style="font-size: 1.6rem; line-height: 1"
-            /></a>
-            <h4>Bio</h4>
-            <p v-if="!editUserBio && userBio.length > 0" class="card-text">
-              {{ userBio }}
-            </p>
-            <p v-else-if="!editUserBio" class="card-text text-secondary">
-              Nothing goin' on here...
-            </p>
-            <div v-else class="position-relative">
-              <textarea
-                :maxlength="MAX_BIO_CHARS"
-                :value="userBio"
-                class="form-control"
-                style="min-height: 6rem"
-                @input="userBio = $event.target.value"
-              />
-              <span
-                v-if="userBio.length >= MAX_BIO_CHARS * 0.7"
-                class="position-absolute text-danger-emphasis"
-                style="right: 0.5rem; bottom: 0.5rem"
+  <div class="d-flex flex-column">
+    <div class="mx-auto">
+      <div
+        class="card mt-4 position-relative bg-transparent"
+        style="max-width: 60rem"
+      >
+        <div class="profile-card-bg position-absolute z-n1" />
+        <div class="card-body p-5">
+          <img
+            :src="userInfo.profile_pic"
+            alt="profile picture"
+            class="rounded-circle mx-auto d-block"
+            style="width: 100px; height: 100px"
+          />
+          <h2 class="card-title text-center my-3">{{ userInfo.username }}</h2>
+          <h4 class="card-title text-center my-3 mb-5">
+            {{ userInfo.postCount }} {{ postsText }}
+          </h4>
+          <div class="card mx-auto w-100 bg-transparent">
+            <div class="card-body">
+              <a v-if="!editUserBio" @click="editUserBio = true"
+                ><i class="bi-pencil-fill float-end px-2"
+              /></a>
+              <a
+                v-else
+                @click="
+                  () => {
+                    editUserBio = false;
+                    updateBio();
+                  }
+                "
+                ><i
+                  class="bi-check-lg float-end px-2"
+                  style="font-size: 1.6rem; line-height: 1"
+              /></a>
+              <h4>Bio</h4>
+              <p
+                v-if="!editUserBio && userInfo.bio.length > 0"
+                class="card-text"
               >
-                {{ userBio.length }}/{{ MAX_BIO_CHARS }}
-              </span>
+                {{ userInfo.bio }}
+              </p>
+              <p v-else-if="!editUserBio" class="card-text text-secondary">
+                Nothing goin' on here...
+              </p>
+              <div v-else class="position-relative">
+                <textarea
+                  :maxlength="MAX_BIO_CHARS"
+                  :value="userInfo.bio"
+                  class="form-control"
+                  style="min-height: 6rem"
+                  @input="userInfo.bio = $event.target.value"
+                />
+                <span
+                  v-if="userInfo.bio.length >= MAX_BIO_CHARS * 0.7"
+                  class="position-absolute text-danger-emphasis"
+                  style="right: 0.5rem; bottom: 0.5rem"
+                >
+                  {{ userInfo.bio.length }}/{{ MAX_BIO_CHARS }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      <div class="mx-auto" style="max-width: 1000px">
+        <h2 class="text-center my-5">User posts</h2>
+        <PostList :posts="userInfo.posts" />
       </div>
     </div>
   </div>

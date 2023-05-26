@@ -1,14 +1,16 @@
 import datetime
 import os
 import sqlite3
+
 from utils.errors import *
 
-wg_whitelist = ["All", "CT", "OP", "PCG", "RAN", "SA", "CT 1", "CT 3", "CT 4", "CT 6", "RAN 1", "RAN 2", "RAN 3", "RAN 4", "RAN 5", "SA 1", "SA 2", "SA 3", "SA 4", "SA 5", "SA 6"]
+wg_whitelist = ["All", "CT", "OP", "PCG", "RAN", "SA", "CT 1", "CT 3", "CT 4", "CT 6", "RAN 1", "RAN 2", "RAN 3",
+                "RAN 4", "RAN 5", "SA 1", "SA 2", "SA 3", "SA 4", "SA 5", "SA 6"]
+
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
     return {key: value for key, value in zip(fields, row)}
-
 
 
 class Database:
@@ -30,7 +32,7 @@ class Database:
         conn = sqlite3.connect(self.db_dir)
         conn.row_factory = dict_factory
         return conn
-    
+
     def connect_data(self, row_factory=dict_factory):
         conn = sqlite3.connect(self.db_data_dir)
         conn.row_factory = row_factory
@@ -63,7 +65,7 @@ class Database:
         if user is None:
             raise UserNotFound()
         return user
-    
+
     def get_user_by_username(self, username: str):
         query = "SELECT email, username, profile_pic, birthday, bio, cv FROM users WHERE username=?"
         with self.connect() as conn:
@@ -73,14 +75,12 @@ class Database:
         if user is None:
             raise UserNotFound()
         return user
-    
+
     def edit_user(self, email, birthday, bio, cv):
         query = "UPDATE users SET birthday=?, bio=?, cv=? WHERE email=?"
         with self.connect() as conn:
             cursor = conn.execute(query, (birthday, bio, cv, email))
             cursor.close()
-
-    
 
     def get_posts_for_user(self, email: str):
         query = """
@@ -94,12 +94,12 @@ class Database:
             order by p.timestamp desc
         """
         with self.connect() as conn:
-            cursor = conn.execute(query, (email,email,email))
+            cursor = conn.execute(query, (email, email, email))
             posts = cursor.fetchall()
             cursor.close()
         return posts
-    
-    def get_user_posts(self, email, author_username):
+
+    def get_user_posts(self, email):
         # get posts published by author_username
         query = """
             select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred, coalesce(h.hidden, 0) as hidden
@@ -107,18 +107,16 @@ class Database:
             left join votes v2 on p.id = v2.post and v2.email = ?
             left join favorites f on p.id = f.post and f.email = ?
             left join hidden h on p.id = h.post and h.email = ?
-            where p.author = ?
+            where p.author_email = ?
             group by p.id
             order by p.timestamp desc
         """
         with self.connect() as conn:
-            cursor = conn.execute(query, (email,email,email,author_username))
+            cursor = conn.execute(query, (email, email, email, email))
             posts = cursor.fetchall()
             cursor.close()
         return posts
-    
 
-    
     def get_favorite_posts_for_user(self, email: str):
         query = """
             select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred, coalesce(h.hidden, 0) as hidden
@@ -131,11 +129,11 @@ class Database:
             order by p.timestamp desc
         """
         with self.connect() as conn:
-            cursor = conn.execute(query, (email,email,email))
+            cursor = conn.execute(query, (email, email, email))
             posts = cursor.fetchall()
             cursor.close()
         return posts
-    
+
     def get_hidden_posts_for_user(self, email: str):
         query = """
             select p.*, coalesce(sum(v.value), 0) as score, coalesce(v2.value, 0) as userVote, coalesce(f.starred, 0) as starred, coalesce(h.hidden, 0) as hidden
@@ -148,7 +146,7 @@ class Database:
             order by p.timestamp desc
         """
         with self.connect() as conn:
-            cursor = conn.execute(query, (email,email,email))
+            cursor = conn.execute(query, (email, email, email))
             posts = cursor.fetchall()
             cursor.close()
         return posts
@@ -195,16 +193,16 @@ class Database:
             meetings = cursor.fetchall()
             cursor.close()
         return meetings
-    
+
     def count_tdocs(self, index, tdoc_status):
         if index not in ["nation", "company"]:
             raise InvalidIndex()
         if tdoc_status == 'all':
-            tdoc_status = ('agreed','approved','withdrawn','rejected','not concluded','not pursued')
+            tdoc_status = ('agreed', 'approved', 'withdrawn', 'rejected', 'not concluded', 'not pursued')
         elif tdoc_status == 'accepted':
-            tdoc_status = ('agreed','approved')
+            tdoc_status = ('agreed', 'approved')
         elif tdoc_status == 'rejected':
-            tdoc_status = ('withdrawn','rejected','not concluded','not pursued')
+            tdoc_status = ('withdrawn', 'rejected', 'not concluded', 'not pursued')
         else:
             raise InvalidFilterKey()
 
@@ -223,7 +221,7 @@ class Database:
             tdocs = cursor.fetchall()
             cursor.close()
         return tdocs
-    
+
     def get_all_nations(self):
         query = """
             SELECT DISTINCT nation
@@ -235,7 +233,7 @@ class Database:
             nations = cursor.fetchall()
             cursor.close()
         return nations
-    
+
     def get_all_companies(self):
         query = """
             SELECT DISTINCT company
@@ -278,7 +276,7 @@ class Database:
             cursor.execute(query, (email, post, content, timestamp))
             cursor.close()
 
-    def get_comments_for_post(self, post_id, email = ''):
+    def get_comments_for_post(self, post_id, email=''):
         query = """
             select u.username as authorUsername,u.profile_pic as authorProfilePic , c.id, c.content, c.timestamp, c.likes, (
                 select count(*) > 0
@@ -297,7 +295,7 @@ class Database:
             comments = cursor.fetchall()
             cursor.close()
         return comments
-    
+
     def like_comment(self, email, comment_id):
         query = """
             INSERT INTO likes (email, comment_id)
@@ -316,8 +314,3 @@ class Database:
             cursor = conn.cursor()
             cursor.execute(query, (email, comment_id))
             cursor.close()
-
-
-        
-    
-    
