@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { PostData } from "../../components/Post.vue";
 import axiosInstance from "../../utils/axiosInstance";
 import { onBeforeMount, ref, watch } from "vue";
 import PostList from "../../components/PostList.vue";
 import { bs5Breakpoints } from "../../utils/appUtils";
+import { PostData } from "../../types/apiTypes";
 
 const props = defineProps<{
   apiEndpoint: string;

@@ -5,6 +5,7 @@ import { ref } from "vue";
 import { getInputElementById } from "../utils/tsUtils";
 import { GoogleLogin } from "vue3-google-login";
 import { sendGoogleSignInRequest } from "../utils/appUtils";
+import { UserInfoResponse } from "../types/apiTypes";
 
 function generatePasswordMD5(plainPassword) {
   return md5(plainPassword).toString();

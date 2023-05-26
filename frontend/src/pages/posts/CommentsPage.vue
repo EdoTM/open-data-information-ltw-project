@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { PostData } from "../../components/Post.vue";
 import PostList from "../../components/PostList.vue";
 import axiosInstance from "../../utils/axiosInstance";
 import Comment, { CommentData } from "../../components/Comment.vue";
 import { ref } from "vue";
+import { PostData } from "../../types/apiTypes";
 
 const props = defineProps<{
   post: PostData;

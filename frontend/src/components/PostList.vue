@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import Post, { PostData } from "./Post.vue";
+import Post from "./Post.vue";
 import axiosInstance from "../utils/axiosInstance";
 import { inject, Ref, ref } from "vue";
+import { PostData } from "../types/apiTypes";
 
 const isLogged = inject<Ref<boolean>>("is-logged")!;
 

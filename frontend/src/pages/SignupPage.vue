@@ -7,6 +7,7 @@ import {
   sendSignUpRequest,
 } from "../utils/appUtils";
 import { AxiosResponse } from "axios";
+import { SignInResponse, SignUpRequest } from "../types/apiTypes";
 
 defineProps<{
   isLogged: boolean;
