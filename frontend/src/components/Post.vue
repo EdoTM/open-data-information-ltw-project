@@ -174,7 +174,14 @@ function updateLike(commentId: number, liked: boolean) {
           :src="post.authorProfilePic"
           class="username-profile-picture"
         />
-        <span class="my-auto username-handle">@{{ post.authorUsername }}</span>
+        <span class="my-auto username-handle">
+          <a
+            :href="`/profile?username=${post.authorUsername}`"
+            class="text-decoration-none"
+          >
+            @{{ post.authorUsername }}
+          </a>
+        </span>
         <span class="my-auto me-auto text-secondary"
           >&nbsp;• {{ displayTimestamp }}</span
         >

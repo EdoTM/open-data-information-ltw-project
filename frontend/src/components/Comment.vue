@@ -31,7 +31,14 @@ const emits = defineEmits(["like", "unlike"]);
           alt="comment author profile pic"
           class="comment-author-pic"
         />
-        <span class="comment-author-username"> @{{ authorUsername }} </span>
+        <span class="comment-author-username">
+          <a
+            :href="`/profile?username=${authorUsername}`"
+            class="text-decoration-none"
+          >
+            @{{ authorUsername }}
+          </a>
+        </span>
       </span>
       <span class="comment-body">
         {{ content }}
