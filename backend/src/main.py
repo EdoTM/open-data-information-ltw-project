@@ -80,8 +80,10 @@ def get_user_by_username(username):
     except UserNotFound:
         return make_error_response("User not found", 404)
     posts = get_user_posts(user["email"])
+    score = db.get_user_score(user["email"])
     user["posts"] = posts
     user["postCount"] = len(posts)
+    user["score"] = score
     return make_response(user, 200)
 
 

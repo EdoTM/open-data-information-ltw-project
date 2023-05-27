@@ -314,3 +314,18 @@ class Database:
             cursor = conn.cursor()
             cursor.execute(query, (email, comment_id))
             cursor.close()
+
+    def get_user_score(self, email):
+        query = """
+            SELECT sum(v.value) as score
+            FROM votes v 
+            JOIN posts p
+            ON p.id = v.post
+            WHERE p.author_email = ?
+        """
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, (email,))
+            score = cursor.fetchone()
+            cursor.close()
+        return score['score']
