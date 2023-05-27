@@ -51,7 +51,7 @@ function handleLogout() {
           </li>
           <li class="nav-item">
             <router-link aria-current="page" class="nav-link" to="/report">
-              Report
+              Explore
             </router-link>
           </li>
           <li class="nav-item">

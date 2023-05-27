@@ -76,7 +76,7 @@ function handleQueryChange(newQuery: string) {
     class="mx-auto mt-4 position-relative"
     style="max-width: 1000px; width: 90%"
   >
-    <h1 class="mb-4">
+    <h1 class="my-4">
       <slot name="header" />
     </h1>
     <div v-if="showInfoAlert" class="alert alert-info mb-4" role="doc-abstract">
