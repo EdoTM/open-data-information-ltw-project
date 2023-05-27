@@ -130,6 +130,9 @@ function handleQueryChange(newQuery: string) {
         />
       </div>
     </div>
+    <div v-if="shownPosts.length === 0" class="d-flex">
+      <h2 class="display-6 mx-auto mt-5 text-secondary">No posts to show</h2>
+    </div>
     <PostList :posts="shownPosts" @hide-post="hidePost" />
   </div>
 </template>

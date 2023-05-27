@@ -21,6 +21,7 @@ const userInfo = ref<ProfileInfo>({
   postCount: 0,
   profile_pic: "",
   username: "",
+  score: 0,
 });
 
 const postsText = computed(() => {
@@ -96,7 +97,8 @@ onMounted(() => {
           />
           <h2 class="card-title text-center my-3">{{ userInfo.username }}</h2>
           <h4 class="card-title text-center my-3 mb-5">
-            {{ userInfo.postCount }} {{ postsText }}
+            {{ userInfo.postCount }} {{ postsText }}&ensp;•&ensp;Score:
+            {{ userInfo.score }}
           </h4>
           <div class="card mx-auto w-100 bg-transparent">
             <div class="card-body">
@@ -149,7 +151,15 @@ onMounted(() => {
         </div>
       </div>
       <div class="mx-auto" style="max-width: 1000px">
-        <h2 class="text-center my-5">User posts</h2>
+        <h2 v-if="userInfo.posts.length > 0" class="text-center my-5">
+          User posts
+        </h2>
+        <div v-else class="d-flex flex-column">
+          <h2 class="display-6 text-center text-secondary mt-5">
+            User hasn't posted anything yet
+          </h2>
+          <span class="mx-auto mb-5" style="font-size: 10rem">🤷</span>
+        </div>
         <PostList :posts="userInfo.posts" />
       </div>
     </div>

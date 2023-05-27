@@ -38,6 +38,7 @@ type ProfileInfo = {
   username: string;
   posts: PostData[];
   postCount: number;
+  score: number;
 };
 
 type SignUpRequest = {

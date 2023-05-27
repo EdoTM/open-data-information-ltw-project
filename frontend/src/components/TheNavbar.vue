@@ -45,11 +45,6 @@ function handleLogout() {
       <div id="navbarSupportedContent" class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <router-link aria-current="page" class="nav-link" to="/">
-              Home
-            </router-link>
-          </li>
-          <li class="nav-item">
             <router-link aria-current="page" class="nav-link" to="/plot">
               Plot
             </router-link>
