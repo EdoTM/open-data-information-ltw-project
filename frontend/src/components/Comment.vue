@@ -1,16 +1,14 @@
 <script lang="ts" setup>
-export interface CommentData {
-  id: number;
-  content?: string;
-  authorUsername: string;
-  authorProfilePic: string;
-  timestamp?: string;
-  likes: number;
-  liked: boolean;
-}
+import { getDisplayTimestamp } from "../utils/postUtils";
+import { computed } from "vue";
+import { CommentData } from "../types/apiTypes";
 
-defineProps<CommentData>();
+const props = defineProps<CommentData>();
 const emits = defineEmits(["like", "unlike"]);
+
+const displayTimestamp = computed(() => {
+  return getDisplayTimestamp(props.timestamp);
+});
 </script>
 
 <template>
@@ -43,6 +41,7 @@ const emits = defineEmits(["like", "unlike"]);
       <span class="comment-body">
         {{ content }}
       </span>
+      <span class="text-secondary small">&nbsp; – {{ displayTimestamp }}</span>
     </div>
   </div>
 </template>

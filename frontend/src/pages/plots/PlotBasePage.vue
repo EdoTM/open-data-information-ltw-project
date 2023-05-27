@@ -253,10 +253,10 @@ const plotIndex = computed(() =>
         type="button"
         @click="handleRequestPlot"
       >
-        <span class="me-2 my-auto" style="font-weight: bold; font-size: 1.3rem"
+        <i class="bi-bar-chart-line-fill" style="font-size: 1.5rem"></i>
+        <span class="ms-2 my-auto" style="font-weight: bold; font-size: 1.3rem"
           >Plot</span
         >
-        <i class="bi bi-graph-up-arrow" style="font-size: 1.5rem"></i>
       </button>
     </div>
     <div

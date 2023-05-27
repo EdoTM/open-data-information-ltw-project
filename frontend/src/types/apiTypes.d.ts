@@ -13,6 +13,16 @@ export interface PostData {
   commentCount: number;
 }
 
+export interface CommentData {
+  id: number;
+  content?: string;
+  authorUsername: string;
+  authorProfilePic: string;
+  timestamp: string;
+  likes: number;
+  liked: boolean;
+}
+
 type UserInfoResponse = {
   username: string;
   email: string;

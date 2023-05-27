@@ -3,6 +3,12 @@ import axiosInstance from "./axiosInstance";
 import { decodeCredential } from "vue3-google-login";
 import { AxiosResponse } from "axios";
 import { breakpointsBootstrapV5, useBreakpoints } from "@vueuse/core";
+import {
+  GoogleUserData,
+  LoginRequest,
+  SignInResponse,
+  SignUpRequest,
+} from "../types/apiTypes";
 
 export function generatePasswordMD5(plainPassword: string) {
   return md5(plainPassword).toString();

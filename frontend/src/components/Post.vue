@@ -4,8 +4,8 @@ import { computed, ref } from "vue";
 import "../styles/Post.css";
 import CommentsPage from "../pages/posts/CommentsPage.vue";
 import axiosInstance from "../utils/axiosInstance";
-import { CommentData } from "./Comment.vue";
-import { PostData } from "../types/apiTypes";
+import { CommentData, PostData } from "../types/apiTypes";
+import { getDisplayTimestamp } from "../utils/postUtils";
 
 const post = defineProps<
   PostData & {
@@ -26,22 +26,7 @@ const imageZoomModalId = `post-${post.id}-zoomModal`;
 const commentsModalId = `post-${post.id}-commentsModal`;
 
 const displayTimestamp = computed(() => {
-  const date = new Date(post.timestamp + "Z");
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diff / (1000 * 3600 * 24));
-  const diffHours = Math.floor(diff / (1000 * 3600));
-  const diffMinutes = Math.floor(diff / (1000 * 60));
-  const diffSeconds = Math.floor(diff / 1000);
-  if (diffDays > 0) {
-    return `${diffDays} days ago`;
-  } else if (diffHours > 0) {
-    return `${diffHours} hours ago`;
-  } else if (diffMinutes > 0) {
-    return `${diffMinutes} minutes ago`;
-  } else {
-    return `${diffSeconds} seconds ago`;
-  }
+  return getDisplayTimestamp(post.timestamp);
 });
 
 const dotsMenuOptions = ref([
