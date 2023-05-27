@@ -5,4 +5,5 @@ COPY package-lock.json .
 RUN ["npm", "install"]
 COPY . .
 EXPOSE 5173
-CMD ["npm", "run", "dev"]
+ARG BUILD
+RUN if [ "$BUILD" = "true" ] ; then npm run build ; fi

@@ -7,6 +7,10 @@ services:
       - "5173:5173"
     volumes:
       - "./frontend/src:/app/src"
+    command:
+      - npm
+      - run
+      - dev
   backend:
     build: "./backend"
     ports:

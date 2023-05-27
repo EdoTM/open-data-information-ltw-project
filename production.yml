@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  frontend:
+    environment:
+      - VITE_BACKEND_SAME_PORT=true
+    build:
+      context: "./frontend"
+      args:
+        - BUILD=true
+    command:
+      - npm
+      - run
+      - preview
+    ports:
+      - "11446:4173"
+    restart: unless-stopped
+  backend:
+    build: "./backend"
+    ports:
+      - "11447:5000"
+    restart: unless-stopped
