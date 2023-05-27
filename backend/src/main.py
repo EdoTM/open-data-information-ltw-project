@@ -250,7 +250,8 @@ def plot_tdocs():
         name = element["name"]
         color = element["color"]
         tdoc_filter = element["tdocFilter"]
-        data = db.count_tdocs(index, tdoc_filter)
+        wg = parse_category(element["currentCategory"])
+        data = db.count_tdocs(index, tdoc_filter, wg)
         data = {x[index]: x["cnt"] for x in data}
         data = {k: v for k, v in sorted(data.items(), key=lambda item: item[1], reverse=True)}
         if not is_sorted:
