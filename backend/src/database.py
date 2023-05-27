@@ -317,7 +317,7 @@ class Database:
 
     def get_user_score(self, email):
         query = """
-            SELECT sum(v.value) as score
+            SELECT COALESCE(sum(v.value),0) as score
             FROM votes v 
             JOIN posts p
             ON p.id = v.post
