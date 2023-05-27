@@ -54,6 +54,11 @@ function handleLogout() {
               Report
             </router-link>
           </li>
+          <li class="nav-item">
+            <router-link aria-current="page" class="nav-link" to="/searchUsers">
+              Users
+            </router-link>
+          </li>
         </ul>
         <div v-if="!isLogged" class="navbar-nav">
           <a

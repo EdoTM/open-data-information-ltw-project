@@ -68,3 +68,8 @@ type GoogleUserData = {
   picture: string;
   sub: string;
 };
+
+type AllUsersResponse = {
+  username: string;
+  profile_pic: string;
+};
