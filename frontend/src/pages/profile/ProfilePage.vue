@@ -6,13 +6,12 @@ import PostList from "../../components/PostList.vue";
 import { useRoute, useRouter } from "vue-router";
 
 const MAX_BIO_CHARS = 100;
+const router = useRouter();
 
 const localUserName = inject<Ref<string>>("user-name")!;
 
 const username = ref("");
-
-const router = useRouter();
-
+const loaded = ref(false);
 const userInfo = ref<ProfileInfo>({
   bio: "",
   email: "",
@@ -50,6 +49,9 @@ function getUserInfo(username: string) {
       } else {
         console.log(error);
       }
+    })
+    .finally(() => {
+      loaded.value = true;
     });
 }
 
@@ -154,7 +156,7 @@ onMounted(() => {
         <h2 v-if="userInfo.posts.length > 0" class="text-center my-5">
           User posts
         </h2>
-        <div v-else class="d-flex flex-column">
+        <div v-else-if="loaded" class="d-flex flex-column">
           <h2 class="display-6 text-center text-secondary mt-5">
             User hasn't posted anything yet
           </h2>

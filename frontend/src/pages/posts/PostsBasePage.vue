@@ -12,8 +12,9 @@ const props = defineProps<{
 
 const allPosts = ref([] as PostData[]);
 const shownPosts = ref([] as PostData[]);
-const searchQuery = ref<string>();
+const searchQuery = ref<string>("");
 const searchByUser = ref<boolean>(false);
+const loaded = ref(false);
 
 const isMobile = bs5Breakpoints.smaller("md");
 
@@ -27,10 +28,15 @@ enum SortBy {
 const sortBy = ref<SortBy>(SortBy.Newest);
 
 function getPosts() {
-  axiosInstance.get(props.apiEndpoint).then((response) => {
-    allPosts.value = response.data;
-    shownPosts.value = allPosts.value;
-  });
+  axiosInstance
+    .get(props.apiEndpoint)
+    .then((response) => {
+      allPosts.value = response.data;
+      shownPosts.value = allPosts.value;
+    })
+    .finally(() => {
+      loaded.value = true;
+    });
 }
 
 function hidePost(postId: number) {
@@ -142,8 +148,19 @@ function handleQueryChange(newQuery: string) {
         />
       </div>
     </div>
-    <div v-if="shownPosts.length === 0" class="d-flex">
+    <div
+      v-if="loaded && shownPosts.length === 0 && searchQuery.length === 0"
+      class="d-flex"
+    >
       <h2 class="display-6 mx-auto mt-5 text-secondary">No posts to show</h2>
+    </div>
+    <div
+      v-if="searchQuery?.length > 0 && shownPosts.length === 0"
+      class="d-flex"
+    >
+      <h2 class="display-6 mx-auto mt-5">
+        No posts matching '{{ searchQuery }}'
+      </h2>
     </div>
     <PostList :posts="shownPosts" @hide-post="hidePost" />
   </div>

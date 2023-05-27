@@ -6,6 +6,7 @@ import axiosInstance from "../utils/axiosInstance";
 const searchQuery = ref<string>("");
 const users = ref<AllUsersResponse[]>([]);
 const shownUsers = ref<AllUsersResponse[]>([]);
+const loaded = ref(false);
 
 function handleQueryChange(newQuery: string) {
   searchQuery.value = newQuery;
@@ -19,10 +20,15 @@ function handleQueryChange(newQuery: string) {
 }
 
 function getAllUsers() {
-  axiosInstance.get("/getAllUsers").then((response) => {
-    users.value = response.data;
-    shownUsers.value = users.value;
-  });
+  axiosInstance
+    .get("/getAllUsers")
+    .then((response) => {
+      users.value = response.data;
+      shownUsers.value = users.value;
+    })
+    .finally(() => {
+      loaded.value = true;
+    });
 }
 
 onBeforeMount(getAllUsers);
@@ -56,7 +62,7 @@ onBeforeMount(getAllUsers);
         <span class="my-auto display-6">@{{ user.username }}</span>
       </a>
     </div>
-    <div v-else>
+    <div v-else-if="loaded">
       <h2 class="display-6 text-center mt-5">
         No users matching '{{ searchQuery }}'
       </h2>
