@@ -13,6 +13,7 @@ const props = defineProps<{
 const allPosts = ref([] as PostData[]);
 const shownPosts = ref([] as PostData[]);
 const searchQuery = ref<string>();
+const searchByUser = ref<boolean>(false);
 
 const isMobile = bs5Breakpoints.smaller("md");
 
@@ -57,9 +58,17 @@ function sortPosts(sort: SortBy) {
 
 function handleQueryChange(newQuery: string) {
   searchQuery.value = newQuery;
-  if (newQuery === "") {
-    shownPosts.value = allPosts.value;
+  if (newQuery.startsWith("@")) {
+    shownPosts.value = allPosts.value.filter((post) =>
+      post.authorUsername
+        .toLowerCase()
+        .includes(newQuery.slice(1).toLowerCase())
+    );
+    searchByUser.value = true;
+    sortPosts(sortBy.value);
     return;
+  } else {
+    searchByUser.value = false;
   }
   shownPosts.value = allPosts.value.filter(
     (post) =>
@@ -120,7 +129,10 @@ function handleQueryChange(newQuery: string) {
         </ul>
       </div>
       <div :class="isMobile ? 'mt-2' : 'mb-3 ms-5'" class="input-group">
-        <span class="input-group-text"><i class="bi-search" /></span>
+        <span class="input-group-text">
+          <i v-if="searchByUser" class="bi-person-fill" />
+          <i v-else class="bi-search" />
+        </span>
         <input
           :value="searchQuery"
           class="form-control"
