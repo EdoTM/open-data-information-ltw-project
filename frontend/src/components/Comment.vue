@@ -2,6 +2,7 @@
 import { getDisplayTimestamp } from "../utils/postUtils";
 import { computed } from "vue";
 import { CommentData } from "../types/apiTypes";
+import { escapeHtml } from "@vue/shared";
 
 const props = defineProps<CommentData>();
 const emits = defineEmits(["like", "unlike"]);
@@ -15,7 +16,9 @@ const formattedContent = computed(() => {
     return "";
   }
   // replace @username with link to profile
-  return props.content.replace(
+  const sanitizedContent = escapeHtml(props.content);
+  console.log(sanitizedContent);
+  return sanitizedContent.replace(
     /@([a-zA-Z0-9_-]+)/g,
     `<a class="text-decoration-none" href="/profile?username=$1">
       <span class="username-handle-comment">@$1</span>
