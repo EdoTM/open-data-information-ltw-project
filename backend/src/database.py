@@ -194,7 +194,7 @@ class Database:
             cursor.close()
         return meetings
 
-    def count_tdocs(self, index, tdoc_status):
+    def count_tdocs(self, index, tdoc_status, wg):
         if index not in ["nation", "company"]:
             raise InvalidIndex()
         if tdoc_status == 'all':
@@ -210,8 +210,11 @@ class Database:
             SELECT attendee.{index}, count(*) as cnt
             FROM AttendeesParticipation attendee JOIN Tdocs tdocs 
             ON attendee.meeting_id = tdocs.meeting_id
+            JOIN Meetings m 
+            ON m.meeting_id = tdocs.meeting_id
             AND tdocs.contact_id = attendee.person_id
             WHERE tdocs.type = 'CR'
+            AND m.wg = 'SA 3'
             AND tdocs.tdoc_status in {tdoc_status}
             GROUP BY attendee.{index}
             """
