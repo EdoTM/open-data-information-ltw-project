@@ -84,9 +84,43 @@ function showStarLoginAlert() {
     showStarAlert.value = false;
   }, 3500);
 }
+
+const actionText = {
+  copyLink: "Copied link!",
+  share: "Shared!",
+  report: "Reported successfully.",
+} as const;
+type actionText = typeof actionText;
+
+const showInfoAlert = ref(false);
+const alertTimer = ref<NodeJS.Timeout | null>(null);
+const alertText = ref<keyof actionText>("copyLink");
+
+function displayInfoAlert(action: string) {
+  if (alertTimer.value !== null) {
+    clearTimeout(alertTimer.value!);
+  }
+  alertText.value = actionText[action];
+  showInfoAlert.value = true;
+  alertTimer.value = setTimeout(() => {
+    showInfoAlert.value = false;
+  }, 3500);
+}
 </script>
 
 <template>
+  <transition name="info-alert-copy">
+    <div
+      v-if="showInfoAlert"
+      class="alert alert-success position-fixed z-3 start-50 translate-middle-x mt-3"
+      role="alert"
+      style="top: 0"
+    >
+      <i class="bi-check-circle-fill me-2"></i>
+      {{ alertText }}
+    </div>
+  </transition>
+
   <div>
     <transition name="login-vote-alert">
       <div
@@ -124,6 +158,7 @@ function showStarLoginAlert() {
           @unvote="votePost(post, 0)"
           @upvote="votePost(post, 1)"
           :no-comments-modal="noCommentsModal"
+          @action="displayInfoAlert"
         />
       </div>
     </transition-group>
@@ -151,5 +186,15 @@ function showStarLoginAlert() {
 .login-vote-alert-leave-to {
   opacity: 0;
   transform: scale(0);
+}
+
+.info-alert-copy-enter-active,
+.info-alert-copy-leave-active {
+  transition: all 0.5s;
+}
+
+.info-alert-copy-enter-from,
+.info-alert-copy-leave-to {
+  translate: 0 -200%;
 }
 </style>

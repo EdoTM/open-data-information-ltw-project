@@ -15,7 +15,14 @@ const post = defineProps<
 
 const postCommentCount = ref(post.commentCount);
 
-const emit = defineEmits(["upvote", "downvote", "unvote", "star", "hide"]);
+const emit = defineEmits([
+  "upvote",
+  "downvote",
+  "unvote",
+  "star",
+  "hide",
+  "action",
+]);
 
 const comments = ref<CommentData[]>([]);
 
@@ -38,17 +45,17 @@ const dotsMenuOptions = ref([
   {
     text: "Report",
     icon: "bi-flag-fill text-danger",
-    action: () => console.log("Report"),
+    action: () => emit("action", "report"),
   },
   {
     text: "Copy link",
     icon: "bi-link-45deg",
-    action: () => console.log("Copy link"),
+    action: () => emit("action", "copyLink"),
   },
   {
     text: "Share",
     icon: "bi-share-fill",
-    action: () => console.log("Share"),
+    action: () => emit("action", "share"),
   },
 ]);
 
