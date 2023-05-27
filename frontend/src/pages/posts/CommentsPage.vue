@@ -2,13 +2,15 @@
 import PostList from "../../components/PostList.vue";
 import axiosInstance from "../../utils/axiosInstance";
 import Comment from "../../components/Comment.vue";
-import { ref } from "vue";
+import { inject, Ref, ref } from "vue";
 import { CommentData, PostData } from "../../types/apiTypes";
 
 const props = defineProps<{
   post: PostData;
   comments: CommentData[];
 }>();
+
+const isLogged = inject<Ref<boolean>>("is-logged")!;
 
 const emits = defineEmits(["like", "unlike", "update-comments"]);
 const textarea = ref<HTMLTextAreaElement>();
@@ -51,7 +53,7 @@ function postComment() {
   <PostList v-if="post" :no-comments-modal="true" :posts="[post]" />
   <div class="container w-75">
     <div class="card ps-0">
-      <div class="form-floating">
+      <div v-if="isLogged" class="form-floating">
         <textarea
           ref="textarea"
           class="form-control"
