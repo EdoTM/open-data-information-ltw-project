@@ -214,7 +214,7 @@ class Database:
             ON m.meeting_id = tdocs.meeting_id
             AND tdocs.contact_id = attendee.person_id
             WHERE tdocs.type = 'CR'
-            AND m.wg = 'SA 3'
+            AND m.wg = '{wg}'
             AND tdocs.tdoc_status in {tdoc_status}
             GROUP BY attendee.{index}
             """
