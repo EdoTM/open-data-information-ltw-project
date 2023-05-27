@@ -86,6 +86,10 @@ def get_user_by_username(username):
     user["score"] = score
     return make_response(user, 200)
 
+@app.route("/api/getAllUsers", methods=["GET"])
+def get_all_users():
+    users = db.get_all_users()
+    return make_response(users, 200)
 
 @app.route("/api/editUser", methods=["POST"])
 @get_user

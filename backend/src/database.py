@@ -329,3 +329,15 @@ class Database:
             score = cursor.fetchone()
             cursor.close()
         return score['score']
+    
+    def get_all_users(self):
+        query = """
+            SELECT DISTINCT username, profile_pic
+            FROM users
+        """
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            users = cursor.fetchall()
+            cursor.close()
+        return users
