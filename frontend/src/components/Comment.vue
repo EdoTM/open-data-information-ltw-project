@@ -20,9 +20,8 @@ const formattedContent = computed(() => {
   console.log(sanitizedContent);
   return sanitizedContent.replace(
     /@([a-zA-Z0-9_-]+)/g,
-    `<a class="text-decoration-none" href="/profile?username=$1">
-      <span class="username-handle-comment">@$1</span>
-      </a>`
+    `<a class="text-decoration-none p-0 m-0" href="/profile?username=$1">
+      <span class="username-handle-comment">@$1</span></a>`
   );
 });
 </script>
@@ -78,7 +77,6 @@ const formattedContent = computed(() => {
 
 <style>
 .username-handle-comment {
-  color: orange;
-  text-decoration: none;
+  font-weight: 500;
 }
 </style>
