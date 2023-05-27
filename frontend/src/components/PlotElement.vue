@@ -56,7 +56,10 @@ const showTdocRadios = ref(false);
             :style="{ background: color }"
             class="element-color-sm"
           />
-          <h5 class="m-0">{{ name }}</h5>
+          <h5 v-if="tdocFilter !== undefined" class="m-0">
+            {{ name }} ({{ tdocFilter }})
+          </h5>
+          <h5 v-else class="m-0">{{ name }}</h5>
           <a
             :class="
               isDeleteable

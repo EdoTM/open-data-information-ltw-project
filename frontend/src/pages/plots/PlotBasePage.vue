@@ -165,7 +165,7 @@ function createTooltip() {
 
 function handleRequestPlot() {
   const newElements = elements.value.map((e) => ({
-    name: e.currentCategory,
+    name: e.currentCategory + (props.isForTdoc ? ` (${e.tdocFilter})` : ""),
     color: e.color,
     currentCategory: e.currentCategory,
     tdocFilter: e.tdocFilter,

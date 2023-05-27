@@ -129,7 +129,7 @@ function updateLike(commentId: number, liked: boolean) {
             class="dots-button"
             data-bs-toggle="dropdown"
           >
-            <i class="bi-three-dots-vertical dots-icon"></i>
+            <i class="bi-three-dots-vertical dots-icon ms-2"></i>
           </a>
           <ul class="dropdown-menu">
             <li v-for="(option, i) in dotsMenuOptions" :key="i">

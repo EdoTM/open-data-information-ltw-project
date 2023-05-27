@@ -9,6 +9,19 @@ const emits = defineEmits(["like", "unlike"]);
 const displayTimestamp = computed(() => {
   return getDisplayTimestamp(props.timestamp);
 });
+
+const formattedContent = computed(() => {
+  if (!props.content) {
+    return "";
+  }
+  // replace @username with link to profile
+  return props.content.replace(
+    /@([a-zA-Z0-9_-]+)/g,
+    `<a class="text-decoration-none" href="/profile?username=$1">
+      <span class="username-handle-comment">@$1</span>
+      </a>`
+  );
+});
 </script>
 
 <template>
@@ -38,9 +51,7 @@ const displayTimestamp = computed(() => {
           </a>
         </span>
       </span>
-      <span class="comment-body">
-        {{ content }}
-      </span>
+      <span class="comment-body" v-html="formattedContent"> </span>
       <span class="text-secondary small">&nbsp; – {{ displayTimestamp }}</span>
     </div>
   </div>
@@ -59,5 +70,12 @@ const displayTimestamp = computed(() => {
 
 .likes-text {
   font-size: 0.8rem;
+}
+</style>
+
+<style>
+.username-handle-comment {
+  color: orange;
+  text-decoration: none;
 }
 </style>

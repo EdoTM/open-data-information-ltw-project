@@ -121,6 +121,7 @@ onMounted(() => {
               <p
                 v-if="!editUserBio && userInfo.bio.length > 0"
                 class="card-text"
+                style="white-space: pre-line"
               >
                 {{ userInfo.bio }}
               </p>
