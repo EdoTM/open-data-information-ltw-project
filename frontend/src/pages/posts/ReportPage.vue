@@ -5,9 +5,6 @@ import PostsBasePage from "./PostsBasePage.vue";
 <template>
   <PostsBasePage :show-info-alert="true" api-endpoint="/getPosts">
     <template #header> User Reports </template>
-    <template #info>
-      Here users share their findings. Lorem ipsum dolor sit amet, consectetur
-      adipiscing elit.
-    </template>
+    <template #info> Here users share their discoveries! </template>
   </PostsBasePage>
 </template>
