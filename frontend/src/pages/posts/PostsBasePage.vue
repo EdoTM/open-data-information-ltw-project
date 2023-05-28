@@ -2,7 +2,6 @@
 import axiosInstance from "../../utils/axiosInstance";
 import { onBeforeMount, ref, watch } from "vue";
 import PostList from "../../components/PostList.vue";
-import { bs5Breakpoints } from "../../utils/appUtils";
 import { PostData } from "../../types/apiTypes";
 
 const props = defineProps<{
@@ -15,8 +14,6 @@ const shownPosts = ref([] as PostData[]);
 const searchQuery = ref<string>("");
 const searchByUser = ref<boolean>(false);
 const loaded = ref(false);
-
-const isMobile = bs5Breakpoints.smaller("md");
 
 enum SortBy {
   Newest = "Most recent",
@@ -98,7 +95,7 @@ function handleQueryChange(newQuery: string) {
       <i class="bi-info-circle-fill me-2"></i>
       <slot name="info" />
     </div>
-    <div :class="isMobile && 'flex-column'" class="d-flex">
+    <div class="d-flex flex-column flex-md-row">
       <div class="dropdown">
         <button
           aria-expanded="false"
@@ -134,7 +131,7 @@ function handleQueryChange(newQuery: string) {
           </li>
         </ul>
       </div>
-      <div :class="isMobile ? 'mt-2' : 'mb-3 ms-5'" class="input-group">
+      <div class="input-group mt-2 mt-md-0 mb-md-3 ms-md-5">
         <span class="input-group-text">
           <i v-if="searchByUser" class="bi-person-fill" />
           <i v-else class="bi-search" />

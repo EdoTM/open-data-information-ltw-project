@@ -26,7 +26,6 @@ const emit = defineEmits([
 
 const comments = ref<CommentData[]>([]);
 
-const isMobile = bs5Breakpoints.smaller("md");
 const showCoverImage = bs5Breakpoints.smaller("md");
 
 const imageZoomModalId = `post-${post.id}-zoomModal`;
@@ -151,11 +150,8 @@ function updateLike(commentId: number, liked: boolean) {
       <img
         alt="post-img"
         :src="post.postImage"
-        :class="[
-          showCoverImage ? 'post-img-cover' : 'post-img',
-          'border',
-          !isMobile && 'float-end',
-        ]"
+        :class="showCoverImage ? 'post-img-cover' : 'post-img'"
+        class="border float-md-end"
         type="button"
         data-bs-toggle="modal"
         :data-bs-target="'#' + imageZoomModalId"
