@@ -8,7 +8,7 @@ const page = ref<"meetings" | "tdocs">("meetings");
 
 <template>
   <div class="mx-auto element-grid position-relative">
-    <div class="d-flex">
+    <div class="d-flex mt-2">
       <ul class="nav nav-pills mt-2 mx-auto">
         <li class="nav-item mx-1">
           <a
