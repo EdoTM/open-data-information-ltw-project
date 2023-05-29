@@ -148,8 +148,8 @@ onMounted(() => {
       style="max-width: 400px"
     />
   </div>
-  <div v-else class="mx-auto mb-4" style="max-width: 300px">
-    <h1>Sign up</h1>
+  <div v-else class="mx-auto mt-5" style="max-width: 300px">
+    <h1 class="my-3 text-center">Sign up</h1>
     <form id="form-coso" novalidate @submit.prevent="() => {}">
       <div :class="['form-floating mb-3' + (emailTaken ? ' is-invalid' : '')]">
         <input
