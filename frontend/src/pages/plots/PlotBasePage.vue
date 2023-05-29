@@ -157,6 +157,7 @@ function publish() {
 
 const createPostFormRef = ref<any>();
 const tooltip = ref<Tooltip>();
+const loading = ref(false);
 
 function createTooltip() {
   const tooltipTrigger = document.getElementById("shareButtonTooltip");
@@ -164,18 +165,24 @@ function createTooltip() {
 }
 
 function handleRequestPlot() {
+  loading.value = true;
   const newElements = elements.value.map((e) => ({
     name: e.currentCategory + (props.isForTdoc ? ` (${e.tdocFilter})` : ""),
     color: e.color,
     currentCategory: e.currentCategory,
     tdocFilter: e.tdocFilter,
   }));
-  props.requestPlot(plotIndex.value, newElements).then((data) => {
-    plotData.value = data;
-    if (!isLogged.value) {
-      nextTick(createTooltip);
-    }
-  });
+  props
+    .requestPlot(plotIndex.value, newElements)
+    .then((data) => {
+      plotData.value = data;
+      if (!isLogged.value) {
+        nextTick(createTooltip);
+      }
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 }
 
 watch(isLogged, () => {
@@ -256,13 +263,26 @@ const plotIndex = computed(() =>
           class="btn btn-primary mx-3 my-auto align-items-center"
           type="button"
           @click="handleRequestPlot"
+          :disabled="loading"
         >
-          <i class="bi-bar-chart-line-fill" style="font-size: 1.5rem"></i>
-          <span
-            class="ms-2 my-auto"
-            style="font-weight: bold; font-size: 1.3rem"
-            >Plot</span
-          >
+          <span v-if="loading" class="d-inline-flex">
+            <span
+              aria-hidden="true"
+              class="spinner-border spinner-border-sm me-2 my-auto"
+              role="status"
+            ></span>
+            <span class="my-auto" style="font-weight: bold; font-size: 1.3rem"
+              >Loading...</span
+            >
+          </span>
+          <span v-else>
+            <i class="bi-bar-chart-line-fill" style="font-size: 1.5rem"></i>
+            <span
+              class="ms-2 my-auto"
+              style="font-weight: bold; font-size: 1.3rem"
+              >Plot</span
+            >
+          </span>
         </button>
       </div>
       <div
