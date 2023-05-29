@@ -101,7 +101,7 @@ function loginFromFields() {
       </div>
       <div class="mx-auto d-flex mt-3" style="color-scheme: light !important">
         <button class="btn btn-primary" style="float: left" type="submit">
-          Login
+          Log in
         </button>
         <div class="flex-grow-1 text-center my-auto">or</div>
         <GoogleLogin
