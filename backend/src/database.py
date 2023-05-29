@@ -205,6 +205,9 @@ class Database:
             tdoc_status = ('withdrawn', 'rejected', 'not concluded', 'not pursued')
         else:
             raise InvalidFilterKey()
+        if wg == 'All':
+            wg = "' OR '1'='1"
+
 
         query = f"""
             SELECT attendee.{index}, count(*) as cnt
@@ -214,7 +217,7 @@ class Database:
             ON m.meeting_id = tdocs.meeting_id
             AND tdocs.contact_id = attendee.person_id
             WHERE tdocs.type = 'CR'
-            AND m.wg = '{wg}'
+            AND (m.wg = '{wg}')
             AND tdocs.tdoc_status in {tdoc_status}
             GROUP BY attendee.{index}
             """
